@@ -11,7 +11,7 @@ from tensorflow.contrib import learn
 import os
 
 
-# commit account test
+# commit account test 222
 # delete the accoutn but still using a wrong account
 # contribution count test
 # somting is little bit starnge
