@@ -10,7 +10,7 @@ import numpy as np
 from tensorflow.contrib import learn
 import os
 
-
+# commit test on ohter machines
 # commit account test
 # delete the accoutn but still using a wrong account
 # contribution count test
