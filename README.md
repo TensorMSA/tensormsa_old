@@ -1,6 +1,6 @@
 # TensorMSA
 <b>1. TensorMSA </b> </br>
-   Tensor Micro Service Architecture is a project started to make TensorFlow more accessable from Java legacy systems
+   - Tensor Micro Service Architecture is a project started to make TensorFlow more accessable from Java legacy systems
    with out modifying too much source codes. 
 
 <b>2. Function </b></br>
@@ -10,8 +10,9 @@
    - Train NN models via Spark cluster supported 
    
 <b>3. Schedule </b></br>
-   we just started this projects (2016.8). we are still on research process now. 
-   Expected to release first trial version on December 2016 
+   - we just started this projects (2016.8). 
+   - we are still on research process now. 
+   - Expected to release first trial version on December 2016 
 </br>
 
 <p align="center">
