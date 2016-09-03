@@ -12,6 +12,7 @@ import os
 
 
 # contribution count test
+# somting is little bit starnge
 class TensorIris():
 
     score = None
