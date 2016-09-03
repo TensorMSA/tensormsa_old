@@ -11,7 +11,7 @@ from tensorflow.contrib import learn
 import os
 
 
-
+# contribution count test
 class TensorIris():
 
     score = None
