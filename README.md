@@ -10,8 +10,8 @@
    - Train NN models via Spark cluster supported 
    
 <b>3. Schedule </b></br>
-   - we just started this projects (2016.8). 
-   - we are still on research process now. 
+   - We just started this projects (2016.8)
+   - We are still on research process now
    - Expected to release first trial version on December 2016 
 </br>
 
