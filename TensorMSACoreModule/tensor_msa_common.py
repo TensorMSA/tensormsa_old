@@ -13,6 +13,7 @@ import os
 
 # contribution count test
 # somting is little bit starnge
+# god damn my another git accoutn confued
 class TensorIris():
 
     score = None
