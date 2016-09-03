@@ -15,7 +15,13 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
+from rest_framework.urlpatterns import format_suffix_patterns
+from TensorMSARestAPI import views
+
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'^tensor/test1/$', views.TensorTest1.as_view()),
+    url(r'^tensor/test2/$', views.TensorTest2.as_view()),
+    url(r'^tensor/test3/$', views.TensorTest3.as_view()),
 ]
