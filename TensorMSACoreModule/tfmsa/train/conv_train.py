@@ -1,10 +1,10 @@
 from __future__ import division, print_function, absolute_import
 
-import TensorMSACoreModule.tflearn as tflearn
-from TensorMSACoreModule.tflearn.layers.core import input_data, dropout, fully_connected
-from TensorMSACoreModule.tflearn.layers.conv import conv_2d, max_pool_2d
-from TensorMSACoreModule.tflearn.layers.normalization import local_response_normalization
-from TensorMSACoreModule.tflearn.layers.estimator import regression
+import tflearn as tflearn
+from tflearn.layers.core import input_data, dropout, fully_connected
+from tflearn.layers.conv import conv_2d, max_pool_2d
+from tflearn.layers.normalization import local_response_normalization
+from tflearn.layers.estimator import regression
 from TensorMSACoreModule.tfmsa.data import json_converter
 
 
@@ -33,7 +33,7 @@ TO-DO : save trained data
 """
 
 """
-TO-DO : save test accuracy result
+TO-DO : save trained data
 """
 
 
