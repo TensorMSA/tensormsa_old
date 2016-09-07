@@ -1,12 +1,11 @@
 from __future__ import division, print_function, absolute_import
 
 import tflearn as tflearn
-from tflearn.layers.core import input_data, dropout, fully_connected
+from TensorMSACoreModule.data import json_converter
 from tflearn.layers.conv import conv_2d, max_pool_2d
-from tflearn.layers.normalization import local_response_normalization
+from tflearn.layers.core import input_data, dropout, fully_connected
 from tflearn.layers.estimator import regression
-from TensorMSACoreModule.tfmsa.data import json_converter
-
+from tflearn.layers.normalization import local_response_normalization
 
 """
 TO-DO : check request nn id
@@ -15,6 +14,8 @@ TO-DO : check request nn id
 """
 TO-DO : load NN conf form db
 """
+
+
 
 """
 TO-DO : load train data from spark
