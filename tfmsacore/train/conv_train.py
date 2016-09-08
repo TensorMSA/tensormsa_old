@@ -9,29 +9,18 @@ from tflearn.layers.estimator import regression
 from tflearn.layers.normalization import local_response_normalization
 from tfmsacore.data import json_conv, json_loader
 from tfmsacore.utils import checker
-from tfmsacore.netconf import config_manager
+from tfmsacore.netconf import nn_config_manager
+import tensorflow as tf
+from tfmsacore.models import nn_data_manager
+import numpy as np
 
 
-
-
-
-
-
-"""
-TO-DO : start train with spark data
-"""
-
-"""
-TO-DO : save trained data
-"""
-
-"""
-TO-DO : save trained data
-"""
 
 def train_conv_network(nn_id):
     """
-    train requested nn
+    Train Convolutional Neural Network and save all result on data base
+    :param nn_id:
+    :return:
     """
 
     try :
@@ -45,72 +34,85 @@ def train_conv_network(nn_id):
         """
         TO-DO : load NN conf form db
         """
-        conf = config_manager.load_conf(nn_id)
+        conf = nn_config_manager.load_conf(nn_id)
 
         """
         TO-DO : load train data from spark
         """
-        data_set = json_conv.JsonDataConverter().convert_json_to_matrix(json_loader.load_data(nn_id))
+        # data_set = json_conv.JsonDataConverter().convert_json_to_matrix(json_loader.load_data(nn_id))
+        train_x = np.array(json_loader.load_data(nn_id) , np.float32)
+        train_y = np.array(json_loader.load_tag(nn_id), np.float32)
+        test_x = np.array(json_loader.load_data(nn_id), np.float32)
+        test_y = np.array(json_loader.load_tag(nn_id), np.float32)
 
         """
-        TO-DO : rebuild model with conf data
+        TO-DO : setting data and variable
         """
-        # "type": "cnn",
-        # "active": "relu",
-        # "cnnmatrix": [2, 2],
-        # "cnnstride": [1, 1],
-        # "maxpoolmatrix": [2, 2],
-        # "maxpoolstride": [1, 1],
-        # "node_in_out": [1, 1],
-        # "regualizer": "",
-        # "padding": "SAME"
+        datalen = conf.data.datalen
+        taglen = conf.data.taglen
+        matrix = conf.data.matrix
+        learnrate = conf.data.learnrate
+        train_x = np.reshape(train_x, (-1, matrix[0],matrix[1], 1))
+        test_x = np.reshape(test_x, (-1, matrix[0], matrix[1], 1))
+
+        """
+        TO-DO : rebuild configuration
+        """
+        # create network conifg
         num_layers = len(conf.layer)
         for i in range(0, num_layers):
 
-            if(conf.layer[0].type == "cnn"):
-                network = input_data(shape=[None, 28, 28, 1], name='input')
-                network = conv_2d(network, 32, 3, activation='relu', regularizer="L2")
-                network = max_pool_2d(network, 2)
+            data = conf.layer[i]
+            print(data.active)
+            if(data.type == "input"):
+                network = input_data(shape=[None, matrix[0], matrix[1], 1], name='input')
+                network = conv_2d(network, data.node_in_out[1], data.cnnfilter, activation=str(data.active), regularizer=data.regualizer)
+                network = max_pool_2d(network, data.maxpoolmatrix)
                 network = local_response_normalization(network)
 
-            elif(conf.layer[0].type == "drop"):
-                network = input_data(shape=[None, 28, 28, 1], name='input')
-                network = conv_2d(network, 32, 3, activation='relu', regularizer="L2")
-                network = max_pool_2d(network, 2)
+            elif (data.type == "cnn"):
+                network = conv_2d(network, data.node_in_out[1], data.cnnfilter, activation=str(data.active), regularizer=data.regualizer)
+                network = max_pool_2d(network, data.maxpoolmatrix)
                 network = local_response_normalization(network)
 
+            elif(data.type == "drop"):
+                network = fully_connected(network, data.node_in_out[1], activation=str(data.active))
+                network = dropout(network, int(data.droprate))
+
+            elif (data.type == "out"):
+                network = fully_connected(network, data.node_in_out[1], activation=str(data.active))
+                network = regression(network, optimizer='adam', learning_rate=learnrate,
+                                     loss='categorical_crossentropy', name='target')
+
+            elif (data.type == "fully"):
+                network = fully_connected(network, data.node_in_out[1], activation=str(data.active))
+
+            else :
+                raise SyntaxError("there is no such kind of nn type : " + str(data.active))
+
+        """
+        TO-DO : restore trained data
+        """
+        nn_data_manager.load_trained_data(nn_id, network)
+
+        """
+        TO-DO : run model (spark also need to be considered)
+        """
+        # Training
+        model = tflearn.DNN(network, tensorboard_verbose=0)
+        model.fit({'input': train_x}, {'target': train_y}, n_epoch=5,
+                  validation_set=({'input': test_x}, {'target': test_y}),
+                  snapshot_step=100, show_metric=True, run_id='convnet_mnist')
+
+        """
+        TO-DO : save trained data
+        """
+        nn_data_manager.save_trained_data(nn_id, network)
+
+        return "success"
 
     except SyntaxError as e :
         return e
 
-#
-#
-# X, Y, testX, testY = json_converter.load_data(one_hot=True)
-# X = X.reshape([-1, 28, 28, 1])
-# testX = testX.reshape([-1, 28, 28, 1])
-#
-# # Building convolutional network
-# network = input_data(shape=[None, 28, 28, 1], name='input')
-# network = conv_2d(network, 32, 3, activation='relu', regularizer="L2")
-# network = max_pool_2d(network, 2)
-# network = local_response_normalization(network)
-# network = conv_2d(network, 64, 3, activation='relu', regularizer="L2")
-# network = max_pool_2d(network, 2)
-# network = local_response_normalization(network)
-# network = fully_connected(network, 128, activation='tanh')
-# network = dropout(network, 0.8)
-# network = fully_connected(network, 256, activation='tanh')
-# network = dropout(network, 0.8)
-# network = fully_connected(network, 10, activation='softmax')
-# network = regression(network, optimizer='adam', learning_rate=0.01,
-#                      loss='categorical_crossentropy', name='target')
-#
-# # Training
-# model = tflearn.DNN(network, tensorboard_verbose=0)
-# model.fit({'input': X}, {'target': Y}, n_epoch=20,
-#            validation_set=({'input': testX}, {'target': testY}),
-#            snapshot_step=100, show_metric=True, run_id='convnet_mnist')
-#
-#
-
-train_conv_network("sample")
+#for test purpose
+#train_conv_network("sample")

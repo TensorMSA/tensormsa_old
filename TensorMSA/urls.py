@@ -16,12 +16,14 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 from rest_framework.urlpatterns import format_suffix_patterns
-from TensorMSARestAPI import views
+from tfmsarest import views
 
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^tensor/test1/$', views.TensorTest1.as_view()),
-    url(r'^tensor/test2/$', views.TensorTest2.as_view()),
-    url(r'^tensor/test3/$', views.TensorTest3.as_view()),
+    url(r'^nn/cnn/service/$', views.CNN_Service.as_view()),
+    url(r'^nn/cnn/config/$', views.CNN_Config.as_view()),
+    url(r'^nn/cnn/data/$', views.CNN_Data.as_view()),
+    url(r'^nn/cnn/stastics/$', views.CNN_Stastics.as_view()),
+
 ]

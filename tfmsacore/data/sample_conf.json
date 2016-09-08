@@ -3,55 +3,60 @@
         {
              "datalen": 96,
              "taglen" : 2,
-             "matrix" : [12 , 8]
+             "matrix" : [12 , 8],
+             "learnrate" : 0.01
         },
     "layer":
         [
             {
-                "type" : "cnn",
+                "type" : "input",
                 "active" : "relu",
-                "cnnmatrix" : [2,2],
+                "cnnfilter" : [2,2],
                 "cnnstride" : [1, 1],
                 "maxpoolmatrix" : [2, 2],
                 "maxpoolstride" : [1, 1],
-                "node_in_out" : [1,1],
+                "node_in_out" : [1,16],
                 "regualizer" : "",
-                "padding" : "SAME"
+                "padding" : "SAME",
+                "droprate" : ""
             },
 
             {
                 "type" : "cnn",
                 "active" : "relu",
-                "cnnmatrix" : [2,2],
+                "cnnfilter" : [2,2],
                 "cnnstride" : [1, 1],
                 "maxpoolmatrix" : [2, 2],
                 "maxpoolstride" : [1, 1],
-                "node_in_out" : [1,32],
+                "node_in_out" : [16,32],
                 "regualizer" : "",
-                "padding" : "SAME"
+                "padding" : "SAME",
+                "droprate" : ""
             },
 
             {
                 "type" : "drop",
                 "active" : "relu",
-                "cnnmatrix" : "",
+                "cnnfilter" : "",
                 "cnnstride" : "",
                 "maxpoolmatrix" : "",
                 "maxpoolstride" : "",
                 "node_in_out" : [192,100],
                 "regualizer" : "",
-                "padding" : "SAME"
+                "padding" : "SAME",
+                "droprate" : 0.5
             },
             {
                 "type" : "out",
                 "active" : "softmax",
-                "cnnmatrix" : "",
+                "cnnfilter" : "",
                 "cnnstride" : "",
                 "maxpoolmatrix" : "",
                 "maxpoolstride" : "",
                 "node_in_out" : [100,2],
                 "regualizer" : "",
-                "padding" : "SAME"
+                "padding" : "SAME",
+                "droprate" : ""
             }
         ]
  }
