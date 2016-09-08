@@ -1,7 +1,3 @@
-"""
-TO-DO : get conf data form db and return with json
-"""
-
 # -*- coding: utf-8 -*-
 import json
 import os
@@ -16,6 +12,9 @@ def load_conf(net_id):
     :return:
     """
 
+    """
+    TO-DO : need to stroe data on data base
+    """
     directory = "/tensorMSA/data/"
     net_id = net_id + "_conf.json"
     #curreunt_path = os.path.dirname(os.path.abspath(__file__))

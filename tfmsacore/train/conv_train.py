@@ -1,18 +1,17 @@
 # -*- coding: utf-8 -*-
 from __future__ import division, print_function, absolute_import
 
-import tflearn as tflearn
+import numpy as np
 
+import tflearn as tflearn
 from tflearn.layers.conv import conv_2d, max_pool_2d
 from tflearn.layers.core import input_data, dropout, fully_connected
 from tflearn.layers.estimator import regression
 from tflearn.layers.normalization import local_response_normalization
-from tfmsacore.data import json_conv, json_loader
-from tfmsacore.utils import checker
-from tfmsacore.netconf import nn_config_manager
-import tensorflow as tf
+from tfmsacore.data import json_loader
 from tfmsacore.models import nn_data_manager
-import numpy as np
+from tfmsacore.netconf import nn_config_manager, nn_data_manager
+from tfmsacore.utils import checker
 
 
 
