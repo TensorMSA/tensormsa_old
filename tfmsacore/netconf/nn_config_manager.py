@@ -20,9 +20,8 @@ def load_conf(net_id):
     #curreunt_path = os.path.dirname(os.path.abspath(__file__))
     curreunt_path = os.path.dirname(os.getcwd())
 
-    print("loading conf path : {0}".format(curreunt_path + "/data/" + net_id))
-
-    model_conf = open(curreunt_path + "/data/" + net_id , 'r')
+    #model_conf = open(curreunt_path + "/data/" + net_id , 'r')
+    model_conf = open(curreunt_path + "/TensorMSA/tfmsacore/data/" + net_id, 'r')
     json_data = json_conv.JsonDataConverter().load_obj_json(model_conf)
 
     model_conf.close()
