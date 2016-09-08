@@ -116,4 +116,4 @@ def train_conv_network(nn_id):
         return e
 
 #for test purpose
-train_conv_network("sample")
+#train_conv_network("sample")

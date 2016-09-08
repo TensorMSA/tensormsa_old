@@ -8,7 +8,15 @@ import tensorflow as tf
 
 # test-predict
 def test_nn_cnn_service_predict():
-    resp = requests.get('http://localhost:8989/nn/cnn/service/')
+    req_data = """[ 0 , 1 , 0, 1 , 0 , 1 , 0 , 1 , 0 , 1 , 0 , 1 ,
+                   0 , 1 , 0, 1 , 0 , 1 , 0 , 1 , 0 , 1 , 0 , 1 ,
+                   0 , 1 , 0, 1 , 0 , 1 , 0 , 1 , 0 , 1 , 0 , 1 ,
+                   0 , 1 , 0, 1 , 0 , 1 , 0 , 1 , 0 , 1 , 0 , 1 ,
+                   0 , 1 , 0, 1 , 0 , 1 , 0 , 1 , 0 , 1 , 0 , 1 ,
+                   0 , 1 , 0, 1 , 0 , 1 , 0 , 1 , 0 , 1 , 0 , 1 ,
+                   0 , 1 , 0, 1 , 0 , 1 , 0 , 1 , 0 , 1 , 0 , 1 ,
+                   0 , 1 , 0, 1 , 0 , 1 , 0 , 1 , 0 , 1 , 0 , 1 ]"""
+    resp = requests.get('http://localhost:8989/nn/cnn/service/' ,json=req_data)
     if resp.status_code != 200:
         raise SyntaxError('GET /tasks/ {}'.format(resp.status_code))
 
@@ -28,7 +36,7 @@ def test_nn_cnn_service_train():
 
 
 def main(case):
-    case = 2
+    case = 1
     if(case == 1):
         test_nn_cnn_service_predict()
     elif(case ==2):

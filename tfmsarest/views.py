@@ -36,8 +36,9 @@ class CNN_Service(APIView):
         return Response(json.dumps(return_data))
 
     # read
-    def get(self, pk):
-        result = TFMsa().predictNerualNetwork("cnn", "sample", pk)
+    def get(self, request):
+        req_data = json.loads(request.body)
+        result = TFMsa().predictNerualNetwork("cnn", "sample", req_data)
 
         print(json.dumps(result))
         return Response(json.dumps(result))
