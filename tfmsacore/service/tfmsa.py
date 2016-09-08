@@ -13,10 +13,10 @@ class TFMsa :
 
     @staticmethod
     def trainNerualNetwork(nn_type, nn_id, run_type):
-        if(type == "conv" & run_type == "local"):
+        if(nn_type == "cnn" and run_type == "local"):
             return train_conv_network(nn_id)
 
-        elif(type == "conv" & run_type == "spark"):
+        elif(nn_type == "cnn" and run_type == "spark"):
             return spark_train_conv_network(nn_id)
 
         else :
@@ -25,8 +25,12 @@ class TFMsa :
 
     @staticmethod
     def predictNerualNetwork(nn_type, nn_id):
-        if(type == "conv"):
+        if(nn_type == "cnn"):
             return predict_conv_network(nn_id)
 
         else :
             return "cannot understand the request!"
+
+
+
+#TFMsa.trainNerualNetwork("cnn", "sample", "local")
