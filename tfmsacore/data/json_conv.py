@@ -11,13 +11,10 @@ class JsonDataConverter:
         JSON to TensorFlow Learning Data
     """
     # 테스트를 위해 1차적으로 개발
-    def convert_json_to_matrix(self, data):
+    def convert_json_to_matrix(self, json_data):
         train_data = []
         train_tag = []
         result_data = []
-        # result_data.append(train_data, train_tag)
-
-        json_data = json.loads(data, object_hook=JsonObject)
 
         for row in json_data:
 
@@ -34,3 +31,14 @@ class JsonDataConverter:
         result_data.append(train_tag)
 
         return result_data
+
+
+    def load_obj_json(self, data):
+        """
+        return objective json
+        :param data:
+        :return:
+        """
+        json_data = json.loads(data.read(), object_hook=JsonObject)
+
+        return json_data

@@ -1,0 +1,57 @@
+{
+    "data":
+        {
+             "datalen": 96,
+             "taglen" : 2,
+             "matrix" : [12 , 8]
+        },
+    "layer":
+        [
+            {
+                "type" : "cnn",
+                "active" : "relu",
+                "cnnmatrix" : [2,2],
+                "cnnstride" : [1, 1],
+                "maxpoolmatrix" : [2, 2],
+                "maxpoolstride" : [1, 1],
+                "node_in_out" : [1,1],
+                "regualizer" : "",
+                "padding" : "SAME"
+            },
+
+            {
+                "type" : "cnn",
+                "active" : "relu",
+                "cnnmatrix" : [2,2],
+                "cnnstride" : [1, 1],
+                "maxpoolmatrix" : [2, 2],
+                "maxpoolstride" : [1, 1],
+                "node_in_out" : [1,32],
+                "regualizer" : "",
+                "padding" : "SAME"
+            },
+
+            {
+                "type" : "drop",
+                "active" : "relu",
+                "cnnmatrix" : "",
+                "cnnstride" : "",
+                "maxpoolmatrix" : "",
+                "maxpoolstride" : "",
+                "node_in_out" : [192,100],
+                "regualizer" : "",
+                "padding" : "SAME"
+            },
+            {
+                "type" : "out",
+                "active" : "softmax",
+                "cnnmatrix" : "",
+                "cnnstride" : "",
+                "maxpoolmatrix" : "",
+                "maxpoolstride" : "",
+                "node_in_out" : [100,2],
+                "regualizer" : "",
+                "padding" : "SAME"
+            }
+        ]
+ }
