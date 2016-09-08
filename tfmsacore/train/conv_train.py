@@ -63,7 +63,7 @@ def train_conv_network(nn_id):
         for i in range(0, num_layers):
 
             data = conf.layer[i]
-            print(data.active)
+
             if(data.type == "input"):
                 network = input_data(shape=[None, matrix[0], matrix[1], 1], name='input')
                 network = conv_2d(network, data.node_in_out[1], data.cnnfilter, activation=str(data.active), regularizer=data.regualizer)
@@ -90,16 +90,17 @@ def train_conv_network(nn_id):
             else :
                 raise SyntaxError("there is no such kind of nn type : " + str(data.active))
 
+        # set to real tensorflow
+        model = tflearn.DNN(network, tensorboard_verbose=0)
+
         """
         TO-DO : restore trained data
         """
-        nn_data_manager.load_trained_data(nn_id, network)
+        nn_data_manager.load_trained_data(nn_id, model.session)
 
         """
         TO-DO : run model (spark also need to be considered)
         """
-        # Training
-        model = tflearn.DNN(network, tensorboard_verbose=0)
         model.fit({'input': train_x}, {'target': train_y}, n_epoch=5,
                   validation_set=({'input': test_x}, {'target': test_y}),
                   snapshot_step=100, show_metric=True, run_id='convnet_mnist')
@@ -107,7 +108,7 @@ def train_conv_network(nn_id):
         """
         TO-DO : save trained data
         """
-        nn_data_manager.save_trained_data(nn_id, network)
+        nn_data_manager.save_trained_data(nn_id, model.session)
 
         return "success"
 
@@ -115,4 +116,4 @@ def train_conv_network(nn_id):
         return e
 
 #for test purpose
-#train_conv_network("sample")
+train_conv_network("sample")

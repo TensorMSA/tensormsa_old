@@ -16,12 +16,15 @@ def load_conf(net_id):
     :return:
     """
 
+    directory = "/tensorMSA/data/"
     net_id = net_id + "_conf.json"
     #curreunt_path = os.path.dirname(os.path.abspath(__file__))
-    curreunt_path = os.path.dirname(os.getcwd())
+    #curreunt_path = os.path.dirname(os.getcwd())
 
-    #model_conf = open(curreunt_path + "/data/" + net_id , 'r')
-    model_conf = open(curreunt_path + "/TensorMSA/tfmsacore/data/" + net_id, 'r')
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+
+    model_conf = open(directory + net_id, 'r')
     json_data = json_conv.JsonDataConverter().load_obj_json(model_conf)
 
     model_conf.close()

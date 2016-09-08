@@ -24,9 +24,9 @@ class TFMsa :
 
 
     @staticmethod
-    def predictNerualNetwork(nn_type, nn_id):
+    def predictNerualNetwork(nn_type, nn_id, req_data):
         if(nn_type == "cnn"):
-            return predict_conv_network(nn_id)
+            return predict_conv_network(nn_id, req_data)
 
         else :
             return "cannot understand the request!"
