@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import json
 import os
-from tfmsacore.data import json_conv
+from tfmsacore.data.json_conv import JsonDataConverter as jc
 
 def load_data(net_id):
     """
@@ -14,7 +14,7 @@ def load_data(net_id):
     directory = "/tensorMSA/data/"
     #curreunt_path = os.path.dirname(os.getcwd())
     model_conf = open(directory + net_id, 'r')
-    json_data = json_conv.JsonDataConverter().load_obj_json(model_conf)
+    json_data = jc.load_obj_json(model_conf)
 
     model_conf.close()
     return json_data
@@ -32,7 +32,7 @@ def load_tag(net_id):
     directory = "/tensorMSA/data/"
     #curreunt_path = os.path.dirname(os.getcwd())
     model_conf = open(directory + net_id, 'r')
-    json_data = json_conv.JsonDataConverter().load_obj_json(model_conf)
+    json_data = jc.load_obj_json(model_conf)
 
     model_conf.close()
     return json_data

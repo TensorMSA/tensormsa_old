@@ -7,6 +7,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from tfmsacore.service.tfmsa import TFMsa
+from tfmsacore.data.json_conv import JsonDataConverter as jc
+
 import json
 
 
@@ -29,24 +31,23 @@ class CNN_Service(APIView):
 
     # create
     def post(self, request):
-        req_data = json.loads(request.body)
-        result = TFMsa().trainNerualNetwork("cnn", req_data["nn_id"], "local")
+        jd = jc.load_obj_json(request.body)
+        result = TFMsa().trainNerualNetwork(jd.nn_id, jd.nn_type, jd.run_type)
         return_data = [{"status": "ok", "result": result}]
         print(json.dumps(return_data))
         return Response(json.dumps(return_data))
 
     # read
     def get(self, request):
-        req_data = json.loads(request.body)
-        result = TFMsa().predictNerualNetwork("cnn", "sample", req_data)
-
+        jd = jc.load_obj_json(request.body)
+        result = TFMsa().predictNerualNetwork(jd.nn_id, jd.nn_type, jd.run_type, jd.predict_data)
         print(json.dumps(result))
         return Response(json.dumps(result))
 
     # update
     def put(self, request):
-        req_data = json.loads(request.body)
-        result = TFMsa().trainNerualNetwork("cnn", req_data["nn_id"], "local")
+        jd = jc.load_obj_json(request.body)
+        result = TFMsa().trainNerualNetwork(jd.nn_id, jd.nn_type, jd.run_type)
         return_data = [{"status": "ok", "result": result}]
         print(json.dumps(return_data))
         return Response(json.dumps(return_data))
@@ -60,8 +61,11 @@ class CNN_Config(APIView):
     """
     TO-DO : Dev Rest Services for CNN config change
     """
-    def post(self, request, pk, format=None):
-        return Response("post")
+    def post(self, request):
+        tfmsa = TFMsa()
+        result = tfmsa.createNewNeuralNet(request)
+        return_data = [{"status": "ok", "result": "ok"}]
+        return Response(return_data)
 
     def get(self, pk):
         return Response("get")

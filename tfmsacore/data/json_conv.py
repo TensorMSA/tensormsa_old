@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import json
 
-# JSON Object 변수에 직접 접근할 수 있도록 합니다
+# json utils
 class JsonObject:
   def __init__(self, d):
     self.__dict__ = d
@@ -10,8 +10,9 @@ class JsonDataConverter:
     """
         JSON to TensorFlow Learning Data
     """
-    # 테스트를 위해 1차적으로 개발
-    def convert_json_to_matrix(self, json_data):
+    #
+    @staticmethod
+    def convert_json_to_matrix(json_data):
         train_data = []
         train_tag = []
         result_data = []
@@ -32,13 +33,20 @@ class JsonDataConverter:
 
         return result_data
 
-
-    def load_obj_json(self, data):
+    @staticmethod
+    def load_obj_json(data):
         """
         return objective json
         :param data:
         :return:
         """
-        json_data = json.loads(data.read(), object_hook=JsonObject)
+        if(isinstance(data, (str))):
+            json_data = json.loads(data, object_hook=JsonObject)
+        elif(isinstance(data, (file))):
+            json_data = json.loads(data.read(), object_hook=JsonObject)
+        elif(isinstance(data, (dict))):
+            json_data = json.loads(data, object_hook=JsonObject)
+        else:
+            raise SyntaxError ("not a right json type")
 
         return json_data

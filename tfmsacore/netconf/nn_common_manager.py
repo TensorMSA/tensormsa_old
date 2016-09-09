@@ -8,25 +8,25 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
-class NNListManager():
+class NNInfoManager():
     """
     List all snippets, or create a new snippet.
     """
-
-    def create_new_network(self, request):
+    def create_new_network(self, req):
         """
         create new nn user request
         :param net_id:
         :return:
         """
 
-        """
-        TO-DO : need to stroe data on data base
-        """
-        serializer = serializers.NNListSerializer(data=request.data)
+        print("=========request.data : {0}".format(req.data))
+        serializer = serializers.NNInfoSerializer(data=req.data)
+        print("=====serializer : {0} " .format(serializer))
+
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            print("======serializer.data : {0}".format(serializer.data))
+            return "success"
+        return "failure"
 
 

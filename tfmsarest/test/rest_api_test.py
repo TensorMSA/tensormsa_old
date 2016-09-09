@@ -16,7 +16,9 @@ def test_nn_cnn_service_predict():
                    0 , 1 , 0, 1 , 0 , 1 , 0 , 1 , 0 , 1 , 0 , 1 ,
                    0 , 1 , 0, 1 , 0 , 1 , 0 , 1 , 0 , 1 , 0 , 1 ,
                    0 , 1 , 0, 1 , 0 , 1 , 0 , 1 , 0 , 1 , 0 , 1 ]"""
-    resp = requests.get('http://localhost:8989/nn/cnn/service/' ,json=req_data)
+    resp = requests.get('http://localhost:8989/nn/cnn/service/' ,
+                        json={ "nn_id": "sample" , "nn_type" : "cnn",
+                               "run_type" : "local", "predict_data":req_data})
     if resp.status_code != 200:
         raise SyntaxError('GET /tasks/ {}'.format(resp.status_code))
 
@@ -26,20 +28,21 @@ def test_nn_cnn_service_predict():
 # test-train
 def test_nn_cnn_service_train():
     #requests.post(url, data, json, arg )
+    #nn_type, run_type, nn_id
     resp = requests.post('http://localhost:8989/nn/cnn/service/',
-                        json={ "nn_id": "sample"})
+                        json={ "nn_id": "sample" , "nn_type" : "cnn",
+                               "run_type" : "local", "predict_data":""})
     if resp.status_code != 200:
         raise SyntaxError('GET /tasks/ {}'.format(resp.status_code))
 
     data = json.loads(resp.json())
     print("test result : {0}".format(data))
 
-
 # create new network test
 def test_nn_cnn_config_create_new():
     #requests.post(url, data, json, arg )
     resp = requests.post('http://localhost:8989/nn/cnn/config/',
-                        json={ "id": "nn00000001",
+                        json={ "nnid": "nn0000001",
                                "category":"test",
                                "name" : "test",
                                "type" : "cnn",
@@ -49,12 +52,10 @@ def test_nn_cnn_config_create_new():
                                "dir" : "default"})
     if resp.status_code != 200:
         raise SyntaxError('GET /tasks/ {}'.format(resp.status_code))
-
-    data = json.loads(resp.json())
-    print("test result : {0}".format(data))
+    print("test result : {0}".format(resp))
 
 
-
+# test each rest apis
 def main(case):
     case = 3
     if(case == 1):
