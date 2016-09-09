@@ -9,7 +9,6 @@ from tflearn.layers.core import input_data, dropout, fully_connected
 from tflearn.layers.estimator import regression
 from tflearn.layers.normalization import local_response_normalization
 from tfmsacore.data import json_loader
-from tfmsacore.models import nn_data_manager
 from tfmsacore.netconf import nn_config_manager, nn_data_manager
 from tfmsacore.utils import checker
 

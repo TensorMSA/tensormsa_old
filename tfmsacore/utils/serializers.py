@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from tfmsacore.models import models
+
+from tfmsacore import models
 
 
 class NNListSerializer(serializers.ModelSerializer):
