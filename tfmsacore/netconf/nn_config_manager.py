@@ -1,36 +1,66 @@
 # -*- coding: utf-8 -*-
-import json
 import os
-from tfmsacore.data import json_conv
-
+from tfmsacore import data
 
 def load_conf(net_id):
     """
-    before dev db conn module get data from file for test
-    TO-DO : get connection from db and get sellected nn conf info
+    load json from  path and return it as python object form
     :param net_id:
     :return:
     """
+    directory = "/tensorMSA/data/"
+    net_id = net_id + "_conf.json"
 
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+    try:
+        model_conf = open(directory + net_id, 'r')
+        json_data = data.json_conv.JsonDataConverter().load_obj_json(model_conf)
+    except :
+        json_data = "load json_conf error"
+    finally :
+        model_conf.close()
+
+    return json_data
+
+def load_ori_conf(net_id):
     """
-    TO-DO : need to stroe data on data base
+    load json from  path and return it as str
+    :param net_id:
+    :return:
     """
     directory = "/tensorMSA/data/"
     net_id = net_id + "_conf.json"
-    #curreunt_path = os.path.dirname(os.path.abspath(__file__))
-    #curreunt_path = os.path.dirname(os.getcwd())
 
     if not os.path.exists(directory):
         os.makedirs(directory)
 
-    model_conf = open(directory + net_id, 'r')
-    json_data = json_conv.JsonDataConverter().load_obj_json(model_conf)
+    try:
+        model_conf = open(directory + net_id, 'r')
+        json_data = model_conf.read().split()
+    except :
+        json_data = "load json_conf error"
+    finally :
+        model_conf.close()
 
-    model_conf.close()
     return json_data
 
+def save_conf(net_id, conf_data):
+    """
+    save json format to json file
+    :param net_id:
+    :param conf_data:
+    :return:
+    """
 
+    directory = "/tensorMSA/data/"
+    net_id = net_id + "_conf.json"
 
-def save_conf(net_id):
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+
+    f = open(directory + net_id, 'w')
+    f.write(str(conf_data))
+    f.close()
 
     return True

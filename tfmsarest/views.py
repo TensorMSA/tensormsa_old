@@ -41,8 +41,8 @@ class CNN_Service(APIView):
     def get(self, request):
         jd = jc.load_obj_json(request.body)
         result = TFMsa().predictNerualNetwork(jd.nn_id, jd.nn_type, jd.run_type, jd.predict_data)
-        print(json.dumps(result))
-        return Response(json.dumps(result))
+        return_data = [{"status": "ok", "result": result}]
+        return Response(json.dumps(return_data))
 
     # update
     def put(self, request):
@@ -62,16 +62,40 @@ class CNN_Config(APIView):
     TO-DO : Dev Rest Services for CNN config change
     """
     def post(self, request):
+        """
+        insert neural net info with conf
+        :param request:
+        :return:
+        """
+        jd = jc.load_obj_json(request.body)
         tfmsa = TFMsa()
-        result = tfmsa.createNewNeuralNet(request)
-        return_data = [{"status": "ok", "result": "ok"}]
+        result = tfmsa.createNeuralNetwork(jd.nn_info, jd.nn_conf)
+        return_data = [{"status": "ok", "result": result}]
         return Response(return_data)
 
-    def get(self, pk):
-        return Response("get")
+    def get(self, request):
+        """
+        get conf data and other info (single or multiple)
+        :param pk:
+        :return:
+        """
+        tfmsa = TFMsa()
+        jd = jc.load_obj_json(request.body)
+        result = tfmsa.searchNeuralNetwork(jd.nn_info)
+        return_data = [{"status": "ok", "result": result}]
+        return Response(json.dumps(return_data))
 
-    def put(self, request, pk, format=None):
-        return Response("put")
+    def put(self, request):
+        """
+        update neural network info with conf
+        :param request:
+        :return:
+        """
+        tfmsa = TFMsa()
+        jd = jc.load_obj_json(request.body)
+        result = tfmsa.updateNeuralNetwork(jd.nn_info, jd.nn_conf)
+        return_data = [{"status": "ok", "result": result}]
+        return Response(json.dumps(return_data))
 
     def delete(self, request, pk, format=None):
         return Response("delete")
