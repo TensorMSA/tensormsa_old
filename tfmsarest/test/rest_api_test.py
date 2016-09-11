@@ -18,7 +18,7 @@ def test_nn_cnn_service_predict():
                    0 , 1 , 0, 1 , 0 , 1 , 0 , 1 , 0 , 1 , 0 , 1 ,
                    0 , 1 , 0, 1 , 0 , 1 , 0 , 1 , 0 , 1 , 0 , 1 ,
                    0 , 1 , 0, 1 , 0 , 1 , 0 , 1 , 0 , 1 , 0 , 1 ]"""
-    resp = requests.get('http://' + url + '/nn/cnn/service/' ,
+    resp = requests.get('http://' + url + '/service/nn/cnn/' ,
                         json={ "nn_id": "sample" , "nn_type" : "cnn",
                                "run_type" : "local", "predict_data":req_data})
     if resp.status_code != 200:
@@ -31,7 +31,7 @@ def test_nn_cnn_service_predict():
 def test_nn_cnn_service_train():
     #requests.post(url, data, json, arg )
     #nn_type, run_type, nn_id
-    resp = requests.post('http://' + url + '/nn/cnn/service/',
+    resp = requests.post('http://' + url + '/service/nn/cnn/',
                         json={ "nn_id": "sample" , "nn_type" : "cnn",
                                "run_type" : "local", "predict_data":""})
     if resp.status_code != 200:
@@ -115,7 +115,7 @@ def test_nn_cnn_config_create_new():
            "config" : "",
            "dir" : "default"}
          """
-    resp = requests.post('http://' + url + '/nn/cnn/config/',
+    resp = requests.post('http://' + url + '/config/nn/cnn/',
                         json={
                             "nn_info" : nn_info,
                             "nn_conf" : ""
@@ -200,7 +200,7 @@ def test_nn_cnn_config_insert_conf():
            "dir" : "default"}
          """
 
-    resp = requests.put('http://' + url + '/nn/cnn/config/',
+    resp = requests.put('http://' + url + '/config/nn/cnn/',
                         json={
                             "nn_info" : nn_info,
                             "nn_conf" : req_data
@@ -224,7 +224,7 @@ def test_nn_cnn_config_search_conf():
            "dir" : "default"}
          """
 
-    resp = requests.get('http://' + url + '/nn/cnn/config/',
+    resp = requests.get('http://' + url + '/config/nn/cnn/',
                         json={
                             "nn_info" : nn_info,
                             "nn_conf" : ""

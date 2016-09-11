@@ -16,14 +16,16 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 from rest_framework.urlpatterns import format_suffix_patterns
-from tfmsarest import views
-
+from tfmsarest import views as rest_view
+from tfmsaview import views as ui_view
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^nn/cnn/service/$', views.CNN_Service.as_view()),
-    url(r'^nn/cnn/config/$', views.CNN_Config.as_view()),
-    url(r'^nn/cnn/data/$', views.CNN_Data.as_view()),
-    url(r'^nn/cnn/stastics/$', views.CNN_Stastics.as_view()),
-
-]
+    url(r'^service/nn/cnn/$', rest_view.CNN_Service.as_view()),
+    url(r'^config/nn/cnn/$', rest_view.CNN_Config.as_view()),
+    url(r'^data/nn/cnn/$', rest_view.CNN_Data.as_view()),
+    url(r'^stastics/nn/cnn/$', rest_view.CNN_Stastics.as_view()),
+    url(r'^view/index/$', ui_view.UI_Service.as_view()),
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
