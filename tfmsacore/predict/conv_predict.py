@@ -40,8 +40,8 @@ def predict_conv_network(nn_id , req_data):
         taglen = conf.data.taglen
         matrix = conf.data.matrix
         learnrate = conf.data.learnrate
+        request_x = np.reshape(json.loads(req_data), (-1, matrix[0], matrix[1],1))
 
-        request_x = np.reshape(json.loads(req_data), (-1, matrix[0], matrix[1], 1))
 
         """
         TO-DO : rebuild configuration
@@ -52,7 +52,7 @@ def predict_conv_network(nn_id , req_data):
 
             data = conf.layer[i]
             if(data.type == "input"):
-                network = input_data(shape=[None, matrix[0], matrix[1], 1], name='input')
+                network = input_data(shape=[None, matrix[0], matrix[1],1], name='input')
                 network = conv_2d(network, data.node_in_out[1], data.cnnfilter, activation=str(data.active), regularizer=data.regualizer)
                 network = max_pool_2d(network, data.maxpoolmatrix)
                 network = local_response_normalization(network)
@@ -83,8 +83,8 @@ def predict_conv_network(nn_id , req_data):
         """
         TO-DO : restore trained data
         """
-        nn_data_manager.load_trained_data(nn_id, model.session)
-
+        model = nn_data_manager.load_trained_data(nn_id, model)
+        print(request_x)
         result = model.predict(request_x)
         print("result : {0} ".format(result))
 

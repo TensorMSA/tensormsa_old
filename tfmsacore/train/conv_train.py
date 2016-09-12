@@ -50,8 +50,9 @@ def train_conv_network(nn_id):
         taglen = conf.data.taglen
         matrix = conf.data.matrix
         learnrate = conf.data.learnrate
-        train_x = np.reshape(train_x, (-1, matrix[0],matrix[1], 1))
-        test_x = np.reshape(test_x, (-1, matrix[0], matrix[1], 1))
+        train_x = np.reshape(train_x, (-1, matrix[0],matrix[1],1))
+        test_x = np.reshape(test_x, (-1, matrix[0], matrix[1],1))
+
 
         """
         TO-DO : rebuild configuration
@@ -63,7 +64,7 @@ def train_conv_network(nn_id):
             data = conf.layer[i]
 
             if(data.type == "input"):
-                network = input_data(shape=[None, matrix[0], matrix[1], 1], name='input')
+                network = input_data(shape=[None, matrix[0], matrix[1],1], name='input')
                 network = conv_2d(network, data.node_in_out[1], data.cnnfilter, activation=str(data.active), regularizer=data.regualizer)
                 network = max_pool_2d(network, data.maxpoolmatrix)
                 network = local_response_normalization(network)
@@ -94,7 +95,7 @@ def train_conv_network(nn_id):
         """
         TO-DO : restore trained data
         """
-        nn_data_manager.load_trained_data(nn_id, model.session)
+        model = nn_data_manager.load_trained_data(nn_id, model)
 
         """
         TO-DO : run model (spark also need to be considered)
@@ -106,7 +107,7 @@ def train_conv_network(nn_id):
         """
         TO-DO : save trained data
         """
-        nn_data_manager.save_trained_data(nn_id, model.session)
+        nn_data_manager.save_trained_data(nn_id, model)
 
         return "success"
 
