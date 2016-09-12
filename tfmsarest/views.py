@@ -69,6 +69,7 @@ class CNN_Config(APIView):
         """
         jd = jc.load_obj_json(request.body)
         tfmsa = TFMsa()
+
         result = tfmsa.createNeuralNetwork(jd.nn_info, jd.nn_conf)
         return_data = [{"status": "ok", "result": result}]
         return Response(json.dumps(return_data))
