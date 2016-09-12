@@ -71,7 +71,7 @@ class CNN_Config(APIView):
         tfmsa = TFMsa()
         result = tfmsa.createNeuralNetwork(jd.nn_info, jd.nn_conf)
         return_data = [{"status": "ok", "result": result}]
-        return Response(return_data)
+        return Response(json.dumps(return_data))
 
     def get(self, request):
         """
