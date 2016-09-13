@@ -5,7 +5,7 @@ from tfmsacore import data
 def load_conf(net_id):
     """
     load json from  path and return it as python object form
-    :param net_id:
+    :param net_id: neural network id
     :return:
     """
     directory = "/tensorMSA/data/"
@@ -17,7 +17,7 @@ def load_conf(net_id):
         model_conf = open(directory + net_id, 'r')
         json_data = data.json_conv.JsonDataConverter().load_obj_json(model_conf)
     except :
-        json_data = "load json_conf error"
+        raise SystemError("json load error")
     finally :
         model_conf.close()
 
@@ -26,7 +26,7 @@ def load_conf(net_id):
 def load_ori_conf(net_id):
     """
     load json from  path and return it as str
-    :param net_id:
+    :param net_id: neural network id
     :return:
     """
     directory = "/tensorMSA/data/"
@@ -39,7 +39,7 @@ def load_ori_conf(net_id):
         model_conf = open(directory + net_id, 'r')
         json_data = model_conf.read().split()
     except :
-        json_data = "load json_conf error"
+        raise SystemError("json load error")
     finally :
         model_conf.close()
 
@@ -48,8 +48,8 @@ def load_ori_conf(net_id):
 def save_conf(net_id, conf_data):
     """
     save json format to json file
-    :param net_id:
-    :param conf_data:
+    :param net_id: neural network id
+    :param conf_data: neural network configuration json data 
     :return:
     """
 

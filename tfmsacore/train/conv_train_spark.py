@@ -2,7 +2,7 @@
 from __future__ import division, print_function, absolute_import
 
 
-def spark_train_conv_network(nn_id):
+def spark_train_conv_network(nn_id, epoch, testset):
     """
     Train Convolutional Neural Network and save all result on data base
     :param nn_id:

@@ -10,17 +10,17 @@ url = "192.168.0.3:8989"
 
 # test-predict
 def test_nn_cnn_service_predict():
-    req_data = """[ 0 , 1 , 0, 1 , 0 , 1 , 0 , 1 , 0 , 1 , 0 , 1 ,
-                   0 , 1 , 0, 1 , 0 , 1 , 0 , 1 , 0 , 1 , 0 , 1 ,
-                   0 , 1 , 0, 1 , 0 , 1 , 0 , 1 , 0 , 1 , 0 , 1 ,
-                   0 , 1 , 0, 1 , 0 , 1 , 0 , 1 , 0 , 1 , 0 , 1 ,
-                   0 , 1 , 0, 1 , 0 , 1 , 0 , 1 , 0 , 1 , 0 , 1 ,
-                   0 , 1 , 0, 1 , 0 , 1 , 0 , 1 , 0 , 1 , 0 , 1 ,
-                   0 , 1 , 0, 1 , 0 , 1 , 0 , 1 , 0 , 1 , 0 , 1 ,
-                   0 , 1 , 0, 1 , 0 , 1 , 0 , 1 , 0 , 1 , 0 , 1 ]"""
+    req_data = """[ 0 , 0 , 0, 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 ,
+                   0 , 0 , 0, 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 ,
+                   0 , 0 , 0, 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 ,
+                   0 , 0 , 0, 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 ,
+                   0 , 0 , 0, 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 ,
+                   0 , 0 , 0, 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 ,
+                   0 , 0 , 0, 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 ,
+                   0 , 0 , 0, 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 ]"""
     resp = requests.get('http://' + url + '/service/nn/cnn/' ,
                         json={ "nn_id": "sample" , "nn_type" : "cnn",
-                               "run_type" : "local", "predict_data":req_data})
+                               "run_type" : "local", "epoch" : "", "testset" : "" , "predict_data":req_data})
     if resp.status_code != 200:
         raise SyntaxError('GET /tasks/ {}'.format(resp.status_code))
 
@@ -33,7 +33,7 @@ def test_nn_cnn_service_train():
     #nn_type, run_type, nn_id
     resp = requests.post('http://' + url + '/service/nn/cnn/',
                         json={ "nn_id": "sample" , "nn_type" : "cnn",
-                               "run_type" : "local", "predict_data":""})
+                               "run_type" : "local", "epoch" : 50, "testset" : 10 ,"predict_data":""})
     if resp.status_code != 200:
         raise SyntaxError('GET /tasks/ {}'.format(resp.status_code))
 
@@ -41,14 +41,15 @@ def test_nn_cnn_service_train():
     print("test result : {0}".format(data))
 
 # create new network test
-def test_nn_cnn_config_create_new():
+def test_nn_cnn_config_insert_conf():
     req_data = """{
             "data":
                 {
                     "datalen": 96,
                     "taglen": 2,
                     "matrix": [12, 8],
-                    "learnrate": 0.01
+                    "learnrate": 0.01,
+                    "epoch":50
                 },
             "layer":
                 [
@@ -106,7 +107,7 @@ def test_nn_cnn_config_create_new():
         }"""
 
     nn_info = """
-         { "nnid": "nn0000001",
+         { "nnid": "sample",
            "category":"test",
            "name" : "test",
            "type" : "cnn",
@@ -126,14 +127,15 @@ def test_nn_cnn_config_create_new():
     print("test result : {0}".format(data))
 
 # insert network configuration
-def test_nn_cnn_config_insert_conf():
+def test_nn_cnn_config_update_conf():
     req_data = """{
         "data":
             {
                 "datalen": 96,
                 "taglen": 2,
                 "matrix": [12, 8],
-                "learnrate": 0.01
+                "learnrate": 0.01,
+                "epoch":50
             },
         "layer":
             [
@@ -237,15 +239,15 @@ def test_nn_cnn_config_search_conf():
 
 # test each rest apis
 def main(case):
-    case = 5
+    case = 2
     if(case == 1):
         test_nn_cnn_service_predict()
     elif(case ==2):
         test_nn_cnn_service_train()
     elif (case == 3):
-        test_nn_cnn_config_create_new()
-    elif (case == 4):
         test_nn_cnn_config_insert_conf()
+    elif (case == 4):
+        test_nn_cnn_config_update_conf()
     elif (case == 5):
         test_nn_cnn_config_search_conf()
 

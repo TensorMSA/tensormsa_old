@@ -16,8 +16,9 @@ from tfmsacore.utils import checker
 def predict_conv_network(nn_id , req_data):
     """
         Predict Convolutional Neural Network and save all result on data base
-        :param nn_id:
-        :return:
+        :param nn_id : neural network id
+        :param req_data : test request data
+        :return: predict result in array
         """
 
     try :
@@ -63,6 +64,8 @@ def predict_conv_network(nn_id , req_data):
                 network = local_response_normalization(network)
 
             elif(data.type == "drop"):
+                network = fully_connected(network, data.node_in_out[0], activation=str(data.active))
+                network = dropout(network, int(data.droprate))
                 network = fully_connected(network, data.node_in_out[1], activation=str(data.active))
                 network = dropout(network, int(data.droprate))
 
@@ -84,9 +87,7 @@ def predict_conv_network(nn_id , req_data):
         TO-DO : restore trained data
         """
         model = nn_data_manager.load_trained_data(nn_id, model)
-        print(request_x)
         result = model.predict(request_x)
-        print("result : {0} ".format(result))
 
         return result
 

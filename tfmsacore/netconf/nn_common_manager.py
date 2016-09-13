@@ -20,3 +20,27 @@ def create_new_network(req):
         serializer.save()
         return "success"
     return "failure"
+
+
+def set_train_result(nn_id , acc):
+    """
+    :param nn_id: neural network id
+    :param acc: accuracy result of training
+    :return: success , failure
+    """
+
+    try:
+        req = { "nnid": nn_id,
+                "category":"",
+                "name" : "",
+                "type" : "",
+                "acc" : acc,
+                "train" : "",
+                "config" : "",
+                "dir" : "default"}
+        obj = models.NNInfo.objects.get(nnid= nn_id)
+        obj.acc = acc
+        obj.save()
+    except:
+        return "failure"
+    return "success"

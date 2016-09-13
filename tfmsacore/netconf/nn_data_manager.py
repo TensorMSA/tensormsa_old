@@ -3,12 +3,15 @@
 import json
 import os
 import tensorflow as tf
+import shutil
+
 
 def load_trained_data(nn_id, model):
     """
     Load Net Trained Weights and Bias from data base
-    :param nn_id:
-    :return:
+    :param nn_id: neural network id
+    :param mdoe : tflearn model
+    :return:tflearn model
     """
     directory = "/tensorMSA/data/"
     if not os.path.exists(directory):
@@ -17,8 +20,8 @@ def load_trained_data(nn_id, model):
     if os.path.isfile(directory + nn_id + ".ckpt"):
         model.load(directory + nn_id + ".ckpt")
 
-
     print("load model completed for [ " + nn_id + "]")
+
     """
     TO-DO : get data from postgresql db and load it on the model
     """
@@ -28,11 +31,11 @@ def load_trained_data(nn_id, model):
 def save_trained_data(nn_id, model):
     """
     Load Net Trained Weights and Bias from data base
-    :param nn_id:
-    :return:
+    :param nn_id: neural network id
+    :param mdoe : tflearn model
+    :return:tflearn model
     """
 
-    print(type(model))
     directory = "/tensorMSA/data/"
     if not os.path.exists(directory):
         os.makedirs(directory)
@@ -44,3 +47,15 @@ def save_trained_data(nn_id, model):
     TO-DO : save trained data on the data base
     """
     return model
+
+def test_data_move():
+    """
+    only for the test purpose
+    :return:
+    """
+    to_path = "/tensorMSA/data/"
+    #from_path = os.path.dirname(os.path.realpath(__file__))
+    from_path = os.path.dirname(os.getcwd() +"/tfmsacore/data/")
+    shutil.copy(os.path.join(from_path, "sample_conf.json"), to_path)
+    shutil.copy(os.path.join(from_path, "sample_data.json"), to_path)
+    shutil.copy(os.path.join(from_path, "sample_tag.json"), to_path)

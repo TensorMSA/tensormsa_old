@@ -8,13 +8,13 @@ from tflearn.layers.conv import conv_2d, max_pool_2d
 from tflearn.layers.core import input_data, dropout, fully_connected
 from tflearn.layers.estimator import regression
 from tflearn.layers.normalization import local_response_normalization
-from tfmsacore.data import json_loader
-from tfmsacore.netconf import nn_config_manager, nn_data_manager
-from tfmsacore.utils import checker
+from tfmsacore import data as train_data
+from tfmsacore import netconf
+from tfmsacore import utils
 
 
 
-def train_conv_network(nn_id):
+def train_conv_network(nn_id, epoch, testset):
     """
     Train Convolutional Neural Network and save all result on data base
     :param nn_id:
@@ -25,26 +25,25 @@ def train_conv_network(nn_id):
         """
         TO-DO : check request nn id, conf, data and other setting are ok
         """
-        check_result = checker.check_requested_nn(nn_id)
+        check_result = utils.check_requested_nn(nn_id)
         if(check_result != "ok"):
             raise SyntaxError(check_result)
 
-        """
-        TO-DO : load NN conf form db
-        """
-        conf = nn_config_manager.load_conf(nn_id)
+        # load NN conf form db
+        conf = netconf.load_conf(nn_id)
 
         """
-        TO-DO : load train data from spark
+        TO-DO : need to get data form spark
+        TO-DO : need to sample the test set
         """
         # data_set = json_conv.JsonDataConverter().convert_json_to_matrix(json_loader.load_data(nn_id))
-        train_x = np.array(json_loader.load_data(nn_id) , np.float32)
-        train_y = np.array(json_loader.load_tag(nn_id), np.float32)
-        test_x = np.array(json_loader.load_data(nn_id), np.float32)
-        test_y = np.array(json_loader.load_tag(nn_id), np.float32)
+        train_x = np.array(train_data.load_data(nn_id) , np.float32)
+        train_y = np.array(train_data.load_tag(nn_id), np.float32)
+        test_x = np.array(train_data.load_data(nn_id), np.float32)
+        test_y = np.array(train_data.load_tag(nn_id), np.float32)
 
         """
-        TO-DO : setting data and variable
+        TO-DO : need to get data form spark
         """
         datalen = conf.data.datalen
         taglen = conf.data.taglen
@@ -53,10 +52,6 @@ def train_conv_network(nn_id):
         train_x = np.reshape(train_x, (-1, matrix[0],matrix[1],1))
         test_x = np.reshape(test_x, (-1, matrix[0], matrix[1],1))
 
-
-        """
-        TO-DO : rebuild configuration
-        """
         # create network conifg
         num_layers = len(conf.layer)
         for i in range(0, num_layers):
@@ -75,6 +70,8 @@ def train_conv_network(nn_id):
                 network = local_response_normalization(network)
 
             elif(data.type == "drop"):
+                network = fully_connected(network, data.node_in_out[0], activation=str(data.active))
+                network = dropout(network, int(data.droprate))
                 network = fully_connected(network, data.node_in_out[1], activation=str(data.active))
                 network = dropout(network, int(data.droprate))
 
@@ -92,24 +89,22 @@ def train_conv_network(nn_id):
         # set to real tensorflow
         model = tflearn.DNN(network, tensorboard_verbose=0)
 
-        """
-        TO-DO : restore trained data
-        """
-        model = nn_data_manager.load_trained_data(nn_id, model)
+        #load network
+        model = netconf.nn_data_manager.load_trained_data(nn_id, model)
 
-        """
-        TO-DO : run model (spark also need to be considered)
-        """
-        model.fit({'input': train_x}, {'target': train_y}, n_epoch=5,
+        #train network
+        model.fit({'input': train_x}, {'target': train_y}, n_epoch=epoch,
                   validation_set=({'input': test_x}, {'target': test_y}),
                   snapshot_step=100, show_metric=True, run_id='convnet_mnist')
 
-        """
-        TO-DO : save trained data
-        """
-        nn_data_manager.save_trained_data(nn_id, model)
+        # save trained network
+        netconf.nn_data_manager.save_trained_data(nn_id, model)
 
-        return "success"
+        # save train statistics result
+        acc = model.evaluate(test_x, test_y)
+        netconf.nn_common_manager.set_train_result(nn_id, acc)
+
+        return acc
 
     except SyntaxError as e :
         return e

@@ -35,18 +35,6 @@
             },
 
             {
-                "type" : "drop",
-                "active" : "relu",
-                "cnnfilter" : "",
-                "cnnstride" : "",
-                "maxpoolmatrix" : "",
-                "maxpoolstride" : "",
-                "node_in_out" : [192,100],
-                "regualizer" : "",
-                "padding" : "SAME",
-                "droprate" : 0.5
-            },
-            {
                 "type" : "out",
                 "active" : "softmax",
                 "cnnfilter" : "",
