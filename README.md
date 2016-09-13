@@ -111,6 +111,7 @@ python legacy systems can use deep learning easily
       python manage.py makemigrations 
       python manage.py migrate
    ```
+
 <b>6.run server</b> </br>
    - run server with bellow command</br>
 
