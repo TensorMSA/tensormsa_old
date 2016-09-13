@@ -19,7 +19,7 @@
 Like described bellow, purpose of this project is provide deep learning management system via rest service so that non 
 python legacy systems can use deep learning effectivly 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/seungwookim/TensorMSA/master/ProjectDesc1.png" width="750"/>
+  <img src="https://raw.githubusercontent.com/seungwookim/TensorMSA/master/ProjectDesc3.png" width="750"/>
 </p>
 
 # Install
@@ -36,7 +36,7 @@ python legacy systems can use deep learning effectivly
 ```
 
 <b>2.Install Tensorflow</b> </br>
-   - install Tensorflow using conda 
+   - install Tensorflow using conda </br>
 ```python
     $ conda create -n tensorflow python=2.7
     $ source activate tensorflow
@@ -44,7 +44,7 @@ python legacy systems can use deep learning effectivly
 ```
 
 <b>3.Install Django</b> </br>
-   - install Tensorflow using conda 
+   - install Tensorflow using conda </br>
 ```python
     [Django]
     conda install -c anaconda django=1.9.5
@@ -57,36 +57,36 @@ python legacy systems can use deep learning effectivly
 ```
 
 <b>4.Install Postgresql</b> </br>
-   - install Tensorflow using conda 
+   - install Tensorflow using conda </br>
 
-   - install
+   - install</br>
    ```python
        yum install postgresql-server
    ```
-   - check account and set pass
+   - check account and set pass</br>
    ```python
        cat /etc/passwd | grep postgres
         sudo passwd postgres
    ```
-   - check PGDATA
+   - check PGDATA</br>
    ```python
        cat /var/lib/pgsql/.bash_profile
         env | grep PGDATA
    ```
-   - init and run
+   - init and run</br>
    ```python
        sudo -i -u postgres
        initdb
        pg_ctl start
        ps -ef | grep postgress
    ```
-   - connect and create database
+   - connect and create database</br>
    ```python
        # psql
        postgres=# create database test1  ;
        postgres=# select *   from pg_database  ;
    ```  
-   - create user for TesorMsA
+   - create user for TesorMsA</br>
    ```python
        postgres=#CREATE USER testuser WITH PASSWORD '1234';
        postgres=#ALTER ROLE testuser SET client_encoding TO 'utf8'; 
@@ -100,19 +100,19 @@ python legacy systems can use deep learning effectivly
    ```
 
 <b>5.migrate database</b> </br>
-   - get to project folder where you can see 'manage.py'
+   - get to project folder where you can see 'manage.py'</br>
    ```python
       python manage.py makemigrations 
       python manage.py migrate
    ```
 
 <b>6.run server</b> </br>
-   - run server with bellow command
+   - run server with bellow command</br>
    ```python
       ip addr | grep "inet "
       python manage.py runserver localhost:8989
    ```
 
-# REST API / JAVA API Documents 
+# REST API / JAVA API Documents </br>
    - we are still on research process 
 
