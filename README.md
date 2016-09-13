@@ -17,16 +17,16 @@
 
 # Overview
 Like described bellow, purpose of this project is provide deep learning management system via rest service so that non 
-python legacy systems can use deep learning effectivly 
+python legacy systems can use deep learning in a more effective way
 <p align="center">
   <img src="https://raw.githubusercontent.com/seungwookim/TensorMSA/master/ProjectDesc3.png" width="750"/>
 </p>
 
-# Install
-*[install guide here](http://hugrypiggykim.com/2016/09/03/python-tensorflow-django-%ea%b0%9c%eb%b0%9c%ed%99%98%ea%b2%bd-%ea%b5%ac%ec%b6%95-%ec%a2%85%ed%95%a9/)*.</br>
+# Install*[(link)](http://hugrypiggykim.com/2016/09/03/python-tensorflow-django-%ea%b0%9c%eb%b0%9c%ed%99%98%ea%b2%bd-%ea%b5%ac%ec%b6%95-%ec%a2%85%ed%95%a9/)*
+</br>
 <b>1.Install Anaconda </b> </br>
    - download Anaconda :  https://www.continuum.io/downloads
-   - install (be assure anaconda works as default interpreter) 
+   - install (make sure anaconda works as default interpreter) 
 ```python
     bash /home/user/Downloads/Anaconda2-4.1.1-Linux-x86_64.sh
 ```
@@ -37,12 +37,13 @@ python legacy systems can use deep learning effectivly
 
 <b>2.Install Tensorflow</b> </br>
    - install Tensorflow using conda </br>
+   
 ```python
     $ conda create -n tensorflow python=2.7
     $ source activate tensorflow
     $ conda install -c conda-forge tensorflow
 ```
-
+</br>
 <b>3.Install Django</b> </br>
    - install Tensorflow using conda </br>
 ```python
@@ -55,24 +56,26 @@ python legacy systems can use deep learning effectivly
     [pygments]
     conda install -c anaconda pygments=2.1.3
 ```
-
+</br>
 <b>4.Install Postgresql</b> </br>
-   - install Tensorflow using conda </br>
 
    - install</br>
    ```python
        yum install postgresql-server
    ```
+   
    - check account and set pass</br>
    ```python
        cat /etc/passwd | grep postgres
         sudo passwd postgres
    ```
+   
    - check PGDATA</br>
    ```python
        cat /var/lib/pgsql/.bash_profile
         env | grep PGDATA
    ```
+   
    - init and run</br>
    ```python
        sudo -i -u postgres
@@ -80,12 +83,14 @@ python legacy systems can use deep learning effectivly
        pg_ctl start
        ps -ef | grep postgress
    ```
+   
    - connect and create database</br>
    ```python
        # psql
        postgres=# create database test1  ;
        postgres=# select *   from pg_database  ;
    ```  
+   
    - create user for TesorMsA</br>
    ```python
        postgres=#CREATE USER testuser WITH PASSWORD '1234';
