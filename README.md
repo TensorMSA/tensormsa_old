@@ -17,7 +17,7 @@
 
 # Overview
 Like described bellow, purpose of this project is provide deep learning management system via rest service so that non 
-python legacy systems can use deep learning in a more effective way
+python legacy systems can use deep learning easily
 <p align="center">
   <img src="https://raw.githubusercontent.com/seungwookim/TensorMSA/master/ProjectDesc3.png" width="750"/>
 </p>
@@ -45,7 +45,7 @@ python legacy systems can use deep learning in a more effective way
 ```
 </br>
 <b>3.Install Django</b> </br>
-   - install Tensorflow using conda </br>
+   - install Django, Django Rest Framework and Postgresql plugin</br>
 ```python
     [Django]
     conda install -c anaconda django=1.9.5
@@ -101,7 +101,7 @@ python legacy systems can use deep learning in a more effective way
 
 <b>5.get TensorMSA form git</b> </br>
    ```python
-      git clone 
+      git clone https://github.com/TensorMSA/TensorMSA.git
    ```
 
 <b>5.migrate database</b> </br>
@@ -120,4 +120,5 @@ python legacy systems can use deep learning in a more effective way
 
 # REST API / JAVA API Documents </br>
    - we are still on research process 
+   - will be prepared on 2017
 
