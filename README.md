@@ -106,13 +106,14 @@ python legacy systems can use deep learning easily
 
 <b>5.migrate database</b> </br>
    - get to project folder where you can see 'manage.py'</br>
+
    ```python
       python manage.py makemigrations 
       python manage.py migrate
    ```
-
 <b>6.run server</b> </br>
    - run server with bellow command</br>
+
    ```python
       ip addr | grep "inet "
       python manage.py runserver localhost:8989
