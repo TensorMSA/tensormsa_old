@@ -14,6 +14,12 @@
    - We are still on research process now
    - Expected to release first trial version on December 2016 
 
+<b>4. Stack </b></br>
+   - FE : React(ES6), SVG, D3, Pure CSS
+   - BE : Django F/W, Tensorflow, PostgreSQL, Spark
+
+<b>5. Methodology </b></br>
+   - Agile (CI, TDD, Pair programming and Cloud)
 
 # Overview
 Like described bellow, purpose of this project is provide deep learning management system via rest service so that non 
@@ -165,4 +171,3 @@ python legacy systems can use deep learning easily
 # REST API / JAVA API Documents </br>
    - we are still on research process 
    - will be prepared on 2017
-
