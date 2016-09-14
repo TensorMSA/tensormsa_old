@@ -79,8 +79,8 @@ WSGI_APPLICATION = 'TensorMSA.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'test1',
-        'USER': 'testuser',
+        'NAME': 'tensormsa',
+        'USER': 'tfmsauser',
         'PASSWORD': '1234',
         'HOST': 'localhost',
         'PORT': '',
