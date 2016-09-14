@@ -27,23 +27,31 @@ echo "======================="
  
 sudo /home/dev/spark/sbin/stop-master.sh
 sudo /home/dev/spark/sbin/start-master.sh
-sudo /home/dev/spark/sbin/start-slave.sh http://$1:7077
+sudo /home/dev/spark/sbin/start-slave.sh spark://$1:7077
 
 echo "======================="
 echo "step3 : start Livy"
 echo "======================="
  
-echo sudo /home/dev/livy/bin/livy-server &
+echo /home/dev/livy/bin/livy-server &
+/home/dev/livy/bin/livy-server &
+
+
 
 echo "======================="
 echo "step4 : start Django"
 echo "======================="
 
 cd /home/dev/TensorMSA/
-pkill -f "python manage.py runserver"
 echo ./python manage.py makemigrations & 
+python manage.py makemigrations &
+
 echo ./python manage.py migrate &
+python manage.py migrate &
+
 echo ./python manage.py runserver $1:8989 &
+python manage.py runserver $1:8989 &
+
 
 
 

@@ -36,7 +36,7 @@ python legacy systems can use deep learning easily
    
    - start container with graphical environment (only first time)
    ```python
-      docker run -it --env="DISPLAY" --env="QT_X11_NO_MITSHM=1" --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" tmddno1/tensormsa:v1
+      docker run -it --env="DISPLAY" --env="QT_X11_NO_MITSHM=1" --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" -p 8080:8080 -p 8998:8998 -p 8989:8989 tmddno1/tensormsa:v1
    ```
    
    - check contrainer id
@@ -50,10 +50,15 @@ python legacy systems can use deep learning easily
       sudo docker attach <containerID>
    ```
    
-   - execute sheel script 
-      this will start every thing needed (janggo, postgresql, spark, livy) 
+   - execute sheel script
+      shell script to set start Web Application Server, DataBase, Spark, Livy
+      TensorMSA : http://locahost:8989
+      Spark Manager : http://locahost:8080
+      Livy : http://locahost:8998
+
    ```python
-      /starttfmsa.sh
+      [root@db44c088318c bin]#  /home/dev/TensorMSA/start_tensormsa.sh db44c088318c
+      [root@db44c088318c bin]#  /home/dev/TensorMSA/stop_tensormsa.sh
    ```
    
 # Install*[(link)](http://hugrypiggykim.com/2016/09/03/python-tensorflow-django-%ea%b0%9c%eb%b0%9c%ed%99%98%ea%b2%bd-%ea%b5%ac%ec%b6%95-%ec%a2%85%ed%95%a9/)*
