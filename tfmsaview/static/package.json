@@ -1,0 +1,21 @@
+{ 
+   "name": "TensorMSAView", 
+   "version": "0.0.1", 
+   "description": " TensorFlow micro service architecture", 
+   "repository": { 
+     "type": "git", 
+     "url": "git+https://github.com/TensorMSA/TensorMSA.git" 
+   }, 
+   "license": "MIT", 
+   "scripts": { 
+     "start": "" 
+   }, 
+   "dependencies": { 
+   }, 
+   "devDependencies": { 
+     "babel-core": "^6.14.0", 
+     "babel-loader": "^6.2.5", 
+     "babel-preset-es2015": "^6.14.0", 
+     "webpack": "^1.13.2" 
+   } 
+}
