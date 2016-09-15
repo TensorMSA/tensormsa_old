@@ -15,31 +15,22 @@ echo $SPARK_HOME
 echo $HADOOP_CONF_DIR
 echo $M2_HOME
 
-echo "======================="
-echo "step1 : start postgresql"
-echo "======================="
-
-runuser -l postgres -c 'pg_ctl stop'
 
 echo "======================="
-echo "step2 : start spark apps"
+echo "step1 : stop spark apps"
 echo "======================="
- 
+
 sudo /home/dev/spark/sbin/stop-master.sh
 
 echo "======================="
-echo "step3 : start Livy"
+echo "step2 : stop Livy"
 echo "======================="
 
-pkill -f "livy-server" 
+pkill -f "livy"
 
 echo "======================="
-echo "step4 : start Django"
+echo "step3 : stop Django"
 echo "======================="
 
 cd /home/dev/TensorMSA/
 pkill -f "python manage.py runserver"
-
-
-
- 
