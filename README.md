@@ -5,9 +5,10 @@
 
 <b>2. Function </b></br>
    - REST APIs corresponding to Tensorflow 
-   - JAVA API component interface with python REST APIS inside
+   - JAVA API component interface with python REST APIS
    - Easy to use UI component provide NN configuration, train remotly, save & load NN models, handling train data sets
    - Train NN models via Spark cluster supported 
+   - Android mobile SDK are also part of the plan (gather data and predict) 
    
 <b>3. Schedule </b></br>
    - We just started this projects (2016.8)
@@ -28,6 +29,9 @@ python legacy systems can use deep learning easily
   <img src="https://raw.githubusercontent.com/seungwookim/TensorMSA/master/ProjectDesc3.png" width="750"/>
 </p>
 # Docker*[(Docker Hub)](https://hub.docker.com/r/tmddno1/tensormsa/)**[(usage)](http://wp.me/p7xrpI-dr)*
+  if you use Docker you can set up your environment for TensorMSA much faster. Docker images we share on hub
+  contains libraries, server, TensorMSA and start shell script.
+  
    - install Docker 
    ```python
       sudo yum update 
@@ -56,11 +60,13 @@ python legacy systems can use deep learning easily
       sudo docker attach <containerID>
    ```
    
-   - execute sheel script
-      shell script to set start Web Application Server, DataBase, Spark, Livy
-      TensorMSA : http://locahost:8989
-      Spark Manager : http://locahost:8080
-      Livy : http://locahost:8998
+   - execute shell script </br>
+      start_tensormsa.sh will start Web Application Server, DataBase, Spark, Livy </br>
+      don't forget to pass your container id as parameter  </br>
+
+      TensorMSA : http://locahost:8989  </br>
+      Spark Manager : http://locahost:8080  </br>
+      Livy : http://locahost:8998  </br>
 
    ```python
       [root@db44c088318c bin]#  /home/dev/TensorMSA/start_tensormsa.sh db44c088318c
