@@ -1,3 +1,8 @@
+if [ $# -eq 0 ]
+  then
+    echo "put your container id as parameter"
+    exit 1
+fi
 echo "======================="
 echo "set path, env variables"
 echo "======================="
@@ -33,6 +38,10 @@ echo "======================="
 echo "step3 : start Livy"
 echo "======================="
  
+cp /home/dev/spark/conf/spark-defaults.conf.template /home/dev/spark/conf/spark-defaults.conf
+echo "spark.master       spark://$1:7077 " >> /home/dev/spark/conf/spark-defaults.conf
+
+
 echo /home/dev/livy/bin/livy-server &
 /home/dev/livy/bin/livy-server &
 
