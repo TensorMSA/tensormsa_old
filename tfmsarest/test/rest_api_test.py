@@ -6,7 +6,7 @@ import tensorflow as tf
 #https://realpython.com/blog/python/api-integration-in-python/
 #http://www.slideshare.net/Byungwook/rest-api-60505484
 
-url = "192.168.0.3:8989"
+url = "481bf68ee6d9:8989"
 
 # test-predict
 def test_nn_cnn_service_predict():
@@ -236,10 +236,35 @@ def test_nn_cnn_config_search_conf():
     data = json.loads(resp.json())
     print("test result : {0}".format(data))
 
+# create new table on spark
+def test_nn_cnn_data_post():
+
+    resp = requests.post('http://' + url + '/data/nn/cnn/',
+                        json= { "table": "abcd",
+                                "data":"[{'name':'Andy', 'univ':'snu'},{'name':'Kim', 'univ':'snu'}]",
+                                "query" : ""
+                        })
+    if resp.status_code != 200:
+        raise SyntaxError('GET /tasks/ {}'.format(resp.status_code))
+    data = json.loads(resp.json())
+    print("test result : {0}".format(data))
+
+# select data from table
+def test_nn_cnn_data_get():
+
+    resp = requests.get('http://' + url + '/data/nn/cnn/',
+                        json= { "table": "abcd",
+                                "data":"",
+                                "query" : "select * from abcd"
+                        })
+    if resp.status_code != 200:
+        raise SyntaxError('GET /tasks/ {}'.format(resp.status_code))
+    data = json.loads(resp.json())
+    print("test result : {0}".format(data))
 
 # test each rest apis
 def main(case):
-    case = 2
+    case = 7
     if(case == 1):
         test_nn_cnn_service_predict()
     elif(case ==2):
@@ -250,6 +275,10 @@ def main(case):
         test_nn_cnn_config_update_conf()
     elif (case == 5):
         test_nn_cnn_config_search_conf()
+    elif (case == 6):
+        test_nn_cnn_data_post()
+    elif (case == 7):
+        test_nn_cnn_data_get()
 
 if __name__ == '__main__':
     tf.app.run()
