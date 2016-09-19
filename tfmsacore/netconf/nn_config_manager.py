@@ -59,8 +59,12 @@ def save_conf(net_id, conf_data):
     if not os.path.exists(directory):
         os.makedirs(directory)
 
-    f = open(directory + net_id, 'w')
-    f.write(str(conf_data))
-    f.close()
+    try:
+        f = open(directory + net_id, 'w')
+        f.write(str(conf_data))
+    except:
+        raise SystemError("json conf save error")
+    finally:
+        f.close()
 
     return True

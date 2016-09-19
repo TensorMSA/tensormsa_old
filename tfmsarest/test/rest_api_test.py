@@ -19,7 +19,7 @@ def test_nn_cnn_service_predict():
                    0 , 0 , 0, 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 ,
                    0 , 0 , 0, 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 ]"""
     resp = requests.get('http://' + url + '/service/nn/cnn/' ,
-                        json={ "nn_id": "sample" , "nn_type" : "cnn",
+                        json={ "nn_id": "nn0000005" , "nn_type" : "cnn",
                                "run_type" : "local", "epoch" : "", "testset" : "" , "predict_data":req_data})
     if resp.status_code != 200:
         raise SyntaxError('GET /tasks/ {}'.format(resp.status_code))
@@ -32,7 +32,7 @@ def test_nn_cnn_service_train():
     #requests.post(url, data, json, arg )
     #nn_type, run_type, nn_id
     resp = requests.post('http://' + url + '/service/nn/cnn/',
-                        json={ "nn_id": "sample" , "nn_type" : "cnn",
+                        json={ "nn_id": "nn0000005" , "nn_type" : "cnn",
                                "run_type" : "local", "epoch" : 50, "testset" : 10 ,"predict_data":""})
     if resp.status_code != 200:
         raise SyntaxError('GET /tasks/ {}'.format(resp.status_code))
@@ -107,13 +107,17 @@ def test_nn_cnn_config_insert_conf():
         }"""
 
     nn_info = """
-         { "nnid": "sample",
+         { "nn_id": "nn0000006",
            "category":"test",
            "name" : "test",
            "type" : "cnn",
            "acc" : "",
            "train" : "",
            "config" : "",
+           "table" : "TEST2",
+           "query" : "select * from TEST1",
+           "datadesc":"{'name':'none', 'univ':'cate', 'org' : 'cate' , 'eng' : 'cont', 'grade' : 'tag'}",
+           "datasets":"",
            "dir" : "default"}
          """
     resp = requests.post('http://' + url + '/config/nn/cnn/',
@@ -192,13 +196,17 @@ def test_nn_cnn_config_update_conf():
             ]
     }"""
     nn_info = """
-         { "nnid": "nn0000001",
+         { "nn_id": "nn0000005",
            "category":"test",
            "name" : "test",
            "type" : "cnn",
            "acc" : "",
            "train" : "",
            "config" : "",
+           "table" : "TEST2",
+           "query" : "select * from TEST2",
+           "datadesc":"{'name':'none', 'univ':'cate', 'org' : 'cate' , 'eng' : 'cont', 'grade' : 'tag'}",
+           "datasets":"xxxxxxx",
            "dir" : "default"}
          """
 
@@ -216,13 +224,17 @@ def test_nn_cnn_config_update_conf():
 def test_nn_cnn_config_search_conf():
 
     nn_info = """
-         { "nnid": "nn0000001",
+         { "nn_id": "nn0000005",
            "category":"",
            "name" : "",
            "type" : "",
            "acc" : "",
            "train" : "",
            "config" : "",
+           "table" : "",
+           "query" : "",
+           "datadesc" : "",
+           "datasets" : "",
            "dir" : "default"}
          """
 
@@ -238,10 +250,41 @@ def test_nn_cnn_config_search_conf():
 
 # create new table on spark
 def test_nn_cnn_data_post():
+    """
+    col type (None) : not gonna use on the model
+    col type (cont) : continuous data can be used without modification
+    col type (cate) : categorical data needs to be modified
+    :return:
+    """
 
     resp = requests.post('http://' + url + '/data/nn/cnn/',
-                        json= { "table": "abcd",
-                                "data":"[{'name':'Andy', 'univ':'snu'},{'name':'Kim', 'univ':'snu'}]",
+                        json= { "nn_id": "nn0000006",
+                                "table": "TEST1",
+                                "data":"[{'name':'Andy', 'univ':'a', 'org' : '1', 'eng' : '800' , 'grade' : 'A'}," \
+                                       " {'name':'Kim', 'univ':'b', 'org' : '2', 'eng' : '800' , 'grade' : 'B'}," \
+                                       " {'name':'Kim', 'univ':'YcSU', 'org' : '3', 'eng' : '800' , 'grade' : 'B'}," \
+                                       " {'name':'Kim', 'univ':'d', 'org' : '4', 'eng' : '800' , 'grade' : 'B'}," \
+                                       " {'name':'Kim', 'univ':'e', 'org' : '5', 'eng' : '800' , 'grade' : 'B'}" \
+                                       "]",
+                                "query": ""
+                        })
+    if resp.status_code != 200:
+        raise SyntaxError('GET /tasks/ {}'.format(resp.status_code))
+    data = json.loads(resp.json())
+    print("test result : {0}".format(data))
+
+# append data on spark
+def test_nn_cnn_data_put():
+
+    resp = requests.post('http://' + url + '/data/nn/cnn/',
+                        json= { "nn_id": "nn0000006",
+                                "table": "TEST1",
+                                "data":"[{'name':'Andy', 'univ':'a', 'org' : '1', 'eng' : '800' , 'grade' : 'A'}," \
+                                       " {'name':'Kim', 'univ':'b', 'org' : '2', 'eng' : '800' , 'grade' : 'B'}," \
+                                       " {'name':'Kim', 'univ':'YcSU', 'org' : '3', 'eng' : '800' , 'grade' : 'B'}," \
+                                       " {'name':'Kim', 'univ':'d', 'org' : '4', 'eng' : '800' , 'grade' : 'B'}," \
+                                       " {'name':'Kim', 'univ':'e', 'org' : '5', 'eng' : '800' , 'grade' : 'B'}" \
+                                       "]",
                                 "query" : ""
                         })
     if resp.status_code != 200:
@@ -249,13 +292,37 @@ def test_nn_cnn_data_post():
     data = json.loads(resp.json())
     print("test result : {0}".format(data))
 
+
 # select data from table
 def test_nn_cnn_data_get():
 
     resp = requests.get('http://' + url + '/data/nn/cnn/',
-                        json= { "table": "abcd",
+                        json= { "table": "TEST1",
                                 "data":"",
-                                "query" : "select * from abcd"
+                                "query" : "select * from TEST1"
+                        })
+    if resp.status_code != 200:
+        raise SyntaxError('GET /tasks/ {}'.format(resp.status_code))
+    data = json.loads(resp.json())
+    print("test result : {0}".format(data))
+
+# select data from table
+def test_nn_common_config_get():
+
+    resp = requests.get('http://' + url + '/config/nn/common/',
+                        json={   "nn_id": "",
+                                 "category": "",
+                                 "name": "",
+                                 "type": "",
+                                 "acc": "",
+                                 "train": "",
+                                 "config": "",
+                                 "table": "",
+                                 "query": "",
+                                 "datadesc": "",
+                                 "datasets": "",
+                                 "dir": ""
+
                         })
     if resp.status_code != 200:
         raise SyntaxError('GET /tasks/ {}'.format(resp.status_code))
@@ -264,7 +331,7 @@ def test_nn_cnn_data_get():
 
 # test each rest apis
 def main(case):
-    case = 7
+    case = 6
     if(case == 1):
         test_nn_cnn_service_predict()
     elif(case ==2):
@@ -279,6 +346,9 @@ def main(case):
         test_nn_cnn_data_post()
     elif (case == 7):
         test_nn_cnn_data_get()
-
+    elif (case == 8):
+        test_nn_cnn_data_put()
+    elif (case == 9):
+        test_nn_common_config_get()
 if __name__ == '__main__':
     tf.app.run()

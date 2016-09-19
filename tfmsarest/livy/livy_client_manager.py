@@ -249,3 +249,31 @@ class LivyDfClientManager:
         # result = json.loads(result["output"]["data"]["text/plain"].replace("'", ""), \
         #                     object_hook=JsonObject)
         return result["output"]["data"]["text/plain"].replace("'", "")
+
+    def get_distinct_column(self, table_name, column):
+        """
+        get distinct list of selected table's column
+        :return:
+        """
+        self.get_available_sess_id()
+        query_str = "select distinct " + column + " from " + table_name
+
+        data = {
+            'code': ''.join(['from pyspark.sql import SQLContext\n',
+                             'import json\n',
+                             'sqlContext = SQLContext(sc)\n',
+                             'rows = sqlContext.read.load("' , str(self.hdfs_path),
+                             "/" ,table_name , '" , "parquet" )\n',
+                             'tbl = rows.registerTempTable("' , table_name , '")\n',
+                             'result = sqlContext.sql("' , str(query_str) ,
+                             '").toJSON(False).map(lambda x : x).collect()\n',
+                             'result'
+                             ])
+        }
+
+        resp = requests.post(self.host + "/sessions/" + str(min(self.avail_sess_list)) + \
+                             "/statements", data=json.dumps(data), headers=self.headers)
+        result = self.get_response(str(min(self.avail_sess_list)), \
+                                          json.loads(resp.content, object_hook=JsonObject).id)
+
+        return result["output"]["data"]["text/plain"].replace("'", "")

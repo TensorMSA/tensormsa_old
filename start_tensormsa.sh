@@ -52,11 +52,14 @@ echo "step4 : start Django"
 echo "======================="
 
 cd /home/dev/TensorMSA/
-echo ./python manage.py makemigrations & 
+echo python manage.py makemigrations &
 python manage.py makemigrations &
 
-echo ./python manage.py migrate &
+echo python manage.py migrate &
 python manage.py migrate &
+
+echo python manage.py collectstatic --noinput -i admin
+python manage.py collectstatic --noinput -i admin &
 
 echo ./python manage.py runserver $1:8989 &
 python manage.py runserver $1:8989 &

@@ -5,92 +5,6 @@ from tfmsarest import livy
 from tfmsacore.data.json_conv import JsonDataConverter as jc
 import json
 
-
-"""
-TO-DO : design api rules
-"""
-
-"""
-TO-DO : adjust security keys
-"""
-# Personal contribution check
-# http://www.django-rest-framework.org/api-guide/testing/
-# https://realpython.com/blog/python/api-integration-in-python/
-# http://www.slideshare.net/Byungwook/rest-api-60505484
-
-class CNN_Service(APIView):
-    """
-    TO-DO : Dev Rest Services for CNN (predict, train, etc)
-    """
-
-    def post(self, request):
-        """
-        train requested model and save
-        :param request: json={ "nn_id": "sample" ,
-                               "nn_type" : "cnn",
-                               "run_type" : "local",
-                               "epoch" : 50,
-                               "testset" : 10 ,
-                               "predict_data":""})
-        :return: {"status": "", "result": ""}
-        """
-        try:
-            jd = jc.load_obj_json(request.body)
-            result = TFMsa().trainNerualNetwork(jd.nn_id, jd.nn_type, jd.run_type, jd.epoch, jd.testset)
-            return_data = [{"status": "200", "result": result}]
-            return Response(json.dumps(return_data))
-        except SystemError as e:
-            return_data = [{"status": "404", "result": e}]
-            return Response(json.dumps(return_data))
-
-    # read
-    def get(self, request):
-        """
-        train requested model and save
-        :param request: json={ "nn_id": "sample" ,
-                               "nn_type" : "cnn",
-                               "run_type" : "local",
-                               "epoch" : 50,
-                               "testset" : 10 ,
-                               "predict_data":<essential>})
-        :return: {"status": "", "result": [[]]}
-        """
-        try:
-            jd = jc.load_obj_json(request.body)
-            result = TFMsa().predictNerualNetwork(jd.nn_id, jd.nn_type, jd.run_type, jd.predict_data)
-            return_data = [{"status": "ok", "result": result}]
-            return Response(json.dumps(return_data))
-        except SystemError as e:
-            return_data = [{"status": "404", "result": e}]
-            return Response(json.dumps(return_data))
-
-    # update
-    def put(self, request):
-        """
-        train requested model and save
-        :param request: json={ "nn_id": "sample" ,
-                               "nn_type" : "cnn",
-                               "run_type" : "local",
-                               "epoch" : 50,
-                               "testset" : 10 ,
-                               "predict_data":""})
-        :return: {"status": "", "result": ""}
-        """
-        try:
-            jd = jc.load_obj_json(request.body)
-            result = TFMsa().trainNerualNetwork(jd.nn_id, jd.nn_type, jd.run_type, jd.epoch, jd.testset)
-            return_data = [{"status": "ok", "result": result}]
-            print(json.dumps(return_data))
-            return Response(json.dumps(return_data))
-        except SystemError as e:
-            return_data = [{"status": "404", "result": e}]
-            return Response(json.dumps(return_data))
-
-    # delete
-    def delete(self, request, pk, format=None):
-        return Response("delete")
-
-
 class CNN_Config(APIView):
     """
     TO-DO : Dev Rest Services for CNN config change
@@ -107,6 +21,9 @@ class CNN_Config(APIView):
                             "acc" : "",
                             "train" : "",
                             "config" : "",
+                            "table" : "TEST1",
+                            "query" : "select * from TEST1",
+                            "dataset":"{'name':'none', 'univ':'cate', 'eng' : 'cont', 'grade' : 'tag'}",
                             "dir" : "default"},
             "nn_conf" : {
                             "data":
@@ -114,7 +31,7 @@ class CNN_Config(APIView):
                                     "datalen": 96,
                                     "taglen": 2,
                                     "matrix": [12, 8],
-                                    "learnrate": 0.01,
+                          analizeDataFrame          "learnrate": 0.01,
                                     "epoch":50
                                 },
                             "layer":
@@ -159,6 +76,9 @@ class CNN_Config(APIView):
                             "acc" : "",
                             "train" : "",
                             "config" : "",
+                            "table" : "",
+                            "query" : "",
+                            "dataset":"",
                             "dir" : "default"},
         }
 
@@ -210,6 +130,9 @@ class CNN_Config(APIView):
                             "acc" : "",
                             "train" : "",
                             "config" : "",
+                                                        "table" : "TEST1",
+                            "query" : "select * from TEST1",
+                            "dataset":"{'name':'none', 'univ':'cate', 'eng' : 'cont', 'grade' : 'tag'}",
                             "dir" : "default"},
             "nn_conf" : {
                             "data":
@@ -249,87 +172,6 @@ class CNN_Config(APIView):
         except SystemError as e:
             return_data = [{"status": "404", "result": e}]
             return Response(json.dumps(return_data))
-
-    def delete(self, request, pk, format=None):
-        return Response("delete")
-
-    def get_object(self, pk):
-        return Response("get_onject")
-
-class CNN_Data(APIView):
-    """
-    TO-DO : Dev Rest Services for CNN Test, Train Datas
-    """
-    def post(self, request):
-        """
-        create new table with new json data
-        :param request: request data
-        :return: create table success or failure
-        """
-        try:
-            jd = jc.load_obj_json(request.body)
-            livy_client = livy.LivyDfClientManager(2)
-            livy_client.create_session()
-            result = livy_client.create_table(jd.table, jd.data)
-            print(result)
-            return_data = [{"status": "ok", "result": result}]
-            return Response(json.dumps(return_data))
-        except SystemError as e:
-            return_data = [{"status": "404", "result": e}]
-            return Response(json.dumps(return_data))
-
-    def get(self, request):
-        """
-        select data form spark table
-        :param request: request data
-        :return: query result on json form (list - dict)
-        """
-        try:
-            jd = jc.load_obj_json(request.body)
-            livy_client = livy.LivyDfClientManager(2)
-            livy_client.create_session()
-            result = livy_client.query_data(jd.table, jd.query)
-            return_data = [{"status": "ok", "result": json.dumps(result)}]
-            return Response(json.dumps(return_data))
-        except SystemError as e:
-            return_data = [{"status": "404", "result": e}]
-            return Response(json.dumps(return_data))
-
-    def put(self, request, pk, format=None):
-        """
-        append data on the spark table
-        :param request: request data
-        :return: create table success or failure
-        """
-        try:
-            jd = jc.load_obj_json(request.body)
-            livy_client = livy.LivyDfClientManager(2)
-            livy_client.create_session()
-            result = livy_client.append_data(jd.table, jd.data)
-            return_data = [{"status": "ok", "result": result}]
-            return Response(json.dumps(return_data))
-        except SystemError as e:
-            return_data = [{"status": "404", "result": e}]
-            return Response(json.dumps(return_data))
-
-    def delete(self, request, pk, format=None):
-        return Response("delete")
-
-    def get_object(self, pk):
-        return Response("get_onject")
-
-class CNN_Stastics(APIView):
-    """
-    TO-DO : Dev Rest Services for CNN Accuracy , Data, Response, etc
-    """
-    def post(self, request, pk, format=None):
-        return Response("post")
-
-    def get(self, pk):
-        return Response("get")
-
-    def put(self, request, pk, format=None):
-        return Response("put")
 
     def delete(self, request, pk, format=None):
         return Response("delete")
