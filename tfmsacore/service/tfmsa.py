@@ -1,6 +1,7 @@
 from tfmsacore import train
 from tfmsacore import predict
 from tfmsacore import data
+from tfmsacore import utils
 from tfmsacore import netconf
 from tfmsarest import livy
 import json, unicodedata
@@ -55,13 +56,13 @@ class TFMsa :
         :param conf:acutual strcture information of neural network
         :return:success of failure
         """
-        info_data = data.JsonDataConverter().load_obj_json(str(info))
+        info_data = utils.JsonDataConverter().load_obj_json(str(info))
 
         try:
             netconf.create_new_network(json.loads(info))
             netconf.save_conf(info_data.nn_id, conf)
         except ValueError as e :
-            return "error"
+            return {}
 
         return info_data.nn_id
 
@@ -72,14 +73,15 @@ class TFMsa :
         :param conf:acutual strcture information of neural network
         :return: success of failure
         """
-        info_data = data.JsonDataConverter().load_obj_json(str(info))
+        info_data = utils.JsonDataConverter().load_obj_json(str(info))
         try:
             netconf.update_network(info_data)
             netconf.save_conf(info_data.nn_id, conf)
-        except ValueError as e :
-            return "error"
+            return info_data.nn_id
 
-        return info_data.nn_id
+        except Exception as e:
+            raise Exception(e)
+
 
     def searchNeuralNetwork(self, info):
         """
@@ -87,12 +89,14 @@ class TFMsa :
         :return:acutual strcture information of neural network
         """
         try:
-            info_data = data.JsonDataConverter().load_obj_json(str(info))
+            info_data = utils.JsonDataConverter().load_obj_json(str(info))
             conf_result = netconf.load_ori_conf(info_data.nn_id)
-        except ValueError as e :
-            return {}
+            return conf_result
 
-        return conf_result
+        except Exception as e:
+            raise Exception(e)
+
+
 
     def getNeuralNetConfig(self, nn_id, category):
         """
@@ -101,10 +105,12 @@ class TFMsa :
         """
         try:
             retrun_data = netconf.filter_network_config(nn_id, category)
-        except ValueError as e :
-            return {}
+            return retrun_data
 
-        return retrun_data
+        except Exception as e:
+            raise Exception(e)
+
+
 
     def createDataFrame(self, nn_id, table, data):
         """
@@ -134,5 +140,6 @@ class TFMsa :
             netconf.set_train_datasets(nn_id, str(dist_col_list))
 
             return "success"
-        except IOError as e:
-            return "failure"
+
+        except Exception as e:
+            raise Exception(e)

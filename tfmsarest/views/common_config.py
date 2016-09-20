@@ -26,8 +26,8 @@ class Common_config(APIView):
             result = tfmsa.getNeuralNetConfig(jd.nn_id, jd.category)
             return_data = {"status": "ok", "result": str(result)}
             return Response(json.dumps(return_data))
-        except SystemError as e:
-            return_data = {"status": "404", "result": e}
+        except Exception as e:
+            return_data = {"status": "404", "result": str(e)}
             return Response(json.dumps(return_data))
 
     def put(self, request):

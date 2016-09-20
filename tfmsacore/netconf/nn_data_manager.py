@@ -3,6 +3,24 @@ import os
 import shutil
 
 
+def chk_trained_data(net_id):
+    """
+    check if trained data exist with net_id
+    :param net_id: neural network id
+    :return:
+    """
+    directory = "/tensorMSA/data/"
+    net_id = net_id + ".ckpt"
+
+    try:
+        if os.path.isfile(directory + net_id):
+            return True
+        else :
+            return False
+    except :
+        return False
+
+
 def load_trained_data(nn_id, model):
     """
     Load Net Trained Weights and Bias from data base

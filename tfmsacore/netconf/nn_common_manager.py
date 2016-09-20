@@ -36,10 +36,11 @@ def update_network(req):
         obj.datasets = req.datasets
         obj.dir = req.dir
         obj.save()
-    except IOError as e:
-        print (e)
-        return "failure"
-    return "success"
+
+    except Exception as e:
+        raise Exception(e)
+
+
 
 
 def set_train_result(nn_id , acc):
@@ -51,10 +52,12 @@ def set_train_result(nn_id , acc):
     try:
         obj = models.NNInfo.objects.get(nn_id= nn_id)
         obj.acc = acc
+        obj.train = "Y"
         obj.save()
-    except:
-        return "failure"
-    return "success"
+
+    except Exception as e:
+        raise Exception(e)
+
 
 def set_train_datasets(nn_id , datasets):
     """
@@ -66,9 +69,9 @@ def set_train_datasets(nn_id , datasets):
         obj = models.NNInfo.objects.get(nn_id= nn_id)
         obj.datasets = datasets
         obj.save()
-    except:
-        return "failure"
-    return "success"
+
+    except Exception as e:
+        raise Exception(e)
 
 
 def filter_network_config(nn_id, category):
@@ -93,10 +96,11 @@ def filter_network_config(nn_id, category):
 
     try:
         query_set = models.NNInfo.objects.filter(nn_id__contains= nn_id, category__contains = category)
-    except IOError as e:
-        raise e
-    finally:
         return query_set.values()
+
+    except Exception as e:
+        raise Exception(e)
+
 
 def get_network_config(nn_id):
     """
@@ -121,5 +125,5 @@ def get_network_config(nn_id):
     try:
         data_Set = models.NNInfo.objects.get(nn_id__contains= nn_id)
         return data_Set.json()
-    except IOError as e:
-        raise e
+    except Exception as e:
+        raise Exception(e)

@@ -25,8 +25,8 @@ class CNN_Data(APIView):
             print(result)
             return_data = {"status": "ok", "result": result}
             return Response(json.dumps(return_data))
-        except SystemError as e:
-            return_data = {"status": "404", "result": e}
+        except Exception as e:
+            return_data = {"status": "404", "result": str(e)}
             return Response(json.dumps(return_data))
 
     def get(self, request):
@@ -42,8 +42,8 @@ class CNN_Data(APIView):
             result = livy_client.query_data(jd.table, jd.query)
             return_data = {"status": "ok", "result": result}
             return Response(json.dumps(return_data))
-        except SystemError as e:
-            return_data = {"status": "404", "result": e}
+        except Exception as e:
+            return_data = {"status": "404", "result": str(e)}
             return Response(json.dumps(return_data))
 
     def put(self, request, pk, format=None):
@@ -59,8 +59,8 @@ class CNN_Data(APIView):
             result = livy_client.append_data(jd.table, jd.data)
             return_data = {"status": "ok", "result": result}
             return Response(json.dumps(return_data))
-        except SystemError as e:
-            return_data = {"status": "404", "result": e}
+        except Exception as e:
+            return_data = {"status": "404", "result": str(e)}
             return Response(json.dumps(return_data))
 
     def delete(self, request, pk, format=None):

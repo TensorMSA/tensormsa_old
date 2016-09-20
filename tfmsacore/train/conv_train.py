@@ -27,7 +27,7 @@ def train_conv_network(nn_id, epoch, testset):
         """
         check_result = utils.check_requested_nn(nn_id)
         if(check_result != "ok"):
-            raise SyntaxError(check_result)
+            return check_result
 
         # load NN conf form db
         conf = netconf.load_conf(nn_id)

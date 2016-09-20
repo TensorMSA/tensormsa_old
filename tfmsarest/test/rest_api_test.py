@@ -21,8 +21,6 @@ def test_nn_cnn_service_predict():
     resp = requests.get('http://' + url + '/service/nn/cnn/' ,
                         json={ "nn_id": "nn0000005" , "nn_type" : "cnn",
                                "run_type" : "local", "epoch" : "", "testset" : "" , "predict_data":req_data})
-    if resp.status_code != 200:
-        raise SyntaxError('GET /tasks/ {}'.format(resp.status_code))
 
     data = json.loads(resp.json())
     print("test result : {0}".format(data))
@@ -34,8 +32,6 @@ def test_nn_cnn_service_train():
     resp = requests.post('http://' + url + '/service/nn/cnn/',
                         json={ "nn_id": "nn0000005" , "nn_type" : "cnn",
                                "run_type" : "local", "epoch" : 50, "testset" : 10 ,"predict_data":""})
-    if resp.status_code != 200:
-        raise SyntaxError('GET /tasks/ {}'.format(resp.status_code))
 
     data = json.loads(resp.json())
     print("test result : {0}".format(data))
@@ -113,7 +109,7 @@ def test_nn_cnn_config_insert_conf():
            "type" : "cnn",
            "acc" : "",
            "train" : "",
-           "config" : "",
+           "config" : "Y",
            "table" : "TEST2",
            "query" : "select * from TEST1",
            "datadesc":"{'name':'none', 'univ':'cate', 'org' : 'cate' , 'eng' : 'cont', 'grade' : 'tag'}",
@@ -125,8 +121,7 @@ def test_nn_cnn_config_insert_conf():
                             "nn_info" : nn_info,
                             "nn_conf" : ""
                         })
-    if resp.status_code != 200:
-        raise SyntaxError('GET /tasks/ {}'.format(resp.status_code))
+
     data = json.loads(resp.json())
     print("test result : {0}".format(data))
 
@@ -202,7 +197,7 @@ def test_nn_cnn_config_update_conf():
            "type" : "cnn",
            "acc" : "",
            "train" : "",
-           "config" : "",
+           "config" : "Y",
            "table" : "TEST2",
            "query" : "select * from TEST2",
            "datadesc":"{'name':'none', 'univ':'cate', 'org' : 'cate' , 'eng' : 'cont', 'grade' : 'tag'}",
@@ -215,8 +210,7 @@ def test_nn_cnn_config_update_conf():
                             "nn_info" : nn_info,
                             "nn_conf" : req_data
                         })
-    if resp.status_code != 200:
-        raise SyntaxError('GET /tasks/ {}'.format(resp.status_code))
+
     data = json.loads(resp.json())
     print("test result : {0}".format(data))
 
@@ -243,8 +237,7 @@ def test_nn_cnn_config_search_conf():
                             "nn_info" : nn_info,
                             "nn_conf" : ""
                         })
-    if resp.status_code != 200:
-        raise SyntaxError('GET /tasks/ {}'.format(resp.status_code))
+
     data = json.loads(resp.json())
     print("test result : {0}".format(data))
 
@@ -268,8 +261,7 @@ def test_nn_cnn_data_post():
                                        "]",
                                 "query": ""
                         })
-    if resp.status_code != 200:
-        raise SyntaxError('GET /tasks/ {}'.format(resp.status_code))
+
     data = json.loads(resp.json())
     print("test result : {0}".format(data))
 
@@ -287,8 +279,7 @@ def test_nn_cnn_data_put():
                                        "]",
                                 "query" : ""
                         })
-    if resp.status_code != 200:
-        raise SyntaxError('GET /tasks/ {}'.format(resp.status_code))
+
     data = json.loads(resp.json())
     print("test result : {0}".format(data))
 
@@ -301,8 +292,6 @@ def test_nn_cnn_data_get():
                                 "data":"",
                                 "query" : "select * from TEST1"
                         })
-    if resp.status_code != 200:
-        raise SyntaxError('GET /tasks/ {}'.format(resp.status_code))
 
     data = json.loads(resp.json())
     temp = json.loads(data["result"])
@@ -329,14 +318,13 @@ def test_nn_common_config_get():
                                  "dir": ""
 
                         })
-    if resp.status_code != 200:
-        raise SyntaxError('GET /tasks/ {}'.format(resp.status_code))
+
     data = json.loads(resp.json())
     print("test result : {0}".format(data))
 
 # test each rest apis
 def main(case):
-    case = 5
+    case = 4
     if(case == 1):
         test_nn_cnn_service_predict()
     elif(case ==2):

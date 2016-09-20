@@ -24,8 +24,8 @@ class SparkLoader:
         """
         try :
             print("!!")
-            # result = netconf.get_network_config(nn_id)
-            # print(result)
+            result = netconf.get_network_config(nn_id)
+            print(result)
         except IOError as e:
             return e
 

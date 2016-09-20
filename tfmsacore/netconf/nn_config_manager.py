@@ -1,5 +1,23 @@
 # -*- coding: utf-8 -*-
 import os
+from tfmsacore.utils.json_conv import JsonDataConverter
+
+def chk_conf(net_id):
+    """
+    check if configuraiotn data exist with requested net id
+    :param net_id: neural network id
+    :return:
+    """
+    directory = "/tensorMSA/data/"
+    net_id = net_id + "_conf.json"
+
+    try:
+        if os.path.isfile(directory + net_id):
+            return True
+        else :
+            return False
+    except :
+        return False
 
 
 def load_conf(net_id):
@@ -15,7 +33,7 @@ def load_conf(net_id):
         os.makedirs(directory)
     try:
         model_conf = open(directory + net_id, 'r')
-        json_data = tfmsacore.utils.json_conv.JsonDataConverter().load_obj_json(model_conf)
+        json_data = JsonDataConverter().load_obj_json(model_conf)
     except :
         raise SystemError("json load error")
     finally :

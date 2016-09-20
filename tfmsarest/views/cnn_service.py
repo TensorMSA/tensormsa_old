@@ -28,8 +28,8 @@ class CNN_Service(APIView):
             result = TFMsa().trainNerualNetwork(jd.nn_id, jd.nn_type, jd.run_type, jd.epoch, jd.testset)
             return_data = {"status": "200", "result": result}
             return Response(json.dumps(return_data))
-        except SystemError as e:
-            return_data = {"status": "404", "result": e}
+        except Exception as e:
+            return_data = {"status": "404", "result": str(e)}
             return Response(json.dumps(return_data))
 
     # read
@@ -49,8 +49,8 @@ class CNN_Service(APIView):
             result = TFMsa().predictNerualNetwork(jd.nn_id, jd.nn_type, jd.run_type, jd.predict_data)
             return_data = {"status": "ok", "result": result}
             return Response(json.dumps(return_data))
-        except SystemError as e:
-            return_data = {"status": "404", "result": e}
+        except Exception as e:
+            return_data = {"status": "404", "result": str(e)}
             return Response(json.dumps(return_data))
 
     # update
@@ -70,8 +70,8 @@ class CNN_Service(APIView):
             result = TFMsa().trainNerualNetwork(jd.nn_id, jd.nn_type, jd.run_type, jd.epoch, jd.testset)
             return_data = {"status": "ok", "result": result}
             return Response(json.dumps(return_data))
-        except SystemError as e:
-            return_data = {"status": "404", "result": e}
+        except Exception as e:
+            return_data = {"status": "404", "result": str(e)}
             return Response(json.dumps(return_data))
 
     # delete
