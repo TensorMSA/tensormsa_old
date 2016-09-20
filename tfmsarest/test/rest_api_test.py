@@ -336,7 +336,7 @@ def test_nn_common_config_get():
 
 # test each rest apis
 def main(case):
-    case = 6
+    case = 5
     if(case == 1):
         test_nn_cnn_service_predict()
     elif(case ==2):

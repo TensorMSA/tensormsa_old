@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
-
-import json
 import os
-import tensorflow as tf
 import shutil
 
 

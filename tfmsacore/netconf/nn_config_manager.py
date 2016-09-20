@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
-from tfmsacore import data
+
 
 def load_conf(net_id):
     """
@@ -15,7 +15,7 @@ def load_conf(net_id):
         os.makedirs(directory)
     try:
         model_conf = open(directory + net_id, 'r')
-        json_data = data.json_conv.JsonDataConverter().load_obj_json(model_conf)
+        json_data = tfmsacore.utils.json_conv.JsonDataConverter().load_obj_json(model_conf)
     except :
         raise SystemError("json load error")
     finally :

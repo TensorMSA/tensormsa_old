@@ -1,9 +1,5 @@
-from rest_framework.views import APIView
 from rest_framework.response import Response
-from tfmsacore.service.tfmsa import TFMsa
-from tfmsarest import livy
-from tfmsacore.data.json_conv import JsonDataConverter as jc
-import json
+from rest_framework.views import APIView
 
 
 class CNN_Stastics(APIView):

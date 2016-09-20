@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-import json
-import os
-from tfmsacore.data.json_conv import JsonDataConverter as jc
+from tfmsacore.utils.json_conv import JsonDataConverter as jc
 
 def load_data(net_id):
     """
