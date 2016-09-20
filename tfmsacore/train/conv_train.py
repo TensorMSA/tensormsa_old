@@ -25,9 +25,7 @@ def train_conv_network(nn_id, epoch, testset):
         """
         TO-DO : check request nn id, conf, data and other setting are ok
         """
-        check_result = utils.check_requested_nn(nn_id)
-        if(check_result != "ok"):
-            return check_result
+        utils.check_requested_nn(nn_id)
 
         # load NN conf form db
         conf = netconf.load_conf(nn_id)
@@ -106,8 +104,8 @@ def train_conv_network(nn_id, epoch, testset):
 
         return acc
 
-    except SyntaxError as e :
-        return e
+    except Exception as e :
+        raise Exception(e)
 
 #for test purpose
 #train_conv_network("sample")

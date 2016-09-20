@@ -30,7 +30,7 @@ def test_nn_cnn_service_train():
     #requests.post(url, data, json, arg )
     #nn_type, run_type, nn_id
     resp = requests.post('http://' + url + '/service/nn/cnn/',
-                        json={ "nn_id": "nn0000005" , "nn_type" : "cnn",
+                        json={ "nn_id": "nn0000006" , "nn_type" : "cnn",
                                "run_type" : "local", "epoch" : 50, "testset" : 10 ,"predict_data":""})
 
     data = json.loads(resp.json())
@@ -163,7 +163,7 @@ def test_nn_cnn_config_update_conf():
                     "padding": "SAME",
                     "droprate": ""
                 },
-
+nn0000006
                 {
                     "type": "drop",
                     "active": "relu",
@@ -182,7 +182,7 @@ def test_nn_cnn_config_update_conf():
                     "cnnfilter": "",
                     "cnnstride": "",
                     "maxpoolmatrix": "",
-                    "maxpoolstride": "",
+                    "maxpoolstride": "nn0000006",
                     "node_in_out": [100, 2],
                     "regualizer": "",
                     "padding": "SAME",
@@ -324,7 +324,7 @@ def test_nn_common_config_get():
 
 # test each rest apis
 def main(case):
-    case = 4
+    case = 2
     if(case == 1):
         test_nn_cnn_service_predict()
     elif(case ==2):
