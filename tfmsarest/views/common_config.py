@@ -22,10 +22,10 @@ class Common_config(APIView):
             tfmsa = TFMsa()
             jd = jc.load_obj_json(request.body)
             result = tfmsa.getNeuralNetConfig(jd.nn_id, jd.category)
-            return_data = [{"status": "ok", "result": str(result)}]
+            return_data = {"status": "ok", "result": str(result)}
             return Response(json.dumps(return_data))
         except SystemError as e:
-            return_data = [{"status": "404", "result": e}]
+            return_data = {"status": "404", "result": e}
             return Response(json.dumps(return_data))
 
     def put(self, request):

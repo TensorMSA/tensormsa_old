@@ -25,10 +25,10 @@ class CNN_Service(APIView):
         try:
             jd = jc.load_obj_json(request.body)
             result = TFMsa().trainNerualNetwork(jd.nn_id, jd.nn_type, jd.run_type, jd.epoch, jd.testset)
-            return_data = [{"status": "200", "result": result}]
+            return_data = {"status": "200", "result": result}
             return Response(json.dumps(return_data))
         except SystemError as e:
-            return_data = [{"status": "404", "result": e}]
+            return_data = {"status": "404", "result": e}
             return Response(json.dumps(return_data))
 
     # read
@@ -46,10 +46,10 @@ class CNN_Service(APIView):
         try:
             jd = jc.load_obj_json(request.body)
             result = TFMsa().predictNerualNetwork(jd.nn_id, jd.nn_type, jd.run_type, jd.predict_data)
-            return_data = [{"status": "ok", "result": result}]
+            return_data = {"status": "ok", "result": result}
             return Response(json.dumps(return_data))
         except SystemError as e:
-            return_data = [{"status": "404", "result": e}]
+            return_data = {"status": "404", "result": e}
             return Response(json.dumps(return_data))
 
     # update
@@ -67,11 +67,10 @@ class CNN_Service(APIView):
         try:
             jd = jc.load_obj_json(request.body)
             result = TFMsa().trainNerualNetwork(jd.nn_id, jd.nn_type, jd.run_type, jd.epoch, jd.testset)
-            return_data = [{"status": "ok", "result": result}]
-            print(json.dumps(return_data))
+            return_data = {"status": "ok", "result": result}
             return Response(json.dumps(return_data))
         except SystemError as e:
-            return_data = [{"status": "404", "result": e}]
+            return_data = {"status": "404", "result": e}
             return Response(json.dumps(return_data))
 
     # delete

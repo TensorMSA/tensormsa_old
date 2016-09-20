@@ -3,7 +3,8 @@ from tfmsacore import predict
 from tfmsacore import data
 from tfmsacore import netconf
 from tfmsarest import livy
-import json
+import json, unicodedata
+
 
 class TFMsa :
     """
@@ -124,12 +125,13 @@ class TFMsa :
             livy_client.create_session()
             livy_client.create_table(table, data)
             json_obj = json.loads(str(nn_info['datadesc']).replace("'", "\""))
-            return_dict = {}
+            cate_column_list = []
             for column in json_obj.keys():
                 if(json_obj[column] == 'cate'):
-                    distinct_list = livy_client.get_distinct_column(table, column)
-                    return_dict[column] = json.loads(distinct_list)
-            netconf.set_train_datasets(nn_id, str(return_dict))
+                    cate_column_list.append(column)
+
+            dist_col_list = livy_client.get_distinct_column(table, cate_column_list)
+            netconf.set_train_datasets(nn_id, str(dist_col_list))
 
             return "success"
         except IOError as e:

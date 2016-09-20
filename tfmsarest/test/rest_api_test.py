@@ -303,8 +303,13 @@ def test_nn_cnn_data_get():
                         })
     if resp.status_code != 200:
         raise SyntaxError('GET /tasks/ {}'.format(resp.status_code))
+
     data = json.loads(resp.json())
-    print("test result : {0}".format(data))
+    temp = json.loads(data["result"])
+    print(temp[0])
+    print(temp[0]["grade"])
+    print(temp[0]["univ"])
+
 
 # select data from table
 def test_nn_common_config_get():
@@ -345,7 +350,7 @@ def main(case):
     elif (case == 6):
         test_nn_cnn_data_post()
     elif (case == 7):
-        test_nn_cnn_data_get()
+        test = test_nn_cnn_data_get()
     elif (case == 8):
         test_nn_cnn_data_put()
     elif (case == 9):

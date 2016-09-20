@@ -58,10 +58,10 @@ class CNN_Config(APIView):
             jd = jc.load_obj_json(request.body)
             tfmsa = TFMsa()
             result = tfmsa.createNeuralNetwork(jd.nn_info, jd.nn_conf)
-            return_data = [{"status": "ok", "result": result}]
+            return_data = {"status": "ok", "result": result}
             return Response(json.dumps(return_data))
         except SystemError as e:
-            return_data = [{"status": "404", "result": e}]
+            return_data = {"status": "404", "result": e}
             return Response(json.dumps(return_data))
 
     def get(self, request):
@@ -112,10 +112,10 @@ class CNN_Config(APIView):
             tfmsa = TFMsa()
             jd = jc.load_obj_json(request.body)
             result = tfmsa.searchNeuralNetwork(jd.nn_info)
-            return_data = [{"status": "ok", "result": result}]
+            return_data = {"status": "ok", "result": result}
             return Response(json.dumps(return_data))
         except SystemError as e:
-            return_data = [{"status": "404", "result": e}]
+            return_data = {"status": "404", "result": e}
             return Response(json.dumps(return_data))
 
     def put(self, request):
@@ -167,10 +167,10 @@ class CNN_Config(APIView):
             tfmsa = TFMsa()
             jd = jc.load_obj_json(request.body)
             result = tfmsa.updateNeuralNetwork(jd.nn_info, jd.nn_conf)
-            return_data = [{"status": "ok", "result": result}]
+            return_data = {"status": "ok", "result": result}
             return Response(json.dumps(return_data))
         except SystemError as e:
-            return_data = [{"status": "404", "result": e}]
+            return_data = {"status": "404", "result": e}
             return Response(json.dumps(return_data))
 
     def delete(self, request, pk, format=None):
