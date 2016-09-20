@@ -17,8 +17,8 @@ def check_requested_nn(nn_id):
     if(check_nn_conf_exist(conf, nn_id) == False):
         raise Exception("network configuration not exist")
 
-    if(check_nn_data_exist(conf, nn_id) == False):
-        raise Exception("training data not exist")
+    # if(check_nn_data_exist(conf, nn_id) == False):
+    #     raise Exception("training data not exist")
 
 
 
@@ -29,8 +29,6 @@ def check_nn_exist(conf, nn_id):
     :param nn_id: neural network management id
     :return:
     """
-    print(nn_id)
-    print(conf['nn_id'])
     if(conf['nn_id'] == nn_id):
         return True
     else :

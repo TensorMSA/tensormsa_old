@@ -163,7 +163,6 @@ def test_nn_cnn_config_update_conf():
                     "padding": "SAME",
                     "droprate": ""
                 },
-nn0000006
                 {
                     "type": "drop",
                     "active": "relu",
@@ -201,7 +200,7 @@ nn0000006
            "table" : "TEST2",
            "query" : "select * from TEST2",
            "datadesc":"{'name':'none', 'univ':'cate', 'org' : 'cate' , 'eng' : 'cont', 'grade' : 'tag'}",
-           "datasets":"xxxxxxx",
+           "datasets":"",
            "dir" : "default"}
          """
 
@@ -252,7 +251,7 @@ def test_nn_cnn_data_post():
 
     resp = requests.post('http://' + url + '/data/nn/cnn/',
                         json= { "nn_id": "nn0000006",
-                                "table": "TEST1",
+                                "table": "TEST2",
                                 "data":"[{'name':'Andy', 'univ':'a', 'org' : '1', 'eng' : '800' , 'grade' : 'A'}," \
                                        " {'name':'Kim', 'univ':'b', 'org' : '2', 'eng' : '800' , 'grade' : 'B'}," \
                                        " {'name':'Kim', 'univ':'YcSU', 'org' : '3', 'eng' : '800' , 'grade' : 'B'}," \

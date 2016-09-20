@@ -35,10 +35,10 @@ def train_conv_network(nn_id, epoch, testset):
         TO-DO : need to sample the test set
         """
         # data_set = json_conv.JsonDataConverter().convert_json_to_matrix(json_loader.load_data(nn_id))
-        train_x = np.array(td.SparkLoader.get_train_data(nn_id) , np.float32)
-        train_y = np.array(td.SparkLoader.get_train_data(nn_id), np.float32)
-        test_x = np.array(td.SparkLoader.get_train_data(nn_id), np.float32)
-        test_y = np.array(td.SparkLoader.get_train_data(nn_id), np.float32)
+        train_x = np.array(td.SparkLoader().get_train_data(nn_id) , np.float32)
+        train_y = np.array(td.SparkLoader().get_train_data(nn_id), np.float32)
+        test_x = np.array(td.SparkLoader().get_train_data(nn_id), np.float32)
+        test_y = np.array(td.SparkLoader().get_train_data(nn_id), np.float32)
 
         """
         TO-DO : need to get data form spark
