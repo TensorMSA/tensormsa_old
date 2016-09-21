@@ -283,6 +283,8 @@ def test_nn_cnn_data_put():
     print("test result : {0}".format(data))
 
 
+
+
 # select data from table
 def test_nn_cnn_data_get():
 
@@ -323,7 +325,7 @@ def test_nn_common_config_get():
 
 # test each rest apis
 def main(case):
-    case = 2
+    case = 3
     if(case == 1):
         test_nn_cnn_service_predict()
     elif(case ==2):

@@ -58,10 +58,15 @@ python manage.py makemigrations &
 echo python manage.py migrate &
 python manage.py migrate &
 
-echo python manage.py collectstatic --noinput -i admin
-python manage.py collectstatic --noinput -i admin &
+echo python manage.py collectstatic --noinput -i admin -i node_modules
+python manage.py collectstatic --noinput -i admin -i node_modules  &
+
+echo webpack
+cd /home/dev/TensorMSA/tfmsaview/static
+webpack
 
 echo ./python manage.py runserver $1:8989 &
+cd /home/dev/TensorMSA/
 python manage.py runserver $1:8989 &
 
 

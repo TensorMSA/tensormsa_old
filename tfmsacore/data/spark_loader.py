@@ -20,15 +20,21 @@ class SparkLoader:
         """
         try :
 
+            # (1) get data configuration info
             net_conf = netconf.get_network_config(nn_id)
-
             datadesc = JsonDataConverter().load_obj_json(net_conf['datadesc'])
             datasets = JsonDataConverter().load_obj_json(net_conf['datasets'])
 
+            # (2) get user seleceted data from spark
             sql_stmt = self.get_sql_state(datadesc , net_conf['table'])
             livy_client = livy.LivyDfClientManager(2)
             livy_client.create_session()
             livy_client.query_data(net_conf['table'], sql_stmt)
+
+            # (3) modify train data for 'categorical data'
+            """
+                think it is better to be done on spark
+            """
 
             """
             TO-DO :

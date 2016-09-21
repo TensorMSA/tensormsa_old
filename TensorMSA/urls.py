@@ -16,7 +16,7 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 from tfmsarest import views as rest_view
-#from tfmsaview import views as ui_view
+from tfmsaview import views as ui_view
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -27,5 +27,5 @@ urlpatterns = [
     url(r'^data/nn/cnn/$', rest_view.CNN_Data.as_view()),
     url(r'^stastics/nn/cnn/$', rest_view.CNN_Stastics.as_view()),
     url(r'^config/nn/common/$', rest_view.Common_config.as_view()),
-#    url(r'^view/index/$', ui_view.UI_Service.as_view()),
+    url(r'^view/index/$', ui_view.UI_Service.as_view()),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

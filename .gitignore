@@ -1,2 +1,3 @@
 # tfmsaview - exclude NPM modules 
 /tfmsaview/static/node_modules
+/tfmsaview/dist
