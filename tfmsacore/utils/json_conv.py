@@ -30,6 +30,9 @@ class JsonDataConverter:
             :param data:
             :return:
             """
+            if(data == "") :
+                data = "{}"
+
             if ("'" in data and "\"" in data):
                 if (data.index("'") < data.index("\"")):
                     data = data.encode("utf-8")
@@ -42,6 +45,7 @@ class JsonDataConverter:
             return data
 
         try :
+
             if(isinstance(data, (str))):
                 json_data = json.loads(comma_converter(data), object_hook=JsonObject)
             elif(isinstance(data, (file))):

@@ -17,6 +17,12 @@ def check_requested_nn(nn_id):
     if(check_nn_conf_exist(conf, nn_id) == False):
         raise Exception("network configuration not exist")
 
+    if (check_nn_datadesc_exist(conf) == False):
+        raise Exception("network column types are not defined")
+
+    if (check_nn_datasets_exist(conf) == False):
+        raise Exception("network categorical type list not exists")
+
     # if(check_nn_data_exist(conf, nn_id) == False):
     #     raise Exception("training data not exist")
 
@@ -61,6 +67,30 @@ def check_nn_data_exist(conf, nn_id):
     livy_client.create_session()
 
     if (livy_client.query_stucture(conf['table']) != None):
+        return True
+    else:
+        return False
+
+
+def check_nn_datadesc_exist(conf):
+    """
+    check datadesc info is exists
+    :param conf : configuration data on database
+    :return: Boolean
+    """
+    if (len(conf['datadesc']) > 0):
+        return True
+    else:
+        return False
+
+
+def check_nn_datasets_exist(conf):
+    """
+    check datasets info is exists
+    :param conf : configuration data on database
+    :return: Boolean
+    """
+    if (len(conf['datasets']) > 0):
         return True
     else:
         return False

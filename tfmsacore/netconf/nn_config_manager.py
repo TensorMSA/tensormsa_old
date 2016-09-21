@@ -34,8 +34,8 @@ def load_conf(net_id):
     try:
         model_conf = open(directory + net_id, 'r')
         json_data = JsonDataConverter().load_obj_json(model_conf)
-    except :
-        raise SystemError("json load error")
+    except Exception as e:
+        raise Exception(e)
     finally :
         model_conf.close()
 
