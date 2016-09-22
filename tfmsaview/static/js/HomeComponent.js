@@ -5,20 +5,60 @@ import ReportRepository from './repositories/ReportRepository'
 export default class HomeComponent extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {data : null}
+        this.callRestApi = this.callRestApi.bind(this);
     }
 
    callRestApi() {
+        this.setState({data: null});
+        let req_data = [ 0 , 0 , 0, 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 ,
+                   0 , 0 , 0, 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 ,
+                   0 , 0 , 0, 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 ,
+                   0 , 0 , 0, 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 ,
+                   0 , 0 , 0, 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 ,
+                   0 , 0 , 0, 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 ,
+                   0 , 0 , 0, 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 ,
+                   0 , 0 , 0, 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 ];
+
         if (true) {
-            let params = {
-                nn_id: "nn0000005",
-                category:"test"
+          /*  let params = {
+                nn_id: "nn0000005" ,
+                nn_type : "cnn",
+                run_type : "local",
+                 epoch : "",
+                 testset : "" ,
+                 predict_data:req_data
             };
-            this.props.reportRepository.getConfigs(params).then((data) => {
+
+
+            this.props.reportRepository.postServices(params).then((data) => {
                 this.setState({data: data})
             });
+                */
+
+          let params = {
+                   nn_id: "nn0000005",
+                   category:"",
+                   name : "",
+                   type : "",
+                   acc : "",
+                   train : "",
+                   config : "",
+                   table : "",
+                   query : "",
+                   datadesc : "",
+                   datasets : "",
+                   dir : "default"
+               };
+
+            this.props.reportRepository.postConfigs(params).then((data) => {
+                this.setState({data: data})
+            });
+
+
         }
         else {
-            this.props.reportRepository.postServices(`param`).then((data) => {
+            this.props.reportRepository.postServices('param').then((data) => {
                 this.setState({data: data});
             });
         }
@@ -30,8 +70,8 @@ export default class HomeComponent extends React.Component {
                 <div className="reports">
                     Hello TensorMSA
                 </div>
-                <div>
-                 {this.callRestApi()}
+                <div className="getAPI" onClick={() => this.callRestApi()}>
+                 Get API
                 </div>
             </div>
         )
