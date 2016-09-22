@@ -14,7 +14,10 @@ def chk_trained_data(net_id):
 
     try:
         if os.path.isfile(directory + net_id):
-            return True
+            if(os.stat(directory + net_id).st_size == 0):
+                return False
+            else:
+                return True
         else :
             return False
     except :
@@ -34,12 +37,8 @@ def load_trained_data(nn_id, model):
 
     if os.path.isfile(directory + nn_id + ".ckpt"):
         model.load(directory + nn_id + ".ckpt")
+        print("load model completed for [ " + nn_id + "]")
 
-    print("load model completed for [ " + nn_id + "]")
-
-    """
-    TO-DO : get data from postgresql db and load it on the model
-    """
     return model
 
 
@@ -62,6 +61,25 @@ def save_trained_data(nn_id, model):
     TO-DO : save trained data on the data base
     """
     return model
+
+
+def remove_trained_data(nn_id, model):
+    """
+    remove Net Trained Weights and Bias from data base
+    :param nn_id: neural network id
+    :param mdoe : tflearn model
+    :return:tflearn model
+    """
+    directory = "/tensorMSA/data/"
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+
+    if os.path.isfile(directory + nn_id + ".ckpt"):
+        os.remove(directory + nn_id + ".ckpt")
+        print("remove model completed for [ " + nn_id + "]")
+
+    return model
+
 
 def test_data_move():
     """

@@ -13,7 +13,10 @@ def chk_conf(net_id):
 
     try:
         if os.path.isfile(directory + net_id):
-            return True
+            if(os.stat(directory + net_id).st_size == 0):
+                return False
+            else:
+                return True
         else :
             return False
     except :
@@ -80,9 +83,25 @@ def save_conf(net_id, conf_data):
     try:
         f = open(directory + net_id, 'w')
         f.write(str(conf_data))
+
     except:
         raise SystemError("json conf save error")
     finally:
         f.close()
 
-    return True
+
+def remove_conf(net_id):
+    """
+    remove json from  path and return it as python object form
+    :param net_id: neural network id
+    :return:
+    """
+    directory = "/tensorMSA/data/"
+    net_id = net_id + "_conf.json"
+
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+    try:
+        os.remove(directory + net_id, 'r')
+    except Exception as e:
+        raise Exception(e)
