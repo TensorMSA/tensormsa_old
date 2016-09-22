@@ -145,13 +145,17 @@ class LivyDfClientManager:
         :param json_data: json form schema data
         :return: success or failure
         """
+
         self.get_available_sess_id()
         data = {
             'code': ''.join(['from pyspark.sql import SQLContext, DataFrameWriter, DataFrame\n',
                              'sqlContext = SQLContext(sc)\n',
-                             'df_writer = sqlContext.createDataFrame(', str(json_data)  ,').write\n',
-                             'df_writer.parquet("' , str(self.hdfs_path), "/", table_name ,
-                             '", mode="append", partitionBy=None)'
+                             'df = sqlContext.read.load("', str(self.hdfs_path),
+                                                  "/", table_name, '" , "parquet" )\n'
+                             'df_writer = sqlContext.createDataFrame(', str(json_data)  ,')\n',
+                             'df.unionAll(df_writer)\n',
+                             'df.write.parquet("', str(self.hdfs_path), "/", table_name,
+                             '", mode="append", partitionBy=None)\n'
                              ])
         }
 
@@ -276,4 +280,4 @@ class LivyDfClientManager:
         result = self.get_response(str(min(self.avail_sess_list)), \
                                           json.loads(resp.content, object_hook=JsonObject).id)
 
-        return result["output"]["data"]["text/plain"]
+        return result["output"]["data"]["text/plain"].replace("\"", "")
