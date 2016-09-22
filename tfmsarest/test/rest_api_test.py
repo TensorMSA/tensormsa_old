@@ -1,12 +1,14 @@
 import requests
 import json
 import tensorflow as tf
+import logging
 
 # Reference
 #https://realpython.com/blog/python/api-integration-in-python/
 #http://www.slideshare.net/Byungwook/rest-api-60505484
 
 url = "481bf68ee6d9:8989"
+
 
 # test-predict
 def test_nn_cnn_service_predict():
@@ -45,7 +47,7 @@ def test_nn_cnn_config_insert_conf():
                     "taglen": 2,
                     "matrix": [12, 8],
                     "learnrate": 0.01,
-                    "epoch":50
+                    "epoch":10
                 },
             "layer":
                 [
@@ -56,20 +58,7 @@ def test_nn_cnn_config_insert_conf():
                         "cnnstride": [1, 1],
                         "maxpoolmatrix": [2, 2],
                         "maxpoolstride": [1, 1],
-                        "node_in_out": [1, 16],
-                        "regualizer": "",
-                        "padding": "SAME",
-                        "droprate": ""
-                    },
-
-                    {
-                        "type": "cnn",
-                        "active": "relu",
-                        "cnnfilter": [2, 2],
-                        "cnnstride": [1, 1],
-                        "maxpoolmatrix": [2, 2],
-                        "maxpoolstride": [1, 1],
-                        "node_in_out": [16, 32],
+                        "node_in_out": [1, 32],
                         "regualizer": "",
                         "padding": "SAME",
                         "droprate": ""
@@ -112,16 +101,16 @@ def test_nn_cnn_config_insert_conf():
            "config" : "Y",
            "table" : "TEST2",
            "query" : "select * from TEST1",
-           "datadesc":"{'name':'none', 'univ':'cate', 'org' : 'cate' , 'eng' : 'cont', 'grade' : 'tag'}",
+           "datadesc":"{'name':'none', 'univ':'rank', 'org' : 'cate' , 'eng' : 'cont', 'grade' : 'tag', 'gender' :'cate' , 'age' : 'cont'}",
            "datasets":"",
            "dir" : "default"}
          """
     resp = requests.post('http://' + url + '/config/nn/cnn/',
                         json={
                             "nn_info" : nn_info,
-                            "nn_conf" : ""
+                            "nn_conf" : req_data
                         })
-
+    print(resp.url)
     data = json.loads(resp.json())
     print("test result : {0}".format(data))
 
@@ -134,7 +123,7 @@ def test_nn_cnn_config_update_conf():
                 "taglen": 2,
                 "matrix": [12, 8],
                 "learnrate": 0.01,
-                "epoch":50
+                "epoch":10
             },
         "layer":
             [
@@ -145,20 +134,7 @@ def test_nn_cnn_config_update_conf():
                     "cnnstride": [1, 1],
                     "maxpoolmatrix": [2, 2],
                     "maxpoolstride": [1, 1],
-                    "node_in_out": [1, 16],
-                    "regualizer": "",
-                    "padding": "SAME",
-                    "droprate": ""
-                },
-
-                {
-                    "type": "cnn",
-                    "active": "relu",
-                    "cnnfilter": [2, 2],
-                    "cnnstride": [1, 1],
-                    "maxpoolmatrix": [2, 2],
-                    "maxpoolstride": [1, 1],
-                    "node_in_out": [16, 32],
+                    "node_in_out": [1, 32],
                     "regualizer": "",
                     "padding": "SAME",
                     "droprate": ""
@@ -190,7 +166,7 @@ def test_nn_cnn_config_update_conf():
             ]
     }"""
     nn_info = """
-         { "nn_id": "nn0000005",
+         { "nn_id": "nn0000006",
            "category":"test",
            "name" : "test",
            "type" : "cnn",
@@ -199,7 +175,7 @@ def test_nn_cnn_config_update_conf():
            "config" : "Y",
            "table" : "TEST2",
            "query" : "select * from TEST2",
-           "datadesc":"{'name':'none', 'univ':'cate', 'org' : 'cate' , 'eng' : 'cont', 'grade' : 'tag'}",
+           "datadesc":"{'name':'none', 'univ':'rank', 'org' : 'cate' , 'eng' : 'cont', 'grade' : 'tag', 'gender' :'cate' , 'age' : 'cont'}",
            "datasets":"",
            "dir" : "default"}
          """
@@ -217,7 +193,7 @@ def test_nn_cnn_config_update_conf():
 def test_nn_cnn_config_search_conf():
 
     nn_info = """
-         { "nn_id": "nn0000005",
+         { "nn_id": "nn0000006",
            "category":"",
            "name" : "",
            "type" : "",
@@ -252,11 +228,30 @@ def test_nn_cnn_data_post():
     resp = requests.post('http://' + url + '/data/nn/cnn/',
                         json= { "nn_id": "nn0000006",
                                 "table": "TEST2",
-                                "data":"[{'name':'Andy', 'univ':'a', 'org' : '1', 'eng' : '800' , 'grade' : 'A'}," \
-                                       " {'name':'Kim', 'univ':'b', 'org' : '2', 'eng' : '800' , 'grade' : 'B'}," \
-                                       " {'name':'Kim', 'univ':'YcSU', 'org' : '3', 'eng' : '800' , 'grade' : 'B'}," \
-                                       " {'name':'Kim', 'univ':'d', 'org' : '4', 'eng' : '800' , 'grade' : 'B'}," \
-                                       " {'name':'Kim', 'univ':'e', 'org' : '5', 'eng' : '800' , 'grade' : 'B'}" \
+                                "data":"[{'name':'Andy', 'univ':'a', 'org' : '1', 'eng' : '800' , 'grade' : 'A', 'gender' : 'female', 'age' : '50'}," \
+                                       " {'name':'Kim', 'univ':'b', 'org' : '2', 'eng' : '800' , 'grade' : 'B', 'gender' : 'female', 'age' : '35'}," \
+                                       " {'name':'Kim', 'univ':'YcSU', 'org' : '3', 'eng' : '800' , 'grade' : 'B', 'gender' : 'male', 'age' : '65'}," \
+                                       " {'name':'Kim', 'univ':'d', 'org' : '4', 'eng' : '800' , 'grade' : 'B', 'gender' : 'female', 'age' : '70'}," \
+                                       " {'name':'Kim', 'univ':'e', 'org' : '5', 'eng' : '800' , 'grade' : 'B', 'gender' : 'male', 'age' : '25'}," \
+                                       " {'name':'Kim', 'univ':'e', 'org' : '5', 'eng' : '800' , 'grade' : 'B', 'gender' : 'male', 'age' : '25'}," \
+                                       " {'name':'Kim', 'univ':'e', 'org' : '5', 'eng' : '800' , 'grade' : 'B', 'gender' : 'male', 'age' : '25'}," \
+                                       " {'name':'Kim', 'univ':'e', 'org' : '5', 'eng' : '800' , 'grade' : 'B', 'gender' : 'male', 'age' : '25'}," \
+                                       " {'name':'Kim', 'univ':'d', 'org' : '4', 'eng' : '800' , 'grade' : 'B', 'gender' : 'female', 'age' : '70'}," \
+                                       " {'name':'Kim', 'univ':'e', 'org' : '5', 'eng' : '800' , 'grade' : 'B', 'gender' : 'male', 'age' : '25'}," \
+                                       " {'name':'Kim', 'univ':'e', 'org' : '5', 'eng' : '800' , 'grade' : 'B', 'gender' : 'male', 'age' : '25'}," \
+                                       " {'name':'Kim', 'univ':'e', 'org' : '5', 'eng' : '800' , 'grade' : 'B', 'gender' : 'male', 'age' : '25'}," \
+                                       " {'name':'Kim', 'univ':'e', 'org' : '5', 'eng' : '800' , 'grade' : 'B', 'gender' : 'male', 'age' : '25'}," \
+                                       " {'name':'Kim', 'univ':'d', 'org' : '4', 'eng' : '800' , 'grade' : 'B', 'gender' : 'female', 'age' : '70'}," \
+                                       " {'name':'Kim', 'univ':'e', 'org' : '5', 'eng' : '800' , 'grade' : 'B', 'gender' : 'male', 'age' : '25'}," \
+                                       " {'name':'Kim', 'univ':'e', 'org' : '5', 'eng' : '800' , 'grade' : 'B', 'gender' : 'male', 'age' : '25'}," \
+                                       " {'name':'Kim', 'univ':'e', 'org' : '5', 'eng' : '800' , 'grade' : 'B', 'gender' : 'male', 'age' : '25'}," \
+                                       " {'name':'Kim', 'univ':'e', 'org' : '5', 'eng' : '800' , 'grade' : 'B', 'gender' : 'male', 'age' : '25'}," \
+                                       " {'name':'Kim', 'univ':'d', 'org' : '4', 'eng' : '800' , 'grade' : 'B', 'gender' : 'female', 'age' : '70'}," \
+                                       " {'name':'Kim', 'univ':'e', 'org' : '5', 'eng' : '800' , 'grade' : 'B', 'gender' : 'male', 'age' : '25'}," \
+                                       " {'name':'Kim', 'univ':'e', 'org' : '5', 'eng' : '800' , 'grade' : 'B', 'gender' : 'male', 'age' : '25'}," \
+                                       " {'name':'Kim', 'univ':'e', 'org' : '5', 'eng' : '800' , 'grade' : 'B', 'gender' : 'male', 'age' : '25'}," \
+                                       " {'name':'Kim', 'univ':'e', 'org' : '5', 'eng' : '800' , 'grade' : 'B', 'gender' : 'male', 'age' : '25'}," \
+                                       " {'name':'Kim', 'univ':'e', 'org' : '5', 'eng' : '800' , 'grade' : 'B', 'gender' : 'male', 'age' : '25'}" \
                                        "]",
                                 "query": ""
                         })
@@ -267,14 +262,18 @@ def test_nn_cnn_data_post():
 # append data on spark
 def test_nn_cnn_data_put():
 
-    resp = requests.post('http://' + url + '/data/nn/cnn/',
+    resp = requests.put('http://' + url + '/data/nn/cnn/',
                         json= { "nn_id": "nn0000006",
                                 "table": "TEST1",
-                                "data":"[{'name':'Andy', 'univ':'a', 'org' : '1', 'eng' : '800' , 'grade' : 'A'}," \
-                                       " {'name':'Kim', 'univ':'b', 'org' : '2', 'eng' : '800' , 'grade' : 'B'}," \
-                                       " {'name':'Kim', 'univ':'YcSU', 'org' : '3', 'eng' : '800' , 'grade' : 'B'}," \
-                                       " {'name':'Kim', 'univ':'d', 'org' : '4', 'eng' : '800' , 'grade' : 'B'}," \
-                                       " {'name':'Kim', 'univ':'e', 'org' : '5', 'eng' : '800' , 'grade' : 'B'}" \
+                                "data":"[{'name':'Andy', 'univ':'a', 'org' : '1', 'eng' : '800' , 'grade' : 'A', 'gender' : 'female', 'age' : '50'}," \
+                                       " {'name':'Kim', 'univ':'b', 'org' : '2', 'eng' : '800' , 'grade' : 'B', 'gender' : 'female', 'age' : '35'}," \
+                                       " {'name':'Kim', 'univ':'YcSU', 'org' : '3', 'eng' : '800' , 'grade' : 'B', 'gender' : 'male', 'age' : '65'}," \
+                                       " {'name':'Kim', 'univ':'d', 'org' : '4', 'eng' : '800' , 'grade' : 'B', 'gender' : 'female', 'age' : '70'}," \
+                                       " {'name':'Kim', 'univ':'e', 'org' : '5', 'eng' : '800' , 'grade' : 'B', 'gender' : 'male', 'age' : '25'}," \
+                                       " {'name':'Kim', 'univ':'e', 'org' : '5', 'eng' : '800' , 'grade' : 'B', 'gender' : 'male', 'age' : '25'}," \
+                                       " {'name':'Kim', 'univ':'e', 'org' : '5', 'eng' : '800' , 'grade' : 'B', 'gender' : 'male', 'age' : '25'}," \
+                                       " {'name':'Kim', 'univ':'e', 'org' : '5', 'eng' : '800' , 'grade' : 'B', 'gender' : 'male', 'age' : '25'}," \
+                                       " {'name':'Kim', 'univ':'e', 'org' : '5', 'eng' : '800' , 'grade' : 'B', 'gender' : 'male', 'age' : '25'}" \
                                        "]",
                                 "query" : ""
                         })
@@ -296,7 +295,7 @@ def test_nn_cnn_data_get():
 
     data = json.loads(resp.json())
     temp = json.loads(data["result"])
-    print(temp[0])
+    print(len(temp))
     print(temp[0]["grade"])
     print(temp[0]["univ"])
 
@@ -325,24 +324,39 @@ def test_nn_common_config_get():
 
 # test each rest apis
 def main(case):
-    case = 3
+    # try:
+    #     import http.client as http_client
+    # except ImportError:
+    #     # Python 2
+    #     import httplib as http_client
+    # http_client.HTTPConnection.debuglevel = 1
+    #
+    # # You must initialize logging, otherwise you'll not see debug output.
+    # logging.basicConfig()
+    # logging.getLogger().setLevel(logging.DEBUG)
+    # requests_log = logging.getLogger("requests.packages.urllib3")
+    # requests_log.setLevel(logging.DEBUG)
+    # requests_log.propagate = True
+
+    case = 1
     if(case == 1):
-        test_nn_cnn_service_predict()
-    elif(case ==2):
-        test_nn_cnn_service_train()
-    elif (case == 3):
+        # set conf for neural network
         test_nn_cnn_config_insert_conf()
-    elif (case == 4):
         test_nn_cnn_config_update_conf()
-    elif (case == 5):
         test_nn_cnn_config_search_conf()
-    elif (case == 6):
-        test_nn_cnn_data_post()
-    elif (case == 7):
-        test = test_nn_cnn_data_get()
-    elif (case == 8):
-        test_nn_cnn_data_put()
-    elif (case == 9):
         test_nn_common_config_get()
+    elif(case ==2):
+        # set data for train
+        test_nn_cnn_data_post()
+        test_nn_cnn_data_get()
+        test_nn_cnn_data_put()
+        test_nn_cnn_data_get()
+    elif (case == 3):
+        # start train
+        test_nn_cnn_service_train()
+    elif (case == 4):
+        #predict result
+        test_nn_cnn_service_predict()
+
 if __name__ == '__main__':
     tf.app.run()
