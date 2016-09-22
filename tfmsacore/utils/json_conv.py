@@ -3,14 +3,28 @@ import json
 
 # json utils
 class JsonObject:
-  def __init__(self, d):
-    self.__dict__ = d
 
-  def __getitem__(self, item):
-      return self.__dict__[item]
+    def __init__(self, d):
+        self.__dict__ = d
 
-  def keys(self):
-      return self.__dict__.keys()
+    def __getitem__(self, item):
+        return self.__dict__[item]
+
+    def keys(self):
+        return self.__dict__.keys()
+
+    def get_dict(self):
+        return self.__dict__
+
+    def dumps(self):
+        # only for the simple
+        return self.__dict__
+
+class CusJsonEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if not isinstance(obj, JsonObject):
+            return super(CusJsonEncoder, self).default(obj)
+        return obj.__dict__
 
 class JsonDataConverter:
     """
@@ -54,6 +68,8 @@ class JsonDataConverter:
                 json_data = json.loads(data, object_hook=JsonObject)
             elif(isinstance(data, (unicode))):
                 json_data = json.loads(comma_converter(data), object_hook=JsonObject)
+            elif (isinstance(data, (JsonObject))):
+                return data
             else:
                 raise SyntaxError ("not a right json type")
 
