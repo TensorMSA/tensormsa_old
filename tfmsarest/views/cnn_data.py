@@ -46,7 +46,7 @@ class CNN_Data(APIView):
             return_data = {"status": "404", "result": str(e)}
             return Response(json.dumps(return_data))
 
-    def put(self, request, pk, format=None):
+    def put(self, request):
         """
         append data on the spark table
         :param request: request data
