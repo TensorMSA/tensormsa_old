@@ -6,7 +6,9 @@ export default class RouterComponent extends React.Component {
     render() {
         return (   
             <div>
-                <HomeComponent/>
+                <Router>
+                    <Route path="/" component={HomeComponent} />
+                </Router>
             </div>
         )
     }
