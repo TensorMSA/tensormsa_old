@@ -37,7 +37,7 @@ export default class HomeComponent extends React.Component {
                 */
 
           let params = {
-                   nn_id: "nn0000005",
+                   nn_id: "nn0000006",
                    category:"",
                    name : "",
                    type : "",
@@ -72,6 +72,9 @@ export default class HomeComponent extends React.Component {
                 </div>
                 <div className="getAPI" onClick={() => this.callRestApi()}>
                  Get API
+                </div>
+                <div className="displayAPI">
+                    {this.state.data}
                 </div>
             </div>
         )
