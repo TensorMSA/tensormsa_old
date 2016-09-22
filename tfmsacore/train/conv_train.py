@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import division, print_function, absolute_import
-
 import numpy as np
-
 import tflearn as tflearn
 from tflearn.layers.conv import conv_2d, max_pool_2d
 from tflearn.layers.core import input_data, dropout, fully_connected
@@ -11,7 +9,35 @@ from tflearn.layers.normalization import local_response_normalization
 from tfmsacore import data as td
 from tfmsacore import netconf
 from tfmsacore import utils
+from tfmsacore.utils import JsonDataConverter,CusJsonEncoder
+import json, math
 
+
+
+def save_changed_data_info(nn_id, spark_loader):
+    """
+    save train data size related information on db
+    :param nn_id: neural network management id
+    :param spark_loader: spark_loader class object
+    :return: None
+    """
+    json_conf = netconf.load_conf(nn_id)
+    json_conf.data.datalen = spark_loader.train_len
+    json_conf.data.taglen = spark_loader.tag_len
+
+    len_sqrt = int(math.ceil(math.sqrt(int(spark_loader.train_len))))
+
+
+    for i in range(0, len_sqrt):
+        for x in range(0, len_sqrt):
+            if(int(json_conf.data.datalen) == (len_sqrt + x) * (len_sqrt - i)):
+                json_conf.data.matrix = [(len_sqrt + x), len_sqrt - i]
+                flag = True
+
+    if(flag == False):
+        json_conf.data.matrix = [spark_loader.train_len, 1]
+
+    netconf.save_conf(nn_id, json.dumps(json_conf, cls=CusJsonEncoder))
 
 
 def train_conv_network(nn_id, epoch, testset):
@@ -22,27 +48,25 @@ def train_conv_network(nn_id, epoch, testset):
     """
 
     try :
-        """
-        TO-DO : check request nn id, conf, data and other setting are ok
-        """
+        # check network is ready to train
         utils.check_requested_nn(nn_id)
+
+        # get train data from spark
+        sp_loader = td.SparkLoader().get_train_data(nn_id)
+
+        # change conf info
+        save_changed_data_info(nn_id, sp_loader)
 
         # load NN conf form db
         conf = netconf.load_conf(nn_id)
 
-        """
-        TO-DO : need to get data form spark
-        TO-DO : need to sample the test set
-        """
-        # data_set = json_conv.JsonDataConverter().convert_json_to_matrix(json_loader.load_data(nn_id))
-        train_x = np.array(td.SparkLoader().get_train_data(nn_id) , np.float32)
-        train_y = np.array(td.SparkLoader().get_train_data(nn_id), np.float32)
-        test_x = np.array(td.SparkLoader().get_train_data(nn_id), np.float32)
-        test_y = np.array(td.SparkLoader().get_train_data(nn_id), np.float32)
+        # set train and test data
+        train_x = np.array(sp_loader.m_train , np.float32)
+        train_y = np.array(sp_loader.m_tag , np.float32)
+        test_x = np.array(sp_loader.m_train, np.float32)
+        test_y = np.array(sp_loader.m_tag, np.float32)
 
-        """
-        TO-DO : need to get data form spark
-        """
+        # set data parmas
         datalen = conf.data.datalen
         taglen = conf.data.taglen
         matrix = conf.data.matrix
@@ -105,6 +129,7 @@ def train_conv_network(nn_id, epoch, testset):
         return acc
 
     except Exception as e :
+        print ("Error Message : {0}".format(e))
         raise Exception(e)
 
 #for test purpose
