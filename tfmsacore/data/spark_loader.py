@@ -3,10 +3,14 @@ from tfmsacore.utils import JsonDataConverter
 from tfmsarest import livy
 
 
+
 class SparkLoader:
     def __init__(self):
-        print("init")
-        # TO-DO :
+        print("init SparkLoader")
+        self.m_train = []
+        self.m_tag = []
+        self.train_len = None
+        self.tag_len = None
 
     def get_train_data(self, nn_id):
         """
@@ -29,21 +33,96 @@ class SparkLoader:
             sql_stmt = self.get_sql_state(datadesc , net_conf['table'])
             livy_client = livy.LivyDfClientManager(2)
             livy_client.create_session()
-            livy_client.query_data(net_conf['table'], sql_stmt)
+            origin_data = livy_client.query_data(net_conf['table'], sql_stmt)
 
             # (3) modify train data for 'categorical data'
-            """
-                think it is better to be done on spark
-            """
+            self.m_train[:] = []
+            self.m_tag[:] = []
+            self.m_train, self.m_tag = self.reform_train_data(JsonDataConverter().load_obj_json(origin_data), \
+                                   datasets, datadesc)
 
-            """
-            TO-DO :
-                    (3) modify train data for 'categorical data'
-                    (4) caculate size of arrays need for neural networks
-                    (5) change neural network configurioatns automtically
-            """
+            # (4) caculate size of arrays need for neural networks
+            self.train_len = len(next(iter(self.m_train), None))
+            self.tag_len = len(next(iter(self.m_tag), None))
+
+            return self
+
         except IOError as e:
             return e
+
+    def reform_train_data(self, origin_data, data_cate, data_desc):
+        """
+        reform train data fit for neural network input  &
+        calculate and update necessary configurations
+        :param origin_data : original data need to be modified
+        :param data_cate : category data
+        :return : ready to train data & update net conf data
+        """
+        modified_train_data = []
+        modified_train_row = []
+        modified_tag_data = []
+        modified_tag_row = []
+
+        for data in origin_data:
+            modified_train_row[:] = []
+            modified_tag_row[:] = []
+            for col_key in data.keys():
+                if(col_key in data_desc.keys()):
+
+                    if(data_desc[col_key] == 'cate'):
+                        modified_train_row = self.set_cate_row(col_key, data_cate, data, \
+                                                               modified_train_row)
+                    if (data_desc[col_key] == 'tag'):
+                        modified_tag_row = self.set_cate_row(col_key, data_cate, data, \
+                                                             modified_tag_row)
+                        modified_tag_data.append(modified_tag_row)
+
+                    if (data_desc[col_key] == 'rank'):
+                        modified_train_row = self.set_rank_row(col_key, data_cate, data, \
+                                                               modified_train_row)
+                else:
+                    modified_train_row.append(str(data[col_key]))
+
+            modified_train_data.append(modified_train_row)
+
+
+        print ("modified train data : {0} ".format(modified_train_data))
+        print ("modified tah data : {0} ".format(modified_tag_data))
+        return modified_train_data, modified_tag_data
+
+    def set_cate_row(self, col_key, data_cate, data, modified_train_row):
+        """
+        convert data form to categorical list array
+        :param col_key:row - col key name
+        :param data_cate: category list for each col key
+        :param data: data set for tarining
+        :param modified_train_row: on processing trainging list data
+        :return: modified tarin row data
+        """
+        for cate_key in data_cate[col_key]:
+            if (cate_key == data[col_key]):
+                modified_train_row.append("1")
+            else:
+                modified_train_row.append("0")
+
+        return modified_train_row
+
+
+    def set_rank_row(self, col_key, data_cate, data, modified_train_row):
+        """
+        convert data form to rank type integer
+        :param col_key:row - col key name
+        :param data_cate: category list for each col key
+        :param data: data set for tarining
+        :param modified_train_row: on processing trainging list data
+        :return: modified tarin row data
+        """
+
+        if(data[col_key] in data_cate[col_key]):
+            modified_train_row.append(data_cate[col_key].index(data[col_key]))
+
+        return modified_train_row
+
 
     def get_sql_state(self, datadesc, table):
         """
@@ -57,7 +136,7 @@ class SparkLoader:
         sql_stmt.append("select ")
 
         for x in datadesc.keys():
-            if(datadesc[x] != 'None'):
+            if(datadesc[x] != 'none'):
                 sql_stmt.append(str(x))
                 sql_stmt.append(",")
 
