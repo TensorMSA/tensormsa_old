@@ -133,7 +133,7 @@ class TFMsa :
             json_obj = json.loads(str(nn_info['datadesc']).replace("'", "\""))
             cate_column_list = []
             for column in json_obj.keys():
-                if(json_obj[column] == 'cate'):
+                if(json_obj[column] == 'cate' or json_obj[column] == 'tag' or json_obj[column] == 'rank' ):
                     cate_column_list.append(column)
 
             dist_col_list = livy_client.get_distinct_column(table, cate_column_list)
