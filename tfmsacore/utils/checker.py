@@ -3,6 +3,7 @@ from tfmsarest import livy
 from tfmsacore.utils.logger import tfmsa_logger
 import os
 
+
 def check_requested_nn(nn_id):
     """
     validation checks

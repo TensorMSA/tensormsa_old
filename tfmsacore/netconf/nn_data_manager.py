@@ -3,7 +3,6 @@ import os
 import shutil
 from tfmsacore.utils.logger import tfmsa_logger
 
-
 def chk_trained_data(net_id):
     """
     check if trained data exist with net_id

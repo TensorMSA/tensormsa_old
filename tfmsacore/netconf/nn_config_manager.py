@@ -3,6 +3,7 @@ import os
 from tfmsacore.utils.json_conv import JsonDataConverter
 from tfmsacore.utils.logger import tfmsa_logger
 
+
 def chk_conf(net_id):
     """
     check if configuraiotn data exist with requested net id
