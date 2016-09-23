@@ -129,7 +129,7 @@ class LivyDfClientManager:
                              'sqlContext = SQLContext(sc)\n',
                              'df_writer = sqlContext.createDataFrame(', str(json_data)  ,').write\n',
                              'df_writer.parquet("' , str(self.hdfs_path), "/", table_name ,
-                             '", mode="overwrite", partitionBy=None)'
+                             '", mode="append", partitionBy=None)'
                              ])
         }
         resp = requests.post(self.host + "/sessions/" + str(min(self.avail_sess_list)) + \
@@ -155,16 +155,14 @@ class LivyDfClientManager:
                              'df_writer = sqlContext.createDataFrame(', str(json_data)  ,')\n',
                              'df.unionAll(df_writer)\n',
                              'df.write.parquet("', str(self.hdfs_path), "/", table_name,
-                             '", mode="append", partitionBy=None)\n'
+                             '", mode="overwrite", partitionBy=None)\n'
                              ])
         }
-
-        print("request codes : {0} ".format(data))
         resp = requests.post(self.host + "/sessions/" + str(min(self.avail_sess_list)) + \
                              "/statements", data=json.dumps(data), headers=self.headers)
         temp_resp = json.loads(resp.content, object_hook=JsonObject)
         result = self.get_response(str(min(self.avail_sess_list)), temp_resp.id)
-        print("result : {0} ".format(result))
+
 
     def get_response(self, session_id, statements_id):
         """

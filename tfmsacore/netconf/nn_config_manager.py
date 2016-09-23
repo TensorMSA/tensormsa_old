@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 from tfmsacore.utils.json_conv import JsonDataConverter
+from tfmsacore.utils.tfmsa_logger import tfmsa_logger
 
 def chk_conf(net_id):
     """
@@ -102,6 +103,8 @@ def remove_conf(net_id):
     if not os.path.exists(directory):
         os.makedirs(directory)
     try:
-        os.remove(directory + net_id, 'r')
+        if os.path.isfile(directory + net_id):
+            os.remove(directory + net_id)
     except Exception as e:
+        tfmsa_logger("removing conf fail : {0}".format(e))
         raise Exception(e)

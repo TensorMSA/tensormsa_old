@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 import shutil
+from tfmsacore.utils import tfmsa_logger
 
 
 def chk_trained_data(net_id):
@@ -37,7 +38,6 @@ def load_trained_data(nn_id, model):
 
     if os.path.isfile(directory + nn_id + ".ckpt"):
         model.load(directory + nn_id + ".ckpt")
-        print("load model completed for [ " + nn_id + "]")
 
     return model
 
@@ -56,29 +56,34 @@ def save_trained_data(nn_id, model):
 
     model.save(directory + nn_id + ".ckpt")
 
-    print("save model completed for [ " + nn_id + "]")
+    tfmsa_logger("save model completed for [ " + nn_id + "]")
     """
     TO-DO : save trained data on the data base
     """
     return model
 
 
-def remove_trained_data(nn_id, model):
+def remove_trained_data(nn_id):
     """
     remove Net Trained Weights and Bias from data base
     :param nn_id: neural network id
     :param mdoe : tflearn model
     :return:tflearn model
     """
-    directory = "/tensorMSA/data/"
-    if not os.path.exists(directory):
-        os.makedirs(directory)
 
-    if os.path.isfile(directory + nn_id + ".ckpt"):
-        os.remove(directory + nn_id + ".ckpt")
-        print("remove model completed for [ " + nn_id + "]")
+    try:
+        directory = "/tensorMSA/data/"
+        if not os.path.exists(directory):
+            os.makedirs(directory)
 
-    return model
+        if os.path.isfile(directory + nn_id + ".ckpt"):
+            os.remove(directory + nn_id + ".ckpt")
+            os.remove(directory + nn_id + ".ckpt.meta")
+            tfmsa_logger("remove model completed for [ " + nn_id + "]")
+    except Exception as e:
+        tfmsa_logger("remove trained error : {0}".format(e))
+
+
 
 
 def test_data_move():
