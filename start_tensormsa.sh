@@ -63,6 +63,7 @@ python manage.py collectstatic --noinput -i admin -i node_modules  &
 
 echo webpack
 cd /home/dev/TensorMSA/tfmsaview/static
+npm install
 webpack
 
 echo ./python manage.py runserver $1:8989 &
