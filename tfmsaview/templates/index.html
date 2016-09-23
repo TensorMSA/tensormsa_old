@@ -6,7 +6,11 @@
 </head>
 <body>
 <div id="main"></div>
-{% load staticfiles %}
-<script src="{% static 'TensorMSA.js' %}"></script>
+<!-- on development ok to use static directly-->
+<!--{% load staticfiles %}-->
+<!--<script src="{% static 'TensorMSA.js' %}"></script>-->
+
+<!--on runtime let Jango serve the files-->
+<script src="/dist/TensorMSA.js"></script>
 </body>
 </html>
