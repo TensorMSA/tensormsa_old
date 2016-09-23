@@ -26,7 +26,7 @@ def test_nn_cnn_service_train():
     #nn_type, run_type, nn_id
     resp = requests.post('http://' + url + '/service/nn/cnn/',
                         json={ "nn_id": "nn0000006" , "nn_type" : "cnn",
-                               "run_type" : "local", "epoch" : 50, "testset" : 10 ,"predict_data":""})
+                               "run_type" : "local", "epoch" : 5, "testset" : 10 ,"predict_data":""})
 
     data = json.loads(resp.json())
     print("test result : {0}".format(data))
@@ -301,7 +301,7 @@ def main(case):
     # requests_log.setLevel(logging.DEBUG)
     # requests_log.propagate = True
 
-    case = 4
+    case = 3
     if(case == 1):
         # set conf for neural network
         test_nn_cnn_config_insert_conf()

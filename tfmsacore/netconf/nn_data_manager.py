@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 import shutil
-from tfmsacore.utils import tfmsa_logger
+from tfmsacore.utils.logger import tfmsa_logger
 
 
 def chk_trained_data(net_id):
@@ -56,7 +56,7 @@ def save_trained_data(nn_id, model):
 
     model.save(directory + nn_id + ".ckpt")
 
-    tfmsa_logger("save model completed for [ " + nn_id + "]")
+    tfmsa_logger("save model completed for ")
     """
     TO-DO : save trained data on the data base
     """

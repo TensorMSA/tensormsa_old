@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 from tfmsacore.utils.json_conv import JsonDataConverter
-from tfmsacore.utils.tfmsa_logger import tfmsa_logger
+from tfmsacore.utils.logger import tfmsa_logger
 
 def chk_conf(net_id):
     """

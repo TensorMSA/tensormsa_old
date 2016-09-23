@@ -1,6 +1,6 @@
 from tfmsacore import netconf
 from tfmsarest import livy
-from tfmsacore.utils import tfmsa_logger
+from tfmsacore.utils.logger import tfmsa_logger
 import os
 
 def check_requested_nn(nn_id):
