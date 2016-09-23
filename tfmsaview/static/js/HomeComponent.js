@@ -5,63 +5,45 @@ import ReportRepository from './repositories/ReportRepository'
 export default class HomeComponent extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {data : null}
-        this.callRestApi = this.callRestApi.bind(this);
+        this.state = {data : null};
     }
 
-   callRestApi() {
-        this.setState({data: null});
-        let req_data = [ 0 , 0 , 0, 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 ,
-                   0 , 0 , 0, 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 ,
-                   0 , 0 , 0, 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 ,
-                   0 , 0 , 0, 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 ,
-                   0 , 0 , 0, 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 ,
-                   0 , 0 , 0, 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 ,
-                   0 , 0 , 0, 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 ,
-                   0 , 0 , 0, 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 ];
+    test_nn_cnn_config_insert_conf(){
 
-        if (true) {
-          /*  let params = {
-                nn_id: "nn0000005" ,
-                nn_type : "cnn",
-                run_type : "local",
-                 epoch : "",
-                 testset : "" ,
-                 predict_data:req_data
-            };
+    }
+    test_nn_cnn_data_post(){
 
+    }
+    test_nn_cnn_service_train(){
 
-            this.props.reportRepository.postServices(params).then((data) => {
+    }
+    test_nn_cnn_service_predict(){
+
+    }
+
+    test_nn_cnn_config_search_conf() {
+        let params = {
+               nn_id: "nn0000006",
+               category:"",
+               name : "",
+               type : "",
+               acc : "",
+               train : "",
+               config : "",
+               table : "",
+               query : "",
+               datadesc : "",
+               datasets : "",
+               dir : "default"
+           };
+           this.checkApiData(params);
+            this.props.reportRepository.postConfigNnCnn(params).then((data) => {
                 this.setState({data: data})
             });
-                */
+    }
 
-          let params = {
-                   nn_id: "nn0000006",
-                   category:"",
-                   name : "",
-                   type : "",
-                   acc : "",
-                   train : "",
-                   config : "",
-                   table : "",
-                   query : "",
-                   datadesc : "",
-                   datasets : "",
-                   dir : "default"
-               };
+    checkApiData(params){
 
-            this.props.reportRepository.postConfigs(params).then((data) => {
-                this.setState({data: data})
-            });
-
-
-        }
-        else {
-            this.props.reportRepository.postServices('param').then((data) => {
-                this.setState({data: data});
-            });
-        }
     }
 
     render() {
@@ -70,7 +52,7 @@ export default class HomeComponent extends React.Component {
                 <div className="reports">
                     Hello TensorMSA
                 </div>
-                <div className="getAPI" onClick={() => this.callRestApi()}>
+                <div className="getAPI" onClick={() => this.test_nn_cnn_config_search_conf()}>
                  Get API
                 </div>
                 <div className="displayAPI">
@@ -82,5 +64,5 @@ export default class HomeComponent extends React.Component {
 }
 
 HomeComponent.defaultProps = {
-    reportRepository: new ReportRepository(new Api())
+    reportRepository: new ReportRepository(new Api());
 };

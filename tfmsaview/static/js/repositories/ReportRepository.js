@@ -9,14 +9,21 @@ export default class ReportRepository {
         });
     }
 
-    postConfigs(params) {
+    postConfigNnCnn(params) {
         return this.api.post(`/config/nn/cnn/`, params).then((data) => {
             console.log(data);
            return data;
         });
     }
 
-    postServices(params) {
+    postDataNnCnn(params) {
+        return this.api.post(`/data/nn/cnn/`, params).then((data) => {
+            console.log(data);
+           return data;
+        });
+    }
+
+    postServiceNnCnn(params) {
         return this.api.post(`/service/nn/cnn/`, params).then((data) => {
            return data;
         });
