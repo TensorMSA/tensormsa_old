@@ -15,7 +15,7 @@ class TFMsa :
         """
         TO-DO : only for the test purpose will be deleted
         """
-        #netconf.test_data_move()
+        utils.tfmsa_logger("TFMsa Class Init ")
 
     def trainNerualNetwork(self,nn_id, nn_type, run_type, epoch, testset):
         """
@@ -60,6 +60,8 @@ class TFMsa :
 
         try:
             netconf.create_new_network(json.loads(info))
+            netconf.remove_conf(info_data.nn_id)
+            netconf.remove_trained_data(info_data.nn_id)
             netconf.save_conf(info_data.nn_id, conf)
         except ValueError as e :
             return {}
