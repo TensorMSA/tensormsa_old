@@ -8,7 +8,7 @@ module.exports = {
     debug: true,
     output: {
         path: __dirname,
-        filename: './../static/TensorMSA.js'
+        filename: './../dist/TensorMSA.js'
     },
     module: {
         loaders: [

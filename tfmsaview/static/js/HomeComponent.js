@@ -60,9 +60,9 @@ export default class HomeComponent extends React.Component {
                 </div>
             </div>
         )
-    }
+    }WW
 }
 
 HomeComponent.defaultProps = {
-    reportRepository: new ReportRepository(new Api());
+    reportRepository: new ReportRepository(new Api())
 };
