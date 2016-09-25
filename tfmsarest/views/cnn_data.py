@@ -29,17 +29,16 @@ class CNN_Data(APIView):
             return_data = {"status": "404", "result": str(e)}
             return Response(json.dumps(return_data))
 
-    def get(self, request):
+    def get(self, request, pk):
         """
         select data form spark table
         :param request: request data
         :return: query result on json form (list - dict)
         """
         try:
-            jd = jc.load_obj_json(request.body)
             livy_client = livy.LivyDfClientManager(2)
             livy_client.create_session()
-            result = livy_client.query_data(jd.table, jd.query)
+            result = livy_client.query_data(pk, "select * from " + str(pk))
             return_data = {"status": "ok", "result": result}
             return Response(json.dumps(return_data))
         except Exception as e:

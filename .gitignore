@@ -1,3 +1,5 @@
 # tfmsaview - exclude NPM modules 
 /tfmsaview/static/node_modules
+/tfmsaview/static/TensorMSA.js
+/tfmsaview/static/TensorMSA.js.map
 /tfmsaview/dist

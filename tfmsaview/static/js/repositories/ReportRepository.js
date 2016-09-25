@@ -10,21 +10,55 @@ export default class ReportRepository {
     }
 
     postConfigNnCnn(params) {
-        return this.api.post(`/config/nn/cnn/`, params).then((data) => {
+        return this.api.post(`/api/v1/type/cnn/config/`, params).then((data) => {
+            console.log(data);
+           return data;
+        });
+    }
+
+    getConfigNnCnn(params) {
+        return this.api.get(`/api/v1/type/cnn/config/`, params).then((data) => {
+            console.log(data);
+           return data;
+        });
+    }
+
+    putConfigNnCnn(params) {
+        return this.api.put(`/api/v1/type/cnn/config/`, params).then((data) => {
             console.log(data);
            return data;
         });
     }
 
     postDataNnCnn(params) {
-        return this.api.post(`/data/nn/cnn/`, params).then((data) => {
+        return this.api.post(`/api/v1/type/cnn/data/`, params).then((data) => {
             console.log(data);
            return data;
         });
     }
 
-    postServiceNnCnn(params) {
-        return this.api.post(`/service/nn/cnn/`, params).then((data) => {
+    getDataNnCnn(params) {
+        return this.api.get(`/api/v1/type/cnn/data/`, params).then((data) => {
+            console.log(data);
+           return data;
+        });
+    }
+
+    putDataNnCnn(params) {
+        return this.api.put(`/api/v1/type/cnn/data/`, params).then((data) => {
+            console.log(data);
+           return data;
+        });
+    }
+
+    postTrainNnCnn(params) {
+        return this.api.post(`/api/v1/type/cnn/train/`, params).then((data) => {
+           return data;
+        });
+    }
+
+    postPredictNnCnn(params) {
+        return this.api.post(`/api/v1/type/cnn/predict/`, params).then((data) => {
            return data;
         });
     }

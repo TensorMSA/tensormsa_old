@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'tfmsacore.apps.TensormsacoremoduleConfig',
-    'tfmsarest.apps.TensormsarestapiConfig'
+    'tfmsarest.apps.TensormsarestapiConfig',
+    'tfmsaview.apps.TfmsaviewConfig',
 ]
 
 MIDDLEWARE_CLASSES = [

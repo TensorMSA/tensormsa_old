@@ -12,10 +12,13 @@ url = "481bf68ee6d9:8989"
 
 # test-predict
 def test_nn_cnn_service_predict():
-    req_data = """[{'name':'Andy', 'univ':'a', 'org' : '1', 'eng' : '800' , 'gender' : 'female', 'age' : '50'}]"""
-    resp = requests.get('http://' + url + '/service/nn/cnn/' ,
-                        json={ "nn_id": "nn0000006" , "nn_type" : "cnn",
-                               "run_type" : "local", "epoch" : "", "testset" : "" , "predict_data":req_data})
+    resp = requests.post('http://' + url + '/api/v1/type/cnn/predict/' ,
+                        json={ "nn_id": "nn0000009" ,
+                               "nn_type" : "cnn",
+                               "run_type" : "local",
+                               "epoch" : "",
+                               "testset" : "" ,
+                               "predict_data":[{'name':'Andy', 'univ':'a', 'org' : '1', 'eng' : '800' , 'gender' : 'female', 'age' : '50'}]})
 
     data = json.loads(resp.json())
     print("test result : {0}".format(data))
@@ -24,8 +27,8 @@ def test_nn_cnn_service_predict():
 def test_nn_cnn_service_train():
     #requests.post(url, data, json, arg )
     #nn_type, run_type, nn_id
-    resp = requests.post('http://' + url + '/service/nn/cnn/',
-                        json={ "nn_id": "nn0000006" , "nn_type" : "cnn",
+    resp = requests.post('http://' + url + '/api/v1/type/cnn/train/',
+                        json={ "nn_id": "nn0000009" , "nn_type" : "cnn",
                                "run_type" : "local", "epoch" : 5, "testset" : 10 ,"predict_data":""})
 
     data = json.loads(resp.json())
@@ -33,62 +36,57 @@ def test_nn_cnn_service_train():
 
 # create new network test
 def test_nn_cnn_config_insert_conf():
-    req_data = """{
-            "data":
-                {
-                    "datalen": 96,
-                    "taglen": 2,
-                    "matrix": [12, 8],
-                    "learnrate": 0.01,
-                    "epoch":10
-                },
-            "layer":
-                [
-                    {
-                        "type": "input",
-                        "active": "relu",
-                        "cnnfilter": [2, 2],
-                        "cnnstride": [1, 1],
-                        "maxpoolmatrix": [2, 2],
-                        "maxpoolstride": [1, 1],
-                        "node_in_out": [1, 16],
-                        "regualizer": "",
-                        "padding": "SAME",
-                        "droprate": ""
-                    },
-                    {
-                        "type": "out",
-                        "active": "softmax",
-                        "cnnfilter": "",
-                        "cnnstride": "",
-                        "maxpoolmatrix": "",
-                        "maxpoolstride": "",
-                        "node_in_out": [64, 2],
-                        "regualizer": "",
-                        "padding": "SAME",
-                        "droprate": ""
-                    }
-                ]
-        }"""
-
-    nn_info = """
-         { "nn_id": "nn0000006",
-           "category":"test",
-           "name" : "test",
-           "type" : "cnn",
-           "acc" : "",
-           "train" : "",
-           "config" : "Y",
-           "table" : "TEST2",
-           "query" : "select * from TEST1",
-           "datadesc":"{'name':'none', 'univ':'rank', 'org' : 'cate' , 'eng' : 'cont', 'grade' : 'tag', 'gender' :'cate' , 'age' : 'cont'}",
-           "datasets":"",
-           "dir" : "default"}
-         """
-    resp = requests.post('http://' + url + '/config/nn/cnn/',
+    resp = requests.post('http://' + url + '/api/v1/type/cnn/config/',
                         json={
-                            "nn_info" : nn_info,
-                            "nn_conf" : req_data
+                            "nn_info" : { "nn_id": "nn0000007",
+                                          "category":"test",
+                                          "name" : "test",
+                                          "type" : "cnn",
+                                          "acc" : "",
+                                          "train" : "",
+                                          "config" : "Y",
+                                          "table" : "TEST2",
+                                          "query" : "select * from TEST1",
+                                          "datadesc":"{'name':'none', 'univ':'rank', 'org' : 'cate' , 'eng' : 'cont', 'grade' : 'tag', 'gender' :'cate' , 'age' : 'cont'}",
+                                          "datasets":"",
+                                          "dir" : "default"},
+                            "nn_conf" : {
+                                        "data":
+                                            {
+                                                "datalen": 96,
+                                                "taglen": 2,
+                                                "matrix": [12, 8],
+                                                "learnrate": 0.01,
+                                                "epoch":10
+                                            },
+                                        "layer":
+                                            [
+                                                {
+                                                    "type": "input",
+                                                    "active": "relu",
+                                                    "cnnfilter": [2, 2],
+                                                    "cnnstride": [1, 1],
+                                                    "maxpoolmatrix": [2, 2],
+                                                    "maxpoolstride": [1, 1],
+                                                    "node_in_out": [1, 16],
+                                                    "regualizer": "",
+                                                    "padding": "SAME",
+                                                    "droprate": ""
+                                                },
+                                                {
+                                                    "type": "out",
+                                                    "active": "softmax",
+                                                    "cnnfilter": "",
+                                                    "cnnstride": "",
+                                                    "maxpoolmatrix": "",
+                                                    "maxpoolstride": "",
+                                                    "node_in_out": [64, 2],
+                                                    "regualizer": "",
+                                                    "padding": "SAME",
+                                                    "droprate": ""
+                                                }
+                                            ]
+                                    }
                         })
     print(resp.url)
     data = json.loads(resp.json())
@@ -96,93 +94,71 @@ def test_nn_cnn_config_insert_conf():
 
 # insert network configuration
 def test_nn_cnn_config_update_conf():
-    req_data = """{
-            "data":
-                {
-                    "datalen": 96,
-                    "taglen": 2,
-                    "matrix": [12, 8],
-                    "learnrate": 0.01,
-                    "epoch":10
-                },
-            "layer":
-                [
-                    {
-                        "type": "input",
-                        "active": "relu",
-                        "cnnfilter": [2, 2],
-                        "cnnstride": [1, 1],
-                        "maxpoolmatrix": [2, 2],
-                        "maxpoolstride": [1, 1],
-                        "node_in_out": [1, 16],
-                        "regualizer": "",
-                        "padding": "SAME",
-                        "droprate": ""
-                    },
-                    {
-                        "type": "out",
-                        "active": "softmax",
-                        "cnnfilter": "",
-                        "cnnstride": "",
-                        "maxpoolmatrix": "",
-                        "maxpoolstride": "",
-                        "node_in_out": [64, 2],
-                        "regualizer": "",
-                        "padding": "SAME",
-                        "droprate": ""
-                    }
-                ]
-        }"""
-    nn_info = """
-         { "nn_id": "nn0000006",
-           "category":"test",
-           "name" : "test",
-           "type" : "cnn",
-           "acc" : "",
-           "train" : "",
-           "config" : "Y",
-           "table" : "TEST2",
-           "query" : "select * from TEST2",
-           "datadesc":"{'name':'none', 'univ':'rank', 'org' : 'cate' , 'eng' : 'cont', 'grade' : 'tag', 'gender' :'cate' , 'age' : 'cont'}",
-           "datasets":"",30
-           "dir" : "default"}
-         """
-
-    resp = requests.put('http://' + url + '/config/nn/cnn/',
-                        json={
-                            "nn_info" : nn_info,
-                            "nn_conf" : req_data
-                        })
+    resp = requests.put('http://' + url + '/api/v1/type/cnn/config/',
+                         json={
+                             "nn_info": {"nn_id": "nn0000009",
+                                         "category": "test",
+                                         "name": "test",
+                                         "type": "cnn",
+                                         "acc": "",
+                                         "train": "",
+                                         "config": "Y",
+                                         "table": "TEST2",
+                                         "query": "select * from TEST1",
+                                         "datadesc": "{'name':'none', 'univ':'rank', 'org' : 'cate' , 'eng' : 'cont', 'grade' : 'tag', 'gender' :'cate' , 'age' : 'cont'}",
+                                         "datasets": "",
+                                         "dir": "default"},
+                             "nn_conf": {
+                                 "data":
+                                     {
+                                         "datalen": 96,
+                                         "taglen": 2,
+                                         "matrix": [12, 8],
+                                         "learnrate": 0.01,
+                                         "epoch": 10
+                                     },
+                                 "layer":
+                                     [
+                                         {
+                                             "type": "input",
+                                             "active": "relu",
+                                             "cnnfilter": [2, 2],
+                                             "cnnstride": [1, 1],
+                                             "maxpoolmatrix": [2, 2],
+                                             "maxpoolstride": [1, 1],
+                                             "node_in_out": [1, 16],
+                                             "regualizer": "",
+                                             "padding": "SAME",
+                                             "droprate": ""
+                                         },
+                                         {
+                                             "type": "out",
+                                             "active": "softmax",
+                                             "cnnfilter": "",
+                                             "cnnstride": "",
+                                             "maxpoolmatrix": "",
+                                             "maxpoolstride": "",
+                                             "node_in_out": [64, 2],
+                                             "regualizer": "",
+                                             "padding": "SAME",
+                                             "droprate": ""
+                                         }
+                                     ]
+                             }
+                         })
 
     data = json.loads(resp.json())
     print("test result : {0}".format(data))
+
 
 # insert network configuration
 def test_nn_cnn_config_search_conf():
 
-    nn_info = """
-         { "nn_id": "nn0000006",
-           "category":"",
-           "name" : "",
-           "type" : "",
-           "acc" : "",
-           "train" : "",
-           "config" : "",
-           "table" : "",
-           "query" : "",
-           "datadesc" : "",
-           "datasets" : "",
-           "dir" : "default"}
-         """
-
-    resp = requests.get('http://' + url + '/config/nn/cnn/',
-                        json={
-                            "nn_info" : nn_info,
-                            "nn_conf" : ""
-                        })
+    resp = requests.get('http://' + url + '/api/v1/type/cnn/config/nn0000009/' )
 
     data = json.loads(resp.json())
     print("test result : {0}".format(data))
+
 
 # create new table on spark
 def test_nn_cnn_data_post():
@@ -193,8 +169,8 @@ def test_nn_cnn_data_post():
     :return:
     """
 
-    resp = requests.post('http://' + url + '/data/nn/cnn/',
-                        json= { "nn_id": "nn0000006",
+    resp = requests.post('http://' + url + '/api/v1/type/cnn/data/',
+                        json= { "nn_id": "nn0000009",
                                 "table": "TEST2",
                                 "data":"[{'name':'Andy', 'univ':'SKKU', 'org' : '1', 'eng' : '800' , 'grade' : 'A', 'gender' : 'female', 'age' : '50'}," \
                                        " {'name':'Kim', 'univ':'SKKU', 'org' : '2', 'eng' : '800' , 'grade' : 'A', 'gender' : 'female', 'age' : '35'}," \
@@ -225,8 +201,8 @@ def test_nn_cnn_data_post():
 # append data on spark
 def test_nn_cnn_data_put():
 
-    resp = requests.put('http://' + url + '/data/nn/cnn/',
-                        json= { "nn_id": "nn0000006",
+    resp = requests.put('http://' + url + '/api/v1/type/cnn/data/',
+                        json= { "nn_id": "nn0000009",
                                 "table": "TEST2",
                                 "data":"[{'name':'Andy', 'univ':'a', 'org' : '1', 'eng' : '800' , 'grade' : 'A', 'gender' : 'female', 'age' : '50'}," \
                                        " {'name':'Kim', 'univ':'b', 'org' : '2', 'eng' : '800' , 'grade' : 'B', 'gender' : 'female', 'age' : '35'}," \
@@ -250,11 +226,7 @@ def test_nn_cnn_data_put():
 # select data from table
 def test_nn_cnn_data_get():
 
-    resp = requests.get('http://' + url + '/data/nn/cnn/',
-                        json= { "table": "TEST2",
-                                "data":"",
-                                "query" : "select * from TEST2"
-                        })
+    resp = requests.get('http://' + url + '/api/v1/type/cnn/data/TEST2/')
 
     data = json.loads(resp.json())
     temp = json.loads(data["result"])
@@ -301,17 +273,17 @@ def main(case):
     # requests_log.setLevel(logging.DEBUG)
     # requests_log.propagate = True
 
-    case = 3
+    case = 2
     if(case == 1):
         # set conf for neural network
-        test_nn_cnn_config_insert_conf()
+        #test_nn_cnn_config_insert_conf()
         #test_nn_cnn_config_update_conf()
-        #test_nn_cnn_config_search_conf()
+        test_nn_cnn_config_search_conf()
         #test_nn_common_config_get()
     elif(case ==2):
         # set data for train
-        test_nn_cnn_data_post()
-        #test_nn_cnn_data_get()
+        #test_nn_cnn_data_post()
+        test_nn_cnn_data_get()
         #test_nn_cnn_data_put()
         #test_nn_cnn_data_get()
     elif (case == 3):

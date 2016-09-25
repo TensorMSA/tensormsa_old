@@ -24,10 +24,16 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^api/v1/type/cnn/service/$', rest_view.CNN_Service.as_view()),
-    url(r'^api/type/cnn/service/$', rest_view.CNN_Service.as_view()),
+    url(r'^api/v1/type/cnn/train/$', rest_view.ConvNeuralNet_Train.as_view()),
+    url(r'^api/type/cnn/train/$', rest_view.ConvNeuralNet_Train.as_view()),
+    url(r'^api/v1/type/cnn/predict/$', rest_view.ConvNeuralNet_Predict.as_view()),
+    url(r'^api/type/cnn/predict/$', rest_view.ConvNeuralNet_Predict.as_view()),
+    url(r'^api/v1/type/cnn/config/(?P<pk>.*)/$', rest_view.CNN_Config.as_view()),
+    url(r'^api/type/cnn/config/(?P<pk>.*)/$', rest_view.CNN_Config.as_view()),
     url(r'^api/v1/type/cnn/config/$', rest_view.CNN_Config.as_view()),
     url(r'^api/type/cnn/config/$', rest_view.CNN_Config.as_view()),
+    url(r'^api/v1/type/cnn/data/(?P<pk>.*)/$', rest_view.CNN_Data.as_view()),
+    url(r'^api/type/cnn/data/(?P<pk>.*)/$', rest_view.CNN_Data.as_view()),
     url(r'^api/v1/type/cnn/data/$', rest_view.CNN_Data.as_view()),
     url(r'^api/type/cnn/data/$', rest_view.CNN_Data.as_view()),
     url(r'^api/v1/type/cnn/stastics/$', rest_view.CNN_Stastics.as_view()),

@@ -49,50 +49,51 @@ class TFMsa :
         else :
             return []
 
-    def createNeuralNetwork(self, info, conf):
+    def createNeuralNetwork(self, info_data, conf):
         """
         create net neural network and conf for training
         :param info:neural network general info for management
         :param conf:acutual strcture information of neural network
         :return:success of failure
         """
-        info_data = utils.JsonDataConverter().load_obj_json(str(info))
+        #info_data = utils.JsonDataConverter().load_obj_json(str(info))
 
         try:
-            netconf.create_new_network(json.loads(info))
+            info_dump = json.dumps(info_data, cls=utils.CusJsonEncoder)
+            conf_dump = json.dumps(conf, cls=utils.CusJsonEncoder)
+            netconf.create_new_network(json.loads(info_dump))
             netconf.remove_conf(info_data.nn_id)
             netconf.remove_trained_data(info_data.nn_id)
-            netconf.save_conf(info_data.nn_id, conf)
+            netconf.save_conf(info_data.nn_id, conf_dump)
         except ValueError as e :
             return {}
 
         return info_data.nn_id
 
-    def updateNeuralNetwork(self, info, conf):
+    def updateNeuralNetwork(self, info_data, conf):
         """
         update net neural network and conf for training
         :param info:neural network general info for management
         :param conf:acutual strcture information of neural network
         :return: success of failure
         """
-        info_data = utils.JsonDataConverter().load_obj_json(str(info))
         try:
+            conf_dump = json.dumps(conf, cls=utils.CusJsonEncoder)
             netconf.update_network(info_data)
-            netconf.save_conf(info_data.nn_id, conf)
+            netconf.save_conf(info_data.nn_id, conf_dump)
             return info_data.nn_id
 
         except Exception as e:
             raise Exception(e)
 
 
-    def searchNeuralNetwork(self, info):
+    def searchNeuralNetwork(self, nn_id):
         """
         :param info:neural network general info for management
         :return:acutual strcture information of neural network
         """
         try:
-            info_data = utils.JsonDataConverter().load_obj_json(str(info))
-            conf_result = netconf.load_ori_conf(info_data.nn_id)
+            conf_result = netconf.load_ori_conf(nn_id)
             return conf_result
 
         except Exception as e:

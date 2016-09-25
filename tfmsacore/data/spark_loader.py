@@ -69,8 +69,7 @@ class SparkLoader:
             # (2) modify train data for 'categorical data'
             self.m_train[:] = []
             self.m_tag[:] = []
-            self.m_train, self.m_tag = self.reform_train_data(JsonDataConverter().load_obj_json(predict_data), \
-                                                              datasets, datadesc)
+            self.m_train, self.m_tag = self.reform_train_data(predict_data, datasets, datadesc)
 
             # (3) caculate size of arrays need for neural networks
             self.train_len = len(next(iter(self.m_train), None))

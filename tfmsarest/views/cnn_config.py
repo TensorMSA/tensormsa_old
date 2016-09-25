@@ -66,24 +66,11 @@ class CNN_Config(APIView):
             return_data = {"status": "404", "result": str(e)}
             return Response(json.dumps(return_data))
 
-    def get(self, request):
+    def get(self, request, pk):
         """
         insert new neural network information
+        :param pk:
         :param request:
-        {
-            "nn_info" : {  "nnid": "sample",
-                            "category":"test",
-                            "name" : "test",
-                            "type" : "cnn",
-                            "acc" : "",
-                            "train" : "",
-                            "config" : "",
-                            "table" : "",
-                            "query" : "",
-                            "dataset":"",
-                            "dir" : "default"},
-        }
-
         :return: {
                     "data":
                         {
@@ -112,8 +99,7 @@ class CNN_Config(APIView):
         """
         try:
             tfmsa = TFMsa()
-            jd = jc.load_obj_json(request.body)
-            result = tfmsa.searchNeuralNetwork(jd.nn_info)
+            result = tfmsa.searchNeuralNetwork(pk)
             return_data = {"status": "ok", "result": result}
             return Response(json.dumps(return_data))
         except Exception as e:
