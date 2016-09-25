@@ -151,11 +151,11 @@ class LivyDfClientManager:
             'code': ''.join(['from pyspark.sql import SQLContext, DataFrameWriter, DataFrame\n',
                              'sqlContext = SQLContext(sc)\n',
                              'df = sqlContext.read.load("', str(self.hdfs_path),
-                                                  "/", table_name, '" , "parquet" )\n'
+                                                  "/", table_name, '" , "parquet" )\n',
                              'df_writer = sqlContext.createDataFrame(', str(json_data)  ,')\n',
                              'df.unionAll(df_writer)\n',
                              'df.write.parquet("', str(self.hdfs_path), "/", table_name,
-                             '", mode="overwrite", partitionBy=None)\n'
+                             '", mode="append", partitionBy=None)\n'
                              ])
         }
         resp = requests.post(self.host + "/sessions/" + str(min(self.avail_sess_list)) + \
@@ -265,9 +265,9 @@ class LivyDfClientManager:
                              'result = sqlContext.sql("' , str(query_str) ,
                              '")\n',
                              'columns = ' ,  str(columns) , '\n' ,
-                             'type(columns)\n'
-                             'return_data = {}\n'
-                             'for column in columns :\n'
+                             'type(columns)\n',
+                             'return_data = {}\n',
+                             'for column in columns :\n',
                              '  return_data[column.encode("UTF8")] = result.select(column).map(lambda x : x[0].encode("UTF8")).distinct().collect()\n',
                              'str(return_data)'
                              ])

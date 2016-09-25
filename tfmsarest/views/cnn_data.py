@@ -2,7 +2,7 @@ import json
 
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
+from tfmsacore.utils import CusJsonEncoder
 from tfmsacore.service.tfmsa import TFMsa
 from tfmsacore.utils.json_conv import JsonDataConverter as jc
 from tfmsarest import livy
@@ -21,8 +21,8 @@ class CNN_Data(APIView):
         try:
             tfmsa = TFMsa()
             jd = jc.load_obj_json(request.body)
-            result = tfmsa.createDataFrame(jd.nn_id, jd.table, jd.data)
-            print(result)
+            conf_data = json.dumps(jd.data, cls=CusJsonEncoder)
+            result = tfmsa.createDataFrame(jd.nn_id, jd.table, conf_data.replace("\"","'"))
             return_data = {"status": "ok", "result": result}
             return Response(json.dumps(return_data))
         except Exception as e:
@@ -52,10 +52,12 @@ class CNN_Data(APIView):
         :return: create table success or failure
         """
         try:
+
             jd = jc.load_obj_json(request.body)
             livy_client = livy.LivyDfClientManager(2)
             livy_client.create_session()
-            result = livy_client.append_data(jd.table, jd.data)
+            conf_data = json.dumps(jd.data, cls= CusJsonEncoder)
+            result = livy_client.append_data(jd.table, conf_data.replace("\"","'"))
             return_data = {"status": "ok", "result": result}
             return Response(json.dumps(return_data))
         except Exception as e:
