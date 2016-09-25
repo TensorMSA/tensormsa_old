@@ -12,6 +12,8 @@ Class-based views
 Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
+Multi Relational service (not need for now )
+    ex: #url(r'^snippets/(?P<pk>[0-9]+)/highlight/$', views.SnippetHighlight.as_view()),
 """
 from django.conf.urls import url
 from django.contrib import admin
@@ -22,10 +24,16 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^service/nn/cnn/$', rest_view.CNN_Service.as_view()),
-    url(r'^config/nn/cnn/$', rest_view.CNN_Config.as_view()),
-    url(r'^data/nn/cnn/$', rest_view.CNN_Data.as_view()),
-    url(r'^stastics/nn/cnn/$', rest_view.CNN_Stastics.as_view()),
-    url(r'^config/nn/common/$', rest_view.Common_config.as_view()),
+    url(r'^api/v1/type/cnn/service/$', rest_view.CNN_Service.as_view()),
+    url(r'^api/type/cnn/service/$', rest_view.CNN_Service.as_view()),
+    url(r'^api/v1/type/cnn/config/$', rest_view.CNN_Config.as_view()),
+    url(r'^api/type/cnn/config/$', rest_view.CNN_Config.as_view()),
+    url(r'^api/v1/type/cnn/data/$', rest_view.CNN_Data.as_view()),
+    url(r'^api/type/cnn/data/$', rest_view.CNN_Data.as_view()),
+    url(r'^api/v1/type/cnn/stastics/$', rest_view.CNN_Stastics.as_view()),
+    url(r'^api/type/cnn/stastics/$', rest_view.CNN_Stastics.as_view()),
+    url(r'^api/v1/type/cnn/common/$', rest_view.Common_config.as_view()),
+    url(r'^api/type/cnn/common/$', rest_view.Common_config.as_view()),
     url(r'^view/index/$', ui_view.UI_Service.as_view()),
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+] + static('/dist/', document_root='tfmsaview/dist')
+#static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
