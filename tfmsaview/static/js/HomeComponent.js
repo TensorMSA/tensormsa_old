@@ -179,13 +179,13 @@ export default class HomeComponent extends React.Component {
                     Hello TensorMSA
                 </div>
                 <div>
-                <button className="getAPI" onClick={() => this.case1()}> create NN conf </button>
-                <button className="getAPI" onClick={() => this.case2()}> Search NN conf </button>
-                <button className="getAPI" onClick={() => this.case3()}> Create Data Table</button>
-                <button className="getAPI" onClick={() => this.case4()}> Search Data Table</button>
-                <button className="getAPI" onClick={() => this.case5()}> Add Data Table </button>
-                <button className="getAPI" onClick={() => this.case6()}> Start Tarining </button>
-                <button className="getAPI" onClick={() => this.case7()}> Predict Result </button>
+                <button className="getAPI1" onClick={() => this.case1()}> create NN conf </button>
+                <button className="getAPI2" onClick={() => this.case2()}> Search NN conf </button>
+                <button className="getAPI3" onClick={() => this.case3()}> Create Data Table</button>
+                <button className="getAPI4" onClick={() => this.case4()}> Search Data Table</button>
+                <button className="getAPI5" onClick={() => this.case5()}> Add Data Table </button>
+                <button className="getAPI6" onClick={() => this.case6()}> Start Tarining </button>
+                <button className="getAPI7" onClick={() => this.case7()}> Predict Result </button>
                 </div>
                 <div className="displayAPI">
                     {this.state.data}
