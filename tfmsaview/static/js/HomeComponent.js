@@ -192,7 +192,7 @@ export default class HomeComponent extends React.Component {
                 </div>
             </div>
         )
-    }WW
+    }
 }
 
 HomeComponent.defaultProps = {
