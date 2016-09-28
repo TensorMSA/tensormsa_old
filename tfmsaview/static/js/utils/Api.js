@@ -13,8 +13,9 @@ Api.prototype.get = function (url, params) {
         EnvConstants.getApiServerUrl() + url + params,
         {
             method: 'GET',
+            mode: "cors",
             headers: new Headers({
-                'Content-Type': 'application/json'
+                 'Accept': 'application/json'
             })
         }
     ).then(function(response) {
@@ -32,9 +33,10 @@ Api.prototype.post = function (url, params) {
         EnvConstants.getApiServerUrl() + url,
         {
             method: 'POST',
+            mode: "cors",
             body: JSON.stringify(params),
             headers: new Headers({
-                'Content-Type': 'application/json'
+                'Accept': 'application/json'
             })
         }
     ).then(function(response) {
@@ -52,9 +54,10 @@ Api.prototype.put = function (url, params) {
         EnvConstants.getApiServerUrl() + url,
         {
             method: 'PUT',
+            mode: "cors",
             body: JSON.stringify(params),
             headers: new Headers({
-                'Content-Type': 'application/json'
+                'Accept': 'application/json'
             })
         }
     ).then(function(response) {
@@ -72,9 +75,10 @@ Api.prototype.delete = function (url, params) {
         EnvConstants.getApiServerUrl() + url,
         {
             method: 'DELETE',
+            mode: "cors",
             body: JSON.stringify(params),
             headers: new Headers({
-                'Content-Type': 'application/json'
+                'Accept': 'application/json'
             })
         }
     ).then(function(response) {
