@@ -21,25 +21,26 @@ from tfmsarest import views as rest_view
 from tfmsaview import views as ui_view
 from django.conf import settings
 from django.conf.urls.static import static
+from django.views.decorators.csrf import csrf_exempt
 
 urlpatterns = [
-    url(r'^admin/', admin.site.urls),
-    url(r'^api/v1/type/cnn/train/$', rest_view.ConvNeuralNet_Train.as_view()),
-    url(r'^api/type/cnn/train/$', rest_view.ConvNeuralNet_Train.as_view()),
-    url(r'^api/v1/type/cnn/predict/$', rest_view.ConvNeuralNet_Predict.as_view()),
-    url(r'^api/type/cnn/predict/$', rest_view.ConvNeuralNet_Predict.as_view()),
-    url(r'^api/v1/type/cnn/config/(?P<pk>.*)/$', rest_view.CNN_Config.as_view()),
-    url(r'^api/type/cnn/config/(?P<pk>.*)/$', rest_view.CNN_Config.as_view()),
-    url(r'^api/v1/type/cnn/config/$', rest_view.CNN_Config.as_view()),
-    url(r'^api/type/cnn/config/$', rest_view.CNN_Config.as_view()),
-    url(r'^api/v1/type/cnn/data/(?P<pk>.*)/$', rest_view.CNN_Data.as_view()),
-    url(r'^api/type/cnn/data/(?P<pk>.*)/$', rest_view.CNN_Data.as_view()),
-    url(r'^api/v1/type/cnn/data/$', rest_view.CNN_Data.as_view()),
-    url(r'^api/type/cnn/data/$', rest_view.CNN_Data.as_view()),
-    url(r'^api/v1/type/cnn/stastics/$', rest_view.CNN_Stastics.as_view()),
-    url(r'^api/type/cnn/stastics/$', rest_view.CNN_Stastics.as_view()),
-    url(r'^api/v1/type/cnn/common/$', rest_view.Common_config.as_view()),
-    url(r'^api/type/cnn/common/$', rest_view.Common_config.as_view()),
-    url(r'^view/index/$', ui_view.UI_Service.as_view()),
+    url(r'^admin/', csrf_exempt(admin.site.urls)),
+    url(r'^api/v1/type/cnn/train/$', csrf_exempt(rest_view.ConvNeuralNet_Train.as_view())),
+    url(r'^api/type/cnn/train/$', csrf_exempt(rest_view.ConvNeuralNet_Train.as_view())),
+    url(r'^api/v1/type/cnn/predict/$', csrf_exempt(rest_view.ConvNeuralNet_Predict.as_view())),
+    url(r'^api/type/cnn/predict/$', csrf_exempt(rest_view.ConvNeuralNet_Predict.as_view())),
+    url(r'^api/v1/type/cnn/config/(?P<pk>.*)/$',  csrf_exempt(rest_view.CNN_Config.as_view())),
+    url(r'^api/type/cnn/config/(?P<pk>.*)/$',  csrf_exempt(rest_view.CNN_Config.as_view())),
+    url(r'^api/v1/type/cnn/config/$',  csrf_exempt(rest_view.CNN_Config.as_view())),
+    url(r'^api/type/cnn/config/$',  csrf_exempt(rest_view.CNN_Config.as_view())),
+    url(r'^api/v1/type/cnn/data/(?P<pk>.*)/$', csrf_exempt(rest_view.CNN_Data.as_view())),
+    url(r'^api/type/cnn/data/(?P<pk>.*)/$', csrf_exempt(rest_view.CNN_Data.as_view())),
+    url(r'^api/v1/type/cnn/data/$', csrf_exempt(rest_view.CNN_Data.as_view())),
+    url(r'^api/type/cnn/data/$', csrf_exempt(rest_view.CNN_Data.as_view())),
+    url(r'^api/v1/type/cnn/stastics/$', csrf_exempt(rest_view.CNN_Stastics.as_view())),
+    url(r'^api/type/cnn/stastics/$', csrf_exempt(rest_view.CNN_Stastics.as_view())),
+    url(r'^api/v1/type/cnn/common/$', csrf_exempt(rest_view.Common_config.as_view())),
+    url(r'^api/type/cnn/common/$', csrf_exempt(rest_view.Common_config.as_view())),
+    url(r'^view/index/$', csrf_exempt(ui_view.UI_Service.as_view())),
 ] + static('/dist/', document_root='tfmsaview/dist')
 #static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
