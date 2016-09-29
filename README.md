@@ -46,7 +46,7 @@ python legacy systems can use deep learning easily
    
    - start container with graphical environment (only first time)
    ```python
-      docker run -it --env="DISPLAY" --env="QT_X11_NO_MITSHM=1" --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" -p 8080:8080 -p 8998:8998 -p 8989:8989 tmddno1/tensormsa:v1
+      docker run -it --env="DISPLAY" --env="QT_X11_NO_MITSHM=1" --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" -p 8080:8080 -p 8998:8998 -p 8989:8989 -p 7077:7077 tmddno1/tensormsa:v1
    ```
    
    - check contrainer id
