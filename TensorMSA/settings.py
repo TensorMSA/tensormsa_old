@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'tfmsacore.apps.TensormsacoremoduleConfig',
     'tfmsarest.apps.TensormsarestapiConfig',
     'tfmsaview.apps.TfmsaviewConfig',
+    'django_jenkins',
 ]
 
 MIDDLEWARE_CLASSES = [
