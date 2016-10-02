@@ -28,3 +28,7 @@ assert 'value' in value
 - su - then passwd
 12. git push cancel
 - git push -f origin +master
+13. git pull 
+- git checkout . and git pull
+14. add python path
+- add path c:\Python27
