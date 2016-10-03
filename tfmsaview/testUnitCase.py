@@ -2,33 +2,33 @@ import unittest
 #from django.utils import unittest
 import unitCase
 
-class TestStringMethods(unittest.TestCase):
+TestMethod = unitCase.TestMethod()
+
+class TestUnitTestExample(unittest.TestCase):
+
+    def setUp(self):
+        print('Start TensorMSA test')
+
+    def tearDown(self):
+        print('Finish TensorMSA test')
+
+    def test_returnValue(self):
+        self.assertEqual(TestMethod.returnString(), 'successful')
 
     def test_upper(self):
-        self.assertEqual('foo'.upper(), 'FOO')
+        test = 'test'
+        self.assertEqual(TestMethod.returnUpper(test), 'TEST')
 
     def test_isupper(self):
-        self.assertTrue('FOO'.isupper())
-        self.assertFalse('Foo'.isupper())
+        test = 'TEST'
+        self.assertTrue(TestMethod.checkUpper(test))
+        #self.assertFalse(TestMethod.checkUpper(test))
 
     def test_split(self):
-        s = 'hello world'
-        self.assertEqual(s.split(), ['hello', 'world'])
+        test = 'TensorMSA Test'
         # check that s.split fails when the separator is not a string
-        with self.assertRaises(TypeError):
-            s.split(2)
-
-  #  def setUp(self):
-   #          self.test = unitCase.TestA()
-#            self.lion = unitCase.objects.create(name="lion", sound="roar")
-#            self.cat = unitCase.objects.create(name="cat", sound="meow")
-
-    def testSpeaking(self):
-        TestMethod = unitCase.TestMethod()
-        print ( TestMethod.TestA())
-        self.assertEqual(TestMethod.TestA(), 'A')
-          #  self.assertEqual(self.lion.speak(), 'The lion says "roar"')
-          #  self.assertEqual(self.cat.speak(), 'The cat says "meow"')
+        self.assertRaises(TypeError, TestMethod.splitString(test))    
+        self.assertEqual(TestMethod.splitString(test), ['TensorMSA', 'Test'])
 
 if __name__ == '__main__':
     unittest.main()
