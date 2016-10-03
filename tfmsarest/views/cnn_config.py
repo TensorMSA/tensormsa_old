@@ -2,167 +2,98 @@ import json
 
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
+from django.conf import settings
 from tfmsacore.service.tfmsa import TFMsa
 from tfmsacore.utils.json_conv import JsonDataConverter as jc
+from tfmsacore import netconf
 
-
-class CNN_Config(APIView):
+class ConvNeuralNetConfig(APIView):
     """
-    TO-DO : Dev Rest Services for CNN config change
+    1. POST :
+    2. PUT :
+    3. GET :
+    4. DELETE :
     """
-    def post(self, request):
+    def post(self, request, nnid):
         """
         insert new neural network information
         :param request:
         {
-            "nn_info" : {  "nnid": "sample",
-                            "category":"test",
-                            "name" : "test",
-                            "type" : "cnn",
-                            "acc" : "",
-                            "train" : "",
-                            "config" : "",
-                            "table" : "TEST1",
-                            "query" : "select * from TEST1",
-                            "dataset":"{'name':'none', 'univ':'cate', 'eng' : 'cont', 'grade' : 'tag'}",
-                            "dir" : "default"},
-            "nn_conf" : {
-                            "data":
-                                {
-                                    "datalen": 96,
-                                    "taglen": 2,
-                                    "matrix": [12, 8],
-                          analizeDataFrame          "learnrate": 0.01,
-                                    "epoch":50
-                                },
-                            "layer":
-                                [
-                                    {
-                                        "type": "input",
-                                        "active": "relu",
-                                        "cnnfilter": [2, 2],
-                                        "cnnstride": [1, 1],
-                                        "maxpoolmatrix": [2, 2],
-                                        "maxpoolstride": [1, 1],
-                                        "node_in_out": [1, 16],
-                                        "regualizer": "",
-                                        "padding": "SAME",
-                                        "droprate": ""
-                                    },
-                                ]
-                            }
+            "nn_info" : {  },
+            "nn_conf" : {"data":{},
+                         "layer":[{},]}
         }
 
         :return: registered network id
         """
         try:
-            jd = jc.load_obj_json(request.body)
-            tfmsa = TFMsa()
-            result = tfmsa.createNeuralNetwork(jd.nn_info, jd.nn_conf)
-            return_data = {"status": "ok", "result": result}
+            jd = jc.load_obj_json("{}")
+            jd.config = "Y"
+            jd.nn_id = nnid
+            netconf.update_network(jd)
+            netconf.save_conf(nnid, request.body)
+            return_data = {"status": "200", "result": nnid}
             return Response(json.dumps(return_data))
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}
             return Response(json.dumps(return_data))
 
-    def get(self, request, pk):
+    def get(self, request, nnid):
         """
         insert new neural network information
         :param pk:
         :param request:
         :return: {
-                    "data":
-                        {
-                            "datalen": 96,
-                            "taglen": 2,
-                            "matrix": [12, 8],
-                            "learnrate": 0.01,
-                            "epoch":50
-                        },
-                    "layer":
-                        [
-                            {
-                                "type": "input",
-                                "active": "relu",
-                                "cnnfilter": [2, 2],
-                                "cnnstride": [1, 1],
-                                "maxpoolmatrix": [2, 2],
-                                "maxpoolstride": [1, 1],
-                                "node_in_out": [1, 16],
-                                "regualizer": "",
-                                "padding": "SAME",
-                                "droprate": ""
-                            },
-                        ]
-                    }
+                    "data":{"datalen": 96,"taglen": 2,"matrix": [12, 8],"learnrate": 0.01,"epoch":50},
+                    "layer":[{},{}]
+                 }
         """
         try:
-            tfmsa = TFMsa()
-            result = tfmsa.searchNeuralNetwork(pk)
-            return_data = {"status": "ok", "result": result}
+            result = netconf.load_ori_conf(nnid)
+            return_data = {"status": "200", "result": result}
             return Response(json.dumps(return_data))
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}
             return Response(json.dumps(return_data))
 
-    def put(self, request):
+    def put(self, request, nnid):
         """
         insert new neural network information
         :param request:
         {
-            "nn_info" : {  "nnid": "sample",
-                            "category":"test",
-                            "name" : "test",
-                            "type" : "cnn",
-                            "acc" : "",
-                            "train" : "",
-                            "config" : "",
-                                                        "table" : "TEST1",
-                            "query" : "select * from TEST1",
-                            "dataset":"{'name':'none', 'univ':'cate', 'eng' : 'cont', 'grade' : 'tag'}",
-                            "dir" : "default"},
-            "nn_conf" : {
-                            "data":
-                                {
-                                    "datalen": 96,
-                                    "taglen": 2,
-                                    "matrix": [12, 8],
-                                    "learnrate": 0.01,
-                                    "epoch":50
-                                },
-                            "layer":
-                                [
-                                    {
-                                        "type": "input",
-                                        "active": "relu",
-                                        "cnnfilter": [2, 2],
-                                        "cnnstride": [1, 1],
-                                        "maxpoolmatrix": [2, 2],
-                                        "maxpoolstride": [1, 1],
-                                        "node_in_out": [1, 16],
-                                        "regualizer": "",
-                                        "padding": "SAME",
-                                        "droprate": ""
-                                    },
-                                ]
-                            }
+            "nn_info" : {  },
+            "nn_conf" : {"data":{},
+                         "layer":[{},]}
         }
 
         :return: registered network id
         """
         try:
-            tfmsa = TFMsa()
-            jd = jc.load_obj_json(request.body)
-            result = tfmsa.updateNeuralNetwork(jd.nn_info, jd.nn_conf)
-            return_data = {"status": "ok", "result": result}
+            netconf.save_conf(nnid, json.dumps(request.body))
+            return_data = {"status": "200", "result": nnid}
             return Response(json.dumps(return_data))
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}
             return Response(json.dumps(return_data))
 
-    def delete(self, request, pk, format=None):
-        return Response("delete")
+    def delete(self, request, nnid):
+        """
+        delete selected net work conf
+        :param request:
+        :param pk: nn_id wanna delete
+        :param format:
+        :return:
+        """
+        try:
+            jd = jc.load_obj_json("{}")
+            jd.config = ""
+            jd.nn_id = nnid
+            netconf.update_network(jd)
+            netconf.remove_conf(nnid)
+            netconf.remove_trained_data(nnid)
+            return_data = {"status": "404", "result": str(nnid)}
+            return Response(json.dumps(return_data))
+        except Exception as e:
+            return_data = {"status": "404", "result": str(e)}
+            return Response(json.dumps(return_data))
 
-    def get_object(self, pk):
-        return Response("get_onject")

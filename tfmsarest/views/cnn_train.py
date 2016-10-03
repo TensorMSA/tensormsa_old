@@ -2,31 +2,31 @@ import json
 
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
+from tfmsacore import train
 from tfmsacore.service.tfmsa import TFMsa
 from tfmsacore.utils.json_conv import JsonDataConverter as jc
 
 
-class ConvNeuralNet_Train(APIView):
+class ConvNeuralNetTrain(APIView):
     """
-    TO-DO : Dev Rest Services for CNN (predict, train, etc)
+    1. POST :
+    2. PUT :
+    3. GET :
+    4. DELETE :
     """
 
-    def post(self, request):
+    def post(self, request, nnid):
         """
         train requested model and save
-        :param request: json={ "nn_id": "sample" ,
-                               "nn_type" : "cnn",
-                               "run_type" : "local",
+        :param request: json={ "type" : "local",
                                "epoch" : 50,
-                               "testset" : 10 ,
-                               "predict_data":""})
+                               "testset" : 10 })
         :return: {"status": "", "result": ""}
         """
         try:
-            jd = jc.load_obj_json(request.body)
-            result = TFMsa().trainNerualNetwork(jd.nn_id, jd.nn_type, jd.run_type, jd.epoch, jd.testset)
-            return_data = {"status": "200", "result": result}
+            json_data = json.loads(request.body)
+            train.train_conv_network(nnid, json_data['epoch'], json_data['testset'])
+            return_data = {"status": "200", "result": nnid}
             return Response(json.dumps(return_data))
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}

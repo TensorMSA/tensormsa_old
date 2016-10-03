@@ -25,22 +25,48 @@ from django.views.decorators.csrf import csrf_exempt
 
 urlpatterns = [
     url(r'^admin/', csrf_exempt(admin.site.urls)),
-    url(r'^api/v1/type/cnn/train/$', csrf_exempt(rest_view.ConvNeuralNet_Train.as_view())),
-    url(r'^api/type/cnn/train/$', csrf_exempt(rest_view.ConvNeuralNet_Train.as_view())),
-    url(r'^api/v1/type/cnn/predict/$', csrf_exempt(rest_view.ConvNeuralNet_Predict.as_view())),
-    url(r'^api/type/cnn/predict/$', csrf_exempt(rest_view.ConvNeuralNet_Predict.as_view())),
-    url(r'^api/v1/type/cnn/config/(?P<pk>.*)/$',  csrf_exempt(rest_view.CNN_Config.as_view())),
-    url(r'^api/type/cnn/config/(?P<pk>.*)/$',  csrf_exempt(rest_view.CNN_Config.as_view())),
-    url(r'^api/v1/type/cnn/config/$',  csrf_exempt(rest_view.CNN_Config.as_view())),
-    url(r'^api/type/cnn/config/$',  csrf_exempt(rest_view.CNN_Config.as_view())),
-    url(r'^api/v1/type/cnn/data/(?P<pk>.*)/$', csrf_exempt(rest_view.CNN_Data.as_view())),
-    url(r'^api/type/cnn/data/(?P<pk>.*)/$', csrf_exempt(rest_view.CNN_Data.as_view())),
-    url(r'^api/v1/type/cnn/data/$', csrf_exempt(rest_view.CNN_Data.as_view())),
-    url(r'^api/type/cnn/data/$', csrf_exempt(rest_view.CNN_Data.as_view())),
-    url(r'^api/v1/type/cnn/stastics/$', csrf_exempt(rest_view.CNN_Stastics.as_view())),
-    url(r'^api/type/cnn/stastics/$', csrf_exempt(rest_view.CNN_Stastics.as_view())),
-    url(r'^api/v1/type/cnn/common/$', csrf_exempt(rest_view.Common_config.as_view())),
-    url(r'^api/type/cnn/common/$', csrf_exempt(rest_view.Common_config.as_view())),
-    url(r'^view/index/$', csrf_exempt(ui_view.UI_Service.as_view())),
-] + static('/dist/', document_root='tfmsaview/dist')
-#static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    # network info
+    url(r'^api/v1/type/common/nninfo/(?P<nnid>.*)/category/(?P<cate>.*)/subcate/(?P<sub>.*)/',
+        csrf_exempt(rest_view.CommonNetInfo.as_view())),
+    url(r'^api/v1/type/common/nninfo/$',
+        csrf_exempt(rest_view.CommonNetInfo.as_view())),
+
+    # pre process for dataframe data
+    url(r'^api/v1/type/dataframe/base/(?P<baseid>.*)/table/(?P<tb>.*)/pre/(?P<nnid>.*)/',
+        csrf_exempt(rest_view.DataFramePre.as_view())),
+
+    #data upload, search
+    url(r'^api/v1/type/dataframe/base/(?P<baseid>.*)/table/(?P<tb>.*)/data/(?P<args>.*)/',
+        csrf_exempt(rest_view.DataFrameData.as_view())),
+    url(r'^api/v1/type/dataframe/base/(?P<baseid>.*)/table/(?P<tb>.*)/data/',
+        csrf_exempt(rest_view.DataFrameData.as_view())),
+
+    #manage column data types
+    url(r'^api/v1/type/dataframe/base/(?P<baseid>.*)/table/(?P<tb>.*)/format/(?P<nnid>.*)/',
+        csrf_exempt(rest_view.DataFrameFormat.as_view())),
+
+    #manage table
+    url(r'^api/v1/type/dataframe/base/(?P<baseid>.*)/table/(?P<tb>.*)/',
+        csrf_exempt(rest_view.DataFrameTable.as_view())),
+    url(r'^api/v1/type/dataframe/base/(?P<baseid>.*)/table/',
+        csrf_exempt(rest_view.DataFrameTable.as_view())),
+
+    #manage data frame
+    url(r'^api/v1/type/dataframe/base/(?P<baseid>\w+:?(?=/))/',
+        csrf_exempt(rest_view.DataFrameSchema.as_view())),
+    url(r'^api/v1/type/dataframe/base/',
+        csrf_exempt(rest_view.DataFrameSchema.as_view())),
+
+    # CNN config data manage
+     url(r'^api/v1/type/cnn/conf/(?P<nnid>.*)/',
+         csrf_exempt(rest_view.ConvNeuralNetConfig.as_view())),
+
+    # CNN training
+     url(r'^api/v1/type/cnn/train/(?P<nnid>.*)/',
+         csrf_exempt(rest_view.ConvNeuralNetTrain.as_view())),
+
+    # CNN predict
+     url(r'^api/v1/type/cnn/predict/(?P<nnid>.*)/',
+         csrf_exempt(rest_view.ConvNeuralNetPredict.as_view())),
+
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
