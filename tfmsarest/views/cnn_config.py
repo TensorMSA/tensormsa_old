@@ -3,7 +3,6 @@ import json
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.conf import settings
-from tfmsacore.service.tfmsa import TFMsa
 from tfmsacore.utils.json_conv import JsonDataConverter as jc
 from tfmsacore import netconf
 
