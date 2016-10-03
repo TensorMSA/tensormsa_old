@@ -130,3 +130,15 @@ STATIC_URL = '/dist/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "tfmsaview/static"),
 ]
+
+# custom setting need for tensormsa
+LIVY_HOST = '8ea172cae00f:8998'
+LIVY_SESS = '1'
+SPARK_HOST = '8ea172cae00f:7077'
+SPARK_CORE = '1'
+SPARK_MEMORY = '1G'
+HDFS_HOST = '587ed1df9441:9000'
+HDFS_ROOT = 'tensormsa'
+HDFS_DF_ROOT = 'tensormsa/dataframe'
+HDFS_CONF_ROOT = '/tensormsa/config/'
+HDFS_MODEL_ROOT = '/tensormsa/model/'
