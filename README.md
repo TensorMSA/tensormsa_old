@@ -44,9 +44,19 @@ python legacy systems can use deep learning easily
       docker pull -a tmddno1/tensormsa
    ```
    
-   - start container with graphical environment (only first time)
+   - pull sequenceiq/hadoop-docker 
    ```python
-      docker run -it --env="DISPLAY" --env="QT_X11_NO_MITSHM=1" --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" -p 8080:8080 -p 8998:8998 -p 8989:8989 -p 7077:7077 tmddno1/tensormsa:v1
+      docker pull sequenceiq/hadoop-docker:2.7.1
+   ```
+   
+   - start hadoop container (first time only)*[(link)](https://github.com/sequenceiq/hadoop-docker)*
+   ```python
+      docker run -it -p 50090:50090 -p 50010:50010 -p 50075:50075 -p 50020:50020 -p 50070:50070 -p 50030:50030 -p 50060:50060 -p 8020:8020 --name hdfs sequenceiq/hadoop-docker:2.7.1 /etc/bootstrap.sh -bash
+   ```  
+   
+   - start container with graphical environment (first time only)
+   ```python
+      docker run -it --env="DISPLAY" --env="QT_X11_NO_MITSHM=1" --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" -p 8080:8080 -p 8998:8998 -p 8989:8989 -p 7077:7077 --name tfmsa --link hdfs:hdfs tmddno1/tensormsa:v1
    ```
    
    - check contrainer id
@@ -67,6 +77,7 @@ python legacy systems can use deep learning easily
       TensorMSA : http://locahost:8989  </br>
       Spark Manager : http://locahost:8080  </br>
       Livy : http://locahost:8998  </br>
+      Hadoop :http://localhost:50070 </br>
 
    ```python
       [root@db44c088318c bin]#  /home/dev/TensorMSA/start_tensormsa.sh db44c088318c
