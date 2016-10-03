@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from tfmsacore import models
 from tfmsacore.utils import serializers
+from tfmsacore.utils.logger import tfmsa_logger
 
 
 def create_new_network(req):
@@ -9,11 +10,14 @@ def create_new_network(req):
     :param net_id:
     :return:
     """
-    serializer = serializers.NNInfoSerializer(data=req)
-    if serializer.is_valid():
-        serializer.save()
-        return "success"
-    return "failure"
+    try:
+        serializer = serializers.NNInfoSerializer(data=req)
+        if serializer.is_valid():
+            serializer.save()
+            return req["nn_id"]
+    except Exception as e:
+        tfmsa_logger(e)
+        raise Exception (e)
 
 
 def update_network(req):
@@ -22,24 +26,18 @@ def update_network(req):
     :param net_id:
     :return:
     """
+
     try:
         obj = models.NNInfo.objects.get(nn_id= req.nn_id)
-        obj.category = req.category
-        obj.name = req.name
-        obj.type = req.type
-        obj.acc = req.acc
-        obj.train = req.train
-        obj.config = req.config
-        obj.table = req.table
-        obj.query = req.query
-        obj.datadesc = req.datadesc
-        obj.datasets = req.datasets
-        obj.dir = req.dir
+        for key in req.keys():
+            if(obj[key] != None):
+                print("key : {0} , val : {1}".format(key, req[key] ))
+                setattr(obj, key, req[key])
+
         obj.save()
-
+        return req.nn_id
     except Exception as e:
-        raise Exception(e)
-
+        return e
 
 
 
@@ -74,7 +72,7 @@ def set_train_datasets(nn_id , datasets):
         raise Exception(e)
 
 
-def filter_network_config(nn_id, category):
+def filter_network_config(nn_id = None, category = None, subcate = None):
     """
     get selected nn_id config info
     :param nn_id: neural network id
@@ -95,7 +93,9 @@ def filter_network_config(nn_id, category):
     """
 
     try:
-        query_set = models.NNInfo.objects.filter(nn_id__contains= nn_id, category__contains = category)
+        query_set = models.NNInfo.objects.filter(nn_id__contains= nn_id, \
+                                                 category__contains = category, \
+                                                 subcate__contains = subcate)
         return query_set.values()
 
     except Exception as e:
@@ -127,3 +127,26 @@ def get_network_config(nn_id):
         return data_Set.json()
     except Exception as e:
         raise Exception(e)
+
+
+def delete_net_info(nn_id):
+    """
+    delete selected nn_id network info
+    :param nn_id: neural network id
+    :param category: business category
+    :return:None
+    """
+
+    try:
+        if (isinstance(nn_id, (str))):
+            query_set = models.NNInfo.objects.filter(nn_id__contains= nn_id).delete()
+        elif(isinstance(nn_id, (list))):
+            for d_id in nn_id:
+                query_set = models.NNInfo.objects.filter(nn_id__contains=d_id).delete()
+        else:
+            return 'delete request data type is wrong'
+        return nn_id
+
+    except Exception as e:
+        return e
+

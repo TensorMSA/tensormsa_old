@@ -2,7 +2,7 @@
 import os
 from tfmsacore.utils.json_conv import JsonDataConverter
 from tfmsacore.utils.logger import tfmsa_logger
-
+from django.conf import settings
 
 def chk_conf(net_id):
     """
@@ -10,7 +10,7 @@ def chk_conf(net_id):
     :param net_id: neural network id
     :return:
     """
-    directory = "/tensorMSA/data/"
+    directory = settings.HDFS_CONF_ROOT
     net_id = net_id + "_conf.json"
 
     try:
@@ -31,7 +31,7 @@ def load_conf(net_id):
     :param net_id: neural network id
     :return:
     """
-    directory = "/tensorMSA/data/"
+    directory = settings.HDFS_CONF_ROOT
     net_id = net_id + "_conf.json"
 
     if not os.path.exists(directory):
@@ -40,6 +40,7 @@ def load_conf(net_id):
         model_conf = open(directory + net_id, 'r')
         json_data = JsonDataConverter().load_obj_json(model_conf)
     except Exception as e:
+        print(e)
         raise Exception(e)
     finally :
         model_conf.close()
@@ -52,7 +53,7 @@ def load_ori_conf(net_id):
     :param net_id: neural network id
     :return:
     """
-    directory = "/tensorMSA/data/"
+    directory = settings.HDFS_CONF_ROOT
     net_id = net_id + "_conf.json"
 
     if not os.path.exists(directory):
@@ -72,11 +73,11 @@ def save_conf(net_id, conf_data):
     """
     save json format to json file
     :param net_id: neural network id
-    :param conf_data: neural network configuration json data 
+    :param conf_data: neural network configuration json data
     :return:
     """
 
-    directory = "/tensorMSA/data/"
+    directory = settings.HDFS_CONF_ROOT
     net_id = net_id + "_conf.json"
 
     if not os.path.exists(directory):
@@ -98,7 +99,7 @@ def remove_conf(net_id):
     :param net_id: neural network id
     :return:
     """
-    directory = "/tensorMSA/data/"
+    directory = settings.HDFS_CONF_ROOT
     net_id = net_id + "_conf.json"
 
     if not os.path.exists(directory):

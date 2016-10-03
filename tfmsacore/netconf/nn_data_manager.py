@@ -2,6 +2,7 @@
 import os
 import shutil
 from tfmsacore.utils.logger import tfmsa_logger
+from django.conf import settings
 
 def chk_trained_data(net_id):
     """
@@ -9,7 +10,7 @@ def chk_trained_data(net_id):
     :param net_id: neural network id
     :return:
     """
-    directory = "/tensorMSA/data/"
+    directory = settings.HDFS_MODEL_ROOT
     net_id = net_id + ".ckpt"
 
     try:
@@ -31,7 +32,7 @@ def load_trained_data(nn_id, model):
     :param mdoe : tflearn model
     :return:tflearn model
     """
-    directory = "/tensorMSA/data/"
+    directory = settings.HDFS_MODEL_ROOT
     if not os.path.exists(directory):
         os.makedirs(directory)
 
@@ -49,7 +50,7 @@ def save_trained_data(nn_id, model):
     :return:tflearn model
     """
 
-    directory = "/tensorMSA/data/"
+    directory = settings.HDFS_MODEL_ROOT
     if not os.path.exists(directory):
         os.makedirs(directory)
 
@@ -71,7 +72,7 @@ def remove_trained_data(nn_id):
     """
 
     try:
-        directory = "/tensorMSA/data/"
+        directory = settings.HDFS_MODEL_ROOT
         if not os.path.exists(directory):
             os.makedirs(directory)
 
@@ -90,7 +91,7 @@ def test_data_move():
     only for the test purpose
     :return:
     """
-    to_path = "/tensorMSA/data/"
+    to_path = settings.HDFS_MODEL_ROOT
     #from_path = os.path.dirname(os.path.realpath(__file__))
     from_path = os.path.dirname(os.getcwd() +"/tfmsacore/data/")
     shutil.copy(os.path.join(from_path, "sample_conf.json"), to_path)
