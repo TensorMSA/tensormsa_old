@@ -1,9 +1,9 @@
 {
     "data":
         {
-             "datalen": 96,
+             "datalen": 16,
              "taglen" : 2,
-             "matrix" : [12 , 8],
+             "matrix" : [4 , 4],
              "learnrate" : 0.01
         },
     "layer":

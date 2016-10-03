@@ -1,9 +1,0 @@
-{
-  "livy" : {"ip" : "481bf68ee6d9",
-            "port" : "8998"},
-  "spark": {"ip" : "481bf68ee6d9",
-            "port" : "7077"},
-  "hdfs" : {"ip" : "",
-            "port" : "",
-            "path" : "/home/dev/hadoop/data_frame"}
-}

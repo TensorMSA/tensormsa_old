@@ -31,7 +31,7 @@ def predict_conv_network(nn_id , req_data):
         conf = netconf.load_conf(nn_id)
 
         # modify predict fit to tarin
-        sp_loader = td.SparkLoader().get_predict_data(nn_id, req_data)
+        sp_loader = td.DFPreProcessor().get_predict_data(nn_id, req_data)
 
         # set spaces for input data
         datalen = conf.data.datalen

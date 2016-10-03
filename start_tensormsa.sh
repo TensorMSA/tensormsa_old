@@ -1,6 +1,7 @@
-if [ $# -eq 0 ]
+if [ $# -lt 2 ]
   then
-    echo "put your container id as parameter"
+    echo "first parameter : your container ID"
+    echo "second parameter : Hadoop Master Container or IP"
     exit 1
 fi
 echo "======================="
@@ -41,6 +42,13 @@ echo "======================="
 cp /home/dev/spark/conf/spark-defaults.conf.template /home/dev/spark/conf/spark-defaults.conf
 echo "spark.master       spark://$1:7077 " >> /home/dev/spark/conf/spark-defaults.conf
 
+cp /root/.hdfscli_temp.cfg /root/.hdfscli.cfg
+echo "[global]"   >>  /root/.hdfscli.cfg
+echo "default.alias = dev"   >>  /root/.hdfscli.cfg
+echo "[dev.alias]"   >>  /root/.hdfscli.cfg
+echo "url = http://$2:50070"   >>  /root/.hdfscli.cfg
+echo "[prod.alias]"   >>  /root/.hdfscli.cfg
+echo "url = http://$2:50070"   >>  /root/.hdfscli.cfg
 
 echo /home/dev/livy/bin/livy-server &
 /home/dev/livy/bin/livy-server &

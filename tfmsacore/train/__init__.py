@@ -1,2 +1,1 @@
 from .conv_train import train_conv_network
-from .conv_train_spark import spark_train_conv_network

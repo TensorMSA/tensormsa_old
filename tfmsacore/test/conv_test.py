@@ -21,11 +21,12 @@ def save_changed_data_info(nn_id, spark_loader):
     :param spark_loader: spark_loader class object
     :return: None
     """
-
     json_conf = netconf.load_conf(nn_id)
     json_conf.data.datalen = spark_loader.train_len
     json_conf.data.taglen = spark_loader.tag_len
+
     len_sqrt = int(math.ceil(math.sqrt(int(spark_loader.train_len))))
+
 
     for i in range(0, len_sqrt):
         for x in range(0, len_sqrt):
@@ -51,7 +52,7 @@ def train_conv_network(nn_id, epoch, testset):
         utils.check_requested_nn(nn_id)
 
         # get train data from spark
-        sp_loader = td.DFPreProcessor().get_train_data(nn_id)
+        sp_loader = td.SparkLoader().get_train_data(nn_id)
 
         # change conf info
         save_changed_data_info(nn_id, sp_loader)
@@ -73,10 +74,9 @@ def train_conv_network(nn_id, epoch, testset):
         train_x = np.reshape(train_x, (-1, matrix[0],matrix[1],1))
         test_x = np.reshape(test_x, (-1, matrix[0], matrix[1],1))
 
-
         # create network conifg
         num_layers = len(conf.layer)
-        for i in range(0, int(num_layers)):
+        for i in range(0, num_layers):
 
             data = conf.layer[i]
 
@@ -115,7 +115,7 @@ def train_conv_network(nn_id, epoch, testset):
         model = netconf.nn_data_manager.load_trained_data(nn_id, model)
 
         #train network
-        model.fit({'input': train_x}, {'target': train_y}, n_epoch=int(epoch),
+        model.fit({'input': train_x}, {'target': train_y}, n_epoch=epoch,
                   validation_set=({'input': test_x}, {'target': test_y}),
                   snapshot_step=100, show_metric=True, run_id='convnet_mnist')
 
