@@ -69,4 +69,8 @@ urlpatterns = [
      url(r'^api/v1/type/cnn/predict/(?P<nnid>.*)/',
          csrf_exempt(rest_view.ConvNeuralNetPredict.as_view())),
 
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    # Common Server status (spark, livy, train task, s3)
+     url(r'^api/v1/type/common/env/',
+         csrf_exempt(rest_view.CommonEnvInfo.as_view())),
+
+              ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

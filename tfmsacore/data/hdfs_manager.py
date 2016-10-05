@@ -18,19 +18,19 @@ class HadoopManager:
         create non exist essential directories
         """
         self.client = Config().get_client()
-        if(self.client.content("/{0}/".format(settings.HDFS_ROOT), strict=False) == None):
-            self.client.makedirs("/{0}/".format(settings.HDFS_ROOT), permission=777)
+        if(self.client.content("{0}/".format(settings.HDFS_ROOT), strict=False) == None):
+            self.client.makedirs("{0}/".format(settings.HDFS_ROOT), permission=777)
 
-        if (self.client.content("/{0}/".format(settings.HDFS_DF_ROOT), strict=False) == None):
-            self.client.makedirs("/{0}/".format(settings.HDFS_DF_ROOT), permission=777)
+        if (self.client.content("{0}/".format(settings.HDFS_DF_ROOT), strict=False) == None):
+            self.client.makedirs("{0}/".format(settings.HDFS_DF_ROOT), permission=777)
 
-        if (self.client.content("/{0}/".format(settings.HDFS_CONF_ROOT), strict=False) == None):
-            self.client.makedirs("/{0}/".format(settings.HDFS_CONF_ROOT), permission=777)
+        if (self.client.content("{0}/".format(settings.HDFS_CONF_ROOT), strict=False) == None):
+            self.client.makedirs("{0}/".format(settings.HDFS_CONF_ROOT), permission=777)
 
-        if (self.client.content("/{0}/".format(settings.HDFS_MODEL_ROOT), strict=False) == None):
-            self.client.makedirs("/{0}/".format(settings.HDFS_MODEL_ROOT), permission=777)
+        if (self.client.content("{0}/".format(settings.HDFS_MODEL_ROOT), strict=False) == None):
+            self.client.makedirs("{0}/".format(settings.HDFS_MODEL_ROOT), permission=777)
 
-        self.root = "/{0}/".format(settings.HDFS_DF_ROOT)
+        self.root = "{0}/".format(settings.HDFS_DF_ROOT)
 
     def search_all_database(self):
         """

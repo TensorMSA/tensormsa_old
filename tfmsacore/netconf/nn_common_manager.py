@@ -31,7 +31,6 @@ def update_network(req):
         obj = models.NNInfo.objects.get(nn_id= req.nn_id)
         for key in req.keys():
             if(obj[key] != None):
-                print("key : {0} , val : {1}".format(key, req[key] ))
                 setattr(obj, key, req[key])
 
         obj.save()

@@ -345,10 +345,22 @@ def cnn_predict_post():
 # TEST - TEST - TEST
 ####################################################################################
 
+"""
+Test Sequence !!
+1. common - nninfo - post
+2. dataframe - base - post
+3. dataframe - table - post
+4. dataframe - data - post
+5. dataframe - format - post
+6. dataframe - pre - post
+7. cnn - config - post
+8. cnn - train - post
+9. cnn - predict- post
+"""
 #common, dataframe, cnn
 category1 = "cnn"
 # checker, predict, stat, test, train, conf, nnfino, base, data, format, table, pre
-category2 = "predict"
+category2 = "train"
 # post, get, put, delete
 request = "post"
 
