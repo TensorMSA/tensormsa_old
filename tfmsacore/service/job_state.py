@@ -135,10 +135,6 @@ class JobStateLoader:
         :return:
         """
         try:
-            print(time)
-            print(type(time))
-            print(time['year'])
-            print(type(time['year']))
             # example :.datetime(2013, 6, 5, 23, 59, 59, 999999)
             set_time = datetime(int(time['year']), int(time['month']), int(time['day']),
                                 int(time['hour']), int(time['min']), int(time['sec']), 999999)

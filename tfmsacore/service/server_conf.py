@@ -12,15 +12,17 @@ class ServerConfLoader:
         """
         try:
             # set state Dead to current Alive conf
-            obj = models.ServerConf.objects.filter(state__contains="A")
-            obj.state = "D"
-            obj.save()
+            quey_set = models.ServerConf.objects.filter(state__contains="A")
+
+            for obj in quey_set:
+                obj.state = "D"
+                obj.save()
 
             # set new conf with request data
             serializer = serializers.ServerConfSerializer(data=req)
             if serializer.is_valid():
                 serializer.save()
-                return req["version"]
+                return "success"
         except Exception as e:
             tfmsa_logger(e)
             raise Exception(e)

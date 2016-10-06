@@ -343,7 +343,7 @@ def cnn_predict_post():
 
 
 ####################################################################################
-# CNN - Predict
+# Common task manager
 ####################################################################################
 
 #datetime(2013, 6, 5, 23, 59, 59, 999999)
@@ -367,27 +367,61 @@ def common_job_delete():
     print("test result : {0}".format(data))
 
 ####################################################################################
+# common server setting
+####################################################################################
+
+def common_env_post():
+    resp = requests.post('http://' + url + '/api/v1/type/common/env/',
+                         json= {'state': 'A',
+                                'store_type': '1',
+                                'fw_capa' : '1',
+                                'livy_host' : '8ea172cae00f:8998' ,
+                                'livy_sess' : '1',
+                                'spark_host' : '8ea172cae00f:7077',
+                                'spark_core': '1',
+                                'spark_memory': '1G',
+                                'hdfs_host': '587ed1df9441:9000',
+                                'hdfs_root': '/tensormsa',
+                                's3_host': '',
+                                's3_access': '',
+                                's3_sess': '',
+                                's3_bucket': '',
+                                }
+                         )
+    data = json.loads(resp.json())
+    print("test result : {0}".format(data))
+
+
+def common_env_get():
+    resp = requests.get('http://' + url + '/api/v1/type/common/env/')
+    data = json.loads(resp.json())
+    print("test result : {0}".format(data))
+
+
+
+####################################################################################
 # TEST - TEST - TEST
 ####################################################################################
 
 """
 Test Sequence !!
-1. common - nninfo - post
-2. dataframe - base - post
-3. dataframe - table - post
-4. dataframe - data - post
-5. dataframe - format - post
-6. dataframe - pre - post
-7. cnn - config - post
-8. cnn - train - post
-9. cnn - predict- post
+1. common - env - post
+2. common - nninfo - post
+3. dataframe - base - post
+4. dataframe - table - post
+5. dataframe - data - post
+6. dataframe - format - post
+7. dataframe - pre - post
+8. cnn - config - post
+9. cnn - train - post
+10. cnn - predict- post
 """
 #common, dataframe, cnn
 category1 = "common"
 # checker, predict, stat, test, train, conf, nnfino, base, data, format, table, pre
-category2 = "job"
+category2 = "env"
 # post, get, put, delete
-request = "delete"
+request = "get"
 
 
 locals()["{0}_{1}_{2}".format(category1, category2, request)]()
