@@ -34,10 +34,10 @@ class LivyDfClientManager:
 
         data = {'kind': 'pyspark',
                 "name": "tensormsa",
-                "executorCores": 1,
-                "executorMemory": "512m",
-                "driverCores": 1,
-                "driverMemory": "512m"}
+                "executorCores": int(settings.SPARK_CORE),
+                "executorMemory": settings.SPARK_MEMORY,
+                "driverCores": int(settings.SPARK_CORE),
+                "driverMemory": settings.SPARK_MEMORY}
         r = requests.post("http://" + settings.LIVY_HOST + "/sessions", data=json.dumps(data), headers=self.headers)
         result = self.get_response(str(r.json()['id']), None)
         return result
