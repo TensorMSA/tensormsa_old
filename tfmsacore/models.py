@@ -56,9 +56,9 @@ class JobManagement(models.Model):
         return dict(
             nn_id = self.nn_id,
             type=self.type,
-            request=self.request,
-            start=self.start,
-            end=self.end,
+            request=str(self.request),
+            start=str(self.start),
+            end=str(self.end),
             status=self.status,
             progress=self.progress,
             acc=self.acc,

@@ -73,4 +73,10 @@ urlpatterns = [
      url(r'^api/v1/type/common/env/',
          csrf_exempt(rest_view.CommonEnvInfo.as_view())),
 
+    # Job Tracker Information
+     url(r'^api/v1/type/common/job/(?P<nnid>.*)/',
+         csrf_exempt(rest_view.CommonJobInfo.as_view())),
+     url(r'^api/v1/type/common/job/',
+         csrf_exempt(rest_view.CommonJobInfo.as_view())),
+
               ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

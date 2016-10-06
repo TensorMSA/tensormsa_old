@@ -341,6 +341,31 @@ def cnn_predict_post():
     print("test result : {0}".format(data))
 
 
+
+####################################################################################
+# CNN - Predict
+####################################################################################
+
+#datetime(2013, 6, 5, 23, 59, 59, 999999)
+def common_job_post():
+    resp = requests.post('http://' + url + '/api/v1/type/common/job/nn0000009/',
+                         json= {'year':2013, 'month':6, 'day' :5, 'hour' :23 , 'min' : 59, 'sec' : 59}
+                         )
+    data = json.loads(resp.json())
+    print("test result : {0}".format(data))
+
+
+def common_job_get():
+    resp = requests.get('http://' + url + '/api/v1/type/common/job/')
+    data = json.loads(resp.json())
+    print("test result : {0}".format(data))
+
+
+def common_job_delete():
+    resp = requests.delete('http://' + url + '/api/v1/type/common/job/nn0000009/')
+    data = json.loads(resp.json())
+    print("test result : {0}".format(data))
+
 ####################################################################################
 # TEST - TEST - TEST
 ####################################################################################
@@ -358,11 +383,11 @@ Test Sequence !!
 9. cnn - predict- post
 """
 #common, dataframe, cnn
-category1 = "cnn"
+category1 = "common"
 # checker, predict, stat, test, train, conf, nnfino, base, data, format, table, pre
-category2 = "train"
+category2 = "job"
 # post, get, put, delete
-request = "post"
+request = "delete"
 
 
 locals()["{0}_{1}_{2}".format(category1, category2, request)]()

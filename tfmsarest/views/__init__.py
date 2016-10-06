@@ -8,3 +8,4 @@ from .dataframe_preprocess import DataFramePre
 from .cnn_train import ConvNeuralNetTrain
 from .cnn_predict import ConvNeuralNetPredict
 from .common_env import CommonEnvInfo
+from .common_job import CommonJobInfo
