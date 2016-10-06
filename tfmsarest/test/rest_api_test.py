@@ -417,9 +417,9 @@ Test Sequence !!
 10. cnn - predict- post
 """
 #common, dataframe, cnn
-category1 = "common"
+category1 = "dataframe"
 # checker, predict, stat, test, train, conf, nnfino, base, data, format, table, pre
-category2 = "env"
+category2 = "data"
 # post, get, put, delete
 request = "get"
 
