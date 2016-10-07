@@ -90,4 +90,24 @@ Api.prototype.delete = function (url, params) {
     });
 };
 
+Api.prototype.getJson = function (url, params) {
+    return fetch(
+        url,
+        {
+            method: 'POST',
+            mode: "cors",
+            body: JSON.stringify(params),
+            headers: new Headers({
+                'Accept': 'application/json'
+            })
+        }
+    ).then(function(response) {
+        return response.json();
+    }).then(function(json) {
+        return json;
+    }).catch(function(e) {
+        console.log("An Error has occurred :" +e);
+    });
+};
+
 export default Api;

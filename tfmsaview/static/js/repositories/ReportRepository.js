@@ -62,4 +62,11 @@ export default class ReportRepository {
            return data;
         });
     }
+
+    getJsonTestData(params) {
+        let url='http://localhost:8888/json/testData.json';//local test for JSON
+        return this.api.getJson(url, params).then((data) => {
+           return data;
+        });
+    }
 }
