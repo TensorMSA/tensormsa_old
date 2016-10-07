@@ -1,11 +1,14 @@
 import React from 'react'
 import Api from './utils/Api'
 import ReportRepository from './repositories/ReportRepository'
+import PersonalDataTableComponent from './tables/PersonalDataTableComponent'
 
 export default class HomeComponent extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {data : null};
+        this.state = {  data : null, 
+                        tableData : null
+                     };
     }
 
     case1(){
@@ -60,7 +63,6 @@ export default class HomeComponent extends React.Component {
                                 ]
                         }
            };
-           this.checkApiData(params);
            this.props.reportRepository.postConfigNnCnn(params).then((data) => {
                 this.setState({data: data})
             });
@@ -68,7 +70,6 @@ export default class HomeComponent extends React.Component {
     }
     case2(){
         let params = "nn0000009"
-               this.checkApiData(params);
                this.props.reportRepository.getConfigNnCnn(params).then((data) => {
                     this.setState({data: data})
                 });
@@ -99,7 +100,6 @@ export default class HomeComponent extends React.Component {
                             {'name':'Kim', 'univ':'d', 'org' : '4', 'eng' : '800' , 'grade' : 'B', 'gender' : 'female', 'age' : '70'}],
                     query: ""
                };
-               this.checkApiData(params);
                this.props.reportRepository.postDataNnCnn(params).then((data) => {
                     this.setState({data: data})
                 });
@@ -108,7 +108,6 @@ export default class HomeComponent extends React.Component {
 
     case4(){
         let params = "TEST2"
-                   this.checkApiData(params);
                    this.props.reportRepository.getDataNnCnn(params).then((data) => {
                         this.setState({data: data})
                     });
@@ -131,7 +130,6 @@ export default class HomeComponent extends React.Component {
                             {'name':'Kim', 'univ':'e', 'org' : '5', 'eng' : '800' , 'grade' : 'B', 'gender' : 'male', 'age' : '25'}],
                     query: ""
                };
-               this.checkApiData(params);
                this.props.reportRepository.putDataNnCnn(params).then((data) => {
                     this.setState({data: data})
                 });
@@ -147,7 +145,6 @@ export default class HomeComponent extends React.Component {
                 testset : 10 ,
                 predict_data:""
            };
-           this.checkApiData(params);
            this.props.reportRepository.postTrainNnCnn(params).then((data) => {
                 this.setState({data: data})
             });
@@ -162,14 +159,15 @@ export default class HomeComponent extends React.Component {
                 testset : 10 ,
                 predict_data:[{'name':'Andy', 'univ':'a', 'org' : '1', 'eng' : '800' , 'gender' : 'female', 'age' : '50'}]
            };
-           this.checkApiData(params);
            this.props.reportRepository.postPredictNnCnn(params).then((data) => {
                 this.setState({data: data})
             });
     }
 
-    checkApiData(params){
-
+    getJson(params){
+           this.props.reportRepository.getJsonTestData(params).then((tableData) => {
+                this.setState({tableData: tableData})
+            });
     }
 
     render() {
@@ -186,9 +184,13 @@ export default class HomeComponent extends React.Component {
                 <button className="getAPI5" onClick={() => this.case5()}> Add Data Table </button>
                 <button className="getAPI6" onClick={() => this.case6()}> Start Tarining </button>
                 <button className="getAPI7" onClick={() => this.case7()}> Predict Result </button>
+                <button className="testJson" onClick={() => this.getJson()}> Test JSON Table</button>
                 </div>
                 <div className="displayAPI">
                     {this.state.data}
+                </div>
+                <div className="jsonTestTable">
+                    <PersonalDataTableComponent tableData={this.state.tableData} />
                 </div>
             </div>
         )
