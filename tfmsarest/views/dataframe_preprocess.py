@@ -50,18 +50,7 @@ class DataFramePre(APIView):
         :return: renamed table name
         """
         try:
-            nn_info = netconf.get_network_config(nnid)
-            livy_client = livy.LivyDfClientManager()
-            livy_client.create_session()
-            json_obj = json.loads(str(nn_info['datadesc']).replace("'", "\""))
-            cate_column_list = []
-            for column in json_obj.keys():
-                if (json_obj[column] == 'cate' or json_obj[column] == 'tag' or json_obj[column] == 'rank'):
-                    cate_column_list.append(column)
-
-            dist_col_list = livy_client.get_distinct_column(baseid, tb, cate_column_list)
-            netconf.set_train_datasets(nnid, str(dist_col_list))
-
+            service.JobManager().regit_job(nnid, "1")
             return_data = {"status": "200", "result": tb}
             return Response(json.dumps(return_data))
         except Exception as e:

@@ -122,8 +122,8 @@ def get_network_config(nn_id):
     """
 
     try:
-        data_Set = models.NNInfo.objects.get(nn_id__contains= nn_id)
-        return data_Set.json()
+        data_set = models.NNInfo.objects.get(nn_id__contains= nn_id)
+        return data_set.json()
     except Exception as e:
         raise Exception(e)
 

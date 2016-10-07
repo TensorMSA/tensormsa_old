@@ -30,10 +30,12 @@ runuser -l postgres -c 'pg_ctl start'
 echo "======================="
 echo "step2 : start spark apps"
 echo "======================="
- 
-sudo /home/dev/spark/sbin/stop-master.sh
-sudo /home/dev/spark/sbin/start-master.sh
-sudo /home/dev/spark/sbin/start-slave.sh spark://$1:7077
+
+sudo /home/dev/spark/sbin/start-master.sh &
+sudo /home/dev/spark/sbin/start-slave.sh spark://$1:7077 -m 6G -c 2
+#sudo /home/dev/spark/bin/spark-class org.apache.spark.deploy.worker.Worker spark://$1:7077 -m 6G -c 2 &
+#sudo /home/dev/spark/bin/spark-class org.apache.spark.deploy.worker.Worker spark://$1:7077 -m 3G -c 1 &
+
 
 echo "======================="
 echo "step3 : start Livy"

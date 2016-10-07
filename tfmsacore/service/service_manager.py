@@ -46,9 +46,6 @@ class JobManager:
             nnid = next['nn_id']
             epoch = next['epoch']
             testsets = next['testsets']
-
-            print(nnid)
-            print(type)
             JobStateLoader().set_run(nnid)
 
             """
@@ -63,7 +60,7 @@ class JobManager:
                 nn_info = netconf.get_network_config(nnid)
                 livy_client = livy.LivyDfClientManager()
                 livy_client.create_session()
-                print(nn_info)
+
                 json_obj = json.loads(str(nn_info['datadesc']).replace("'", "\""))
                 cate_column_list = []
                 for column in json_obj.keys():

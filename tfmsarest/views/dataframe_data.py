@@ -35,17 +35,23 @@ class DataFrameData(APIView):
                     file = request.FILES['file']
                     filename = file._name
 
+                    # save file on file system
                     directory = "{0}/{1}/{2}".format(settings.FILE_ROOT, baseid, tb)
                     if not os.path.exists(directory):
                         os.makedirs(directory)
-
                     fp = open("{0}/{1}/{2}/{3}".format(settings.FILE_ROOT, baseid, tb, filename), 'wb')
-
                     for chunk in file.chunks():
                         fp.write(chunk)
                     fp.close()
+
+                    #update to hdfs
+                    data.CsvLoader().save_csv_to_df(baseid, tb, filename)
+
+                    #delete file after upload
+                    if os.path.isfile("{0}/{1}/{2}/{3}".format(settings.FILE_ROOT, baseid, tb, filename)):
+                        os.remove("{0}/{1}/{2}/{3}".format(settings.FILE_ROOT, baseid, tb, filename))
+                    fp.close()
                     logger.tfmsa_logger("finish uploading csv on file system")
-                    data.save_csv_to_df(baseid, tb, filename)
                     return HttpResponse('File Uploaded')
             else :
                 raise Exception("not supported type")
@@ -91,7 +97,30 @@ class DataFrameData(APIView):
                 livy_client.append_data(baseid, tb, conf_data.replace("\"","'"))
 
             elif (args == "CSV"):
-                print("on development")
+                logger.tfmsa_logger("start uploading csv on file system")
+                if 'file' in request.FILES:
+                    file = request.FILES['file']
+                    filename = file._name
+
+                    #save upload file on file system
+                    directory = "{0}/{1}/{2}".format(settings.FILE_ROOT, baseid, tb)
+                    if not os.path.exists(directory):
+                        os.makedirs(directory)
+                    fp = open("{0}/{1}/{2}/{3}".format(settings.FILE_ROOT, baseid, tb, filename), 'wb')
+                    for chunk in file.chunks():
+                        fp.write(chunk)
+                    fp.close()
+
+                    #upload data to hdfs
+                    data.CsvLoader().save_csv_to_df(baseid, tb, filename)
+
+                    #delete file after upload
+                    if os.path.isfile("{0}/{1}/{2}/{3}".format(settings.FILE_ROOT, baseid, tb, filename)):
+                        os.remove("{0}/{1}/{2}/{3}".format(settings.FILE_ROOT, baseid, tb, filename))
+
+                    fp.close()
+                    logger.tfmsa_logger("finish uploading csv on file system")
+                    return HttpResponse('File Uploaded')
 
             else:
                 raise Exception("not supported type")

@@ -24,7 +24,7 @@ class DFPreProcessor:
         :return: Train Data Sets
         """
         try :
-
+            tfmsa_logger("modifying Train start!")
             # (1) get data configuration info
             net_conf = netconf.get_network_config(nn_id)
             datadesc = JsonDataConverter().load_obj_json(net_conf['datadesc'])
@@ -45,6 +45,7 @@ class DFPreProcessor:
             self.train_len = len(next(iter(self.m_train), None))
             self.tag_len = len(next(iter(self.m_tag), None))
 
+            tfmsa_logger("modifying Train End!")
             return self
 
         except IOError as e:
@@ -108,17 +109,23 @@ class DFPreProcessor:
                         modified_tag_row = self.set_cate_row(col_key, data_cate, data, \
                                                              modified_tag_row)
                         modified_tag_data.append(modified_tag_row)
-
                     elif (data_desc[col_key] == 'rank'):
                         modified_train_row = self.set_rank_row(col_key, data_cate, data, \
                                                                modified_train_row)
                     elif (data_desc[col_key] == 'cont'):
-                        modified_train_row.append(str(data[col_key]))
+                        if(str(data_desc[col_key]).isdigit()):
+                            modified_train_row.append(str(data[col_key]))
+                        else:
+                            modified_train_row.append("0")
+
+            # padding
+            while(range(0, len(modified_train_row) % 2)):
+                modified_train_row.append("0")
 
             modified_train_data.append(modified_train_row)
 
-        tfmsa_logger ("modified train data : {0} ".format(modified_train_data))
-        tfmsa_logger ("modified tah data : {0} ".format(modified_tag_data))
+        #tfmsa_logger ("modified train data : {0} ".format(modified_train_data))
+        #tfmsa_logger ("modified tah data : {0} ".format(modified_tag_data))
 
         return modified_train_data, modified_tag_data
 
@@ -132,7 +139,7 @@ class DFPreProcessor:
         :return: modified tarin row data
         """
         for cate_key in data_cate[col_key]:
-            if (cate_key == data[col_key]):
+            if (str(cate_key) == str(data[col_key]).encode("UTF-8")):
                 modified_train_row.append("1")
             else:
                 modified_train_row.append("0")

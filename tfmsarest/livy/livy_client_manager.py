@@ -248,7 +248,7 @@ class LivyDfClientManager:
                              'type(columns)\n',
                              'return_data = {}\n',
                              'for column in columns :\n',
-                             '  return_data[column.encode("UTF8")] = result.select(column).map(lambda x : x[0].encode("UTF8")).distinct().collect()\n',
+                              '  return_data[column.encode("UTF8")] = result.select(column).map(lambda x : str(x[0]).encode("UTF8")).distinct().collect()\n',
                              'str(return_data)'
                              ])
         }

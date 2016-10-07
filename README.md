@@ -80,7 +80,7 @@ python legacy systems can use deep learning easily
       Hadoop :http://localhost:50070 </br>
 
    ```python
-      [root@db44c088318c bin]#  /home/dev/TensorMSA/start_tensormsa.sh db44c088318c
+      [root@db44c088318c bin]#  /home/dev/TensorMSA/start_tensormsa.sh <tensormsa:id> <hadoop:id>
       [root@db44c088318c bin]#  /home/dev/TensorMSA/stop_tensormsa.sh
    ```
    

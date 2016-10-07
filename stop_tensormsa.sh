@@ -21,6 +21,7 @@ echo "step1 : stop spark apps"
 echo "======================="
 
 sudo /home/dev/spark/sbin/stop-master.sh
+sudo /home/dev/spark/bin/stop-slave.sh
 
 echo "======================="
 echo "step2 : stop Livy"

@@ -27,6 +27,8 @@ def save_changed_data_info(nn_id, spark_loader):
     json_conf.data.taglen = spark_loader.tag_len
     len_sqrt = int(math.ceil(math.sqrt(int(spark_loader.train_len))))
 
+    flag = False
+
     for i in range(0, len_sqrt):
         for x in range(0, len_sqrt):
             if(int(json_conf.data.datalen) == (len_sqrt + x) * (len_sqrt - i)):
@@ -72,7 +74,6 @@ def train_conv_network(nn_id, epoch, testset):
         learnrate = conf.data.learnrate
         train_x = np.reshape(train_x, (-1, matrix[0],matrix[1],1))
         test_x = np.reshape(test_x, (-1, matrix[0], matrix[1],1))
-
 
         # create network conifg
         num_layers = len(conf.layer)
