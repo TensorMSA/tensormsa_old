@@ -129,7 +129,7 @@ class HDFSManager:
         :return:
         """
         try:
-            if (self.client.content("{0}{1}/{2}".format(self.root, db_name, table_name), strict=False) != None):
+            if (self.client.content("{0}{1}".format(self.root, db_name), strict=False) != None):
                 tfmsa_logger("Warning DataBase not exist, auto create : {0}".format(db_name))
                 self.create_database(db_name)
 
