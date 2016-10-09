@@ -20,7 +20,7 @@ class DataFrameTable(APIView):
         :return: create schema result
         """
         try:
-            result = data.HadoopManager().create_table(baseid, tb)
+            result = data.DataMaster().create_table(baseid, tb)
             return_data = {"status": "200", "result": result}
             return Response(json.dumps(return_data))
         except Exception as e:
@@ -35,7 +35,7 @@ class DataFrameTable(APIView):
         :return: list of table
         """
         try:
-            result = data.HadoopManager().search_database(baseid)
+            result = data.DataMaster().search_database(baseid)
             return_data = {"status": "200", "result": result}
             return Response(json.dumps(return_data))
         except Exception as e:
@@ -50,7 +50,7 @@ class DataFrameTable(APIView):
         """
         try:
             json_data = json.loads(request.body)
-            result = data.HadoopManager().rename_table(baseid, json_data['origin'], json_data['modify'])
+            result = data.DataMaster().rename_table(baseid, json_data['origin'], json_data['modify'])
             return_data = {"status": "200", "result": result}
             return Response(json.dumps(return_data))
         except Exception as e:
@@ -64,7 +64,7 @@ class DataFrameTable(APIView):
         :return: renamed table name
         """
         try:
-            result = data.HadoopManager().delete_table(baseid, tb)
+            result = data.DataMaster().delete_table(baseid, tb)
             return_data = {"status": "200", "result": result}
             return Response(json.dumps(return_data))
         except Exception as e:

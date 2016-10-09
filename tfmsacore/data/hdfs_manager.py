@@ -4,8 +4,14 @@
 from hdfs import Config
 from tfmsacore.utils.logger import tfmsa_logger
 from django.conf import settings
+from pyspark.streaming import StreamingContext
+from pyspark import SparkContext, SparkConf
+from tfmsacore.utils.logger import tfmsa_logger
+from pyspark.sql import SQLContext
+from django.conf import settings
+import pandas as pd
 
-class HadoopManager:
+class HDFSManager:
     """
     HdfsManager : mainly manageing hdfs folders
     lv1 : image, raw rext, parquet types
@@ -29,6 +35,23 @@ class HadoopManager:
 
         if (self.client.content("{0}/".format(settings.HDFS_MODEL_ROOT), strict=False) == None):
             self.client.makedirs("{0}/".format(settings.HDFS_MODEL_ROOT), permission=777)
+
+    def spark_session_create(self):
+        """
+        spark Loader Class
+        creadted for the purpose of handling Spark Jobs
+        """
+        tfmsa_logger("Spark Session Created")
+
+        conf = SparkConf()
+        conf.setMaster('spark://{0}'.format(settings.SPARK_HOST))
+        conf.setAppName('save_csv_to_df')
+        conf.set('spark.driver.cores', settings.SPARK_CORE)
+        conf.set('spark.driver.memory', settings.SPARK_MEMORY)
+        conf.set('spark.executor.cores', settings.SPARK_WORKER_CORE)
+        conf.set('spark.executor.memory', settings.SPARK_WORKER_MEMORY)
+
+        self.sc = SparkContext(conf=conf)
 
         self.root = "{0}/".format(settings.HDFS_DF_ROOT)
 
@@ -133,6 +156,25 @@ class HadoopManager:
             tfmsa_logger("Error : {0}".format(e))
             raise Exception(e)
 
+    def reset_table(self, db_name, table_name):
+        """
+        reset table contents
+        :param db_name:target database name
+        :param table_name:target table name
+        :return:
+        """
+        try:
+            if (self.client.content("{0}{1}/{2}".format(self.root, db_name, table_name), strict=False) == None):
+                self.create_table(db_name, table_name)
+                #raise Exception("request table : {0} not exist".format(table_name))
+
+            self.client.delete("{0}{1}/{2}/".format(self.root, db_name, table_name), recursive=True)
+            return table_name
+        except Exception as e:
+            tfmsa_logger("Error : {0}".format(e))
+            raise Exception(e)
+
+
     def rename_table(self, db_name, table_name, rename_table):
         """
         rename table
@@ -210,3 +252,182 @@ class HadoopManager:
         except Exception as e:
             tfmsa_logger("Error : {0}".format(e))
             raise Exception(e)
+
+
+    def get_distinct_dataframe(self, data_frame, table_name, columns):
+        """
+        get distinct table columns
+        :param table_name: name of table you want to get data
+        :param query_str: sql strings
+        :return: query result as json Object
+        """
+        try:
+            self.spark_session_create()
+            tfmsa_logger("start find distinct column !")
+            hdfs_path = "hdfs://" + settings.HDFS_HOST + settings.HDFS_DF_ROOT + "/" + data_frame + "/" + table_name
+            query_str = "select * from " + table_name
+
+            sqlContext = SQLContext(self.sc)
+
+            df = sqlContext.read.load(hdfs_path, "parquet")
+            df.registerTempTable(table_name)
+            result = sqlContext.sql(str(query_str))
+
+            return_data = {}
+            for column in columns:
+                return_data[column.encode("UTF8")] = result.select(column).map(
+                    lambda x: str(x[0]).encode("UTF8")).distinct().collect()
+
+            tfmsa_logger("End find distinct column !")
+
+            return return_data
+
+        except Exception as e:
+            tfmsa_logger(e)
+            raise Exception(e)
+        finally:
+            df.unpersist()
+            self.sc.stop()
+
+
+    def query_data(self, data_frame, table_name, query_str, limit_cnt=0):
+        """
+        get query data from spark
+        :param table_name: name of table you want to get data
+        :param query_str: sql strings
+        :return: query result as json Object
+        """
+        try:
+            self.spark_session_create()
+            tfmsa_logger("start query data !")
+            hdfs_path = "hdfs://" + settings.HDFS_HOST + settings.HDFS_DF_ROOT + "/" + data_frame + "/" + table_name
+
+            sqlContext = SQLContext(self.sc)
+            df = sqlContext.read.load(hdfs_path, "parquet")
+            df.registerTempTable(table_name)
+            if (limit_cnt == 0):
+                result = sqlContext.sql(str(query_str)).collect()
+            else:
+                result = sqlContext.sql(str(query_str)).limit(limit_cnt).collect()
+            return result
+
+            tfmsa_logger("End query data!")
+
+        except Exception as e:
+            tfmsa_logger(e)
+            raise Exception(e)
+        finally:
+            df.unpersist()
+            self.sc.stop()
+
+
+    def post_json_data(self, data_frame, table_name, json_data):
+        """
+        create table with json data
+        :param table_name: name of table want to create
+        :param json_data: json form schema data
+        :return: success or failure
+        """
+        try:
+            self.spark_session_create()
+            tfmsa_logger("start create_table !")
+            hdfs_path = "hdfs://" + settings.HDFS_HOST + settings.HDFS_DF_ROOT + "/" + data_frame + "/" + table_name
+
+            sqlContext = SQLContext(self.sc)
+            df_writer = sqlContext.createDataFrame(str(json_data)).write
+            df_writer.parquet(hdfs_path, mode="append", partitionBy=None)
+            tfmsa_logger("End create_table !")
+
+        except Exception as e:
+            tfmsa_logger(e)
+            raise Exception(e)
+        finally:
+            df_writer.unpersist()
+            self.sc.stop()
+
+
+    def put_json_data(self, data_frame, table_name, json_data):
+        """
+        append data on exist table
+        :param table_name: name of table want to add data
+        :param json_data: json form schema data
+        :return: success or failure
+        """
+        try:
+            self.spark_session_create()
+            tfmsa_logger("start append_data !")
+            hdfs_path = "hdfs://" + settings.HDFS_HOST + settings.HDFS_DF_ROOT + "/" + data_frame + "/" + table_name
+
+            sqlContext = SQLContext(self.sc)
+            df = sqlContext.read.load(hdfs_path, "parquet")
+            df_writer = sqlContext.createDataFrame(str(json_data))
+            df.unionAll(df_writer)
+            df.write.parquet(hdfs_path, mode="append", partitionBy=None)
+            tfmsa_logger("End append_data !")
+
+        except Exception as e:
+            tfmsa_logger(e)
+            raise Exception(e)
+        finally:
+            df_writer.unpersist()
+            df.unpersist()
+            self.sc.stop()
+
+
+    def save_csv_to_df(self, data_frame, table_name, csv_file):
+        """
+        create new table with inserted csv data
+        :param net_id:
+        :return:
+        """
+        try:
+            self.spark_session_create()
+            tfmsa_logger("start uploading csv on Hadoop")
+            # clear current exist table
+            self.reset_table(data_frame, table_name)
+
+            sqlContext = SQLContext(self.sc)
+
+            file_path = settings.FILE_ROOT + "/" + data_frame + "/" + table_name + "/" + csv_file
+            df = sqlContext.createDataFrame(pd.read_csv(file_path))
+            df.write.parquet("hdfs://{0}/{1}/{2}/{3}".format(settings.HDFS_HOST, settings.HDFS_DF_ROOT, \
+                                                             data_frame, table_name), mode="append", partitionBy=None)
+            tfmsa_logger("uploading csv on Hadoop finished")
+
+
+        except Exception as e:
+            tfmsa_logger(e)
+            raise Exception(e)
+        finally:
+            df.unpersist()
+            self.sc.stop()
+
+
+    def update_csv_to_df(self, data_frame, table_name, csv_file):
+        """
+        append csv data
+        :param data_frame:
+        :param table_name:
+        :param csv_file:
+        :return:
+        """
+        try:
+            self.spark_session_create()
+            sqlContext = SQLContext(self.sc)
+            df = sqlContext.read.load("hdfs://{0}/{1}/{2}/{3}".format(settings.HDFS_HOST, settings.HDFS_DF_ROOT, \
+                                                                      data_frame, table_name), "parquet")
+            file_path = settings.FILE_ROOT + "/" + data_frame + "/" + table_name + "/" + csv_file
+            append_df = sqlContext.createDataFrame(pd.read_csv(file_path))
+            append_df.unionAll(df)
+            append_df.write.parquet("hdfs://{0}/{1}/{2}/{3}".format(settings.HDFS_HOST, settings.HDFS_DF_ROOT, \
+                                                                    data_frame, table_name), mode="append",
+                                    partitionBy=None)
+
+        except Exception as e:
+            tfmsa_logger(e)
+            raise Exception(e)
+
+        finally:
+            df.unpersist()
+            append_df.unpersist()
+            self.sc.stop()

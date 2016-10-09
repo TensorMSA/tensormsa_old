@@ -14,8 +14,8 @@ def chk_trained_data(net_id):
     net_id = net_id + ".ckpt"
 
     try:
-        if os.path.isfile(directory + net_id):
-            if(os.stat(directory + net_id).st_size == 0):
+        if os.path.isfile(directory +  "/"  + net_id):
+            if(os.stat(directory + "/"  + net_id).st_size == 0):
                 return False
             else:
                 return True
@@ -36,8 +36,8 @@ def load_trained_data(nn_id, model):
     if not os.path.exists(directory):
         os.makedirs(directory)
 
-    if os.path.isfile(directory + nn_id + ".ckpt"):
-        model.load(directory + nn_id + ".ckpt")
+    if os.path.isfile(directory + "/" + nn_id + ".ckpt"):
+        model.load(directory + "/" +  nn_id + ".ckpt")
 
     return model
 
@@ -54,12 +54,9 @@ def save_trained_data(nn_id, model):
     if not os.path.exists(directory):
         os.makedirs(directory)
 
-    model.save(directory + nn_id + ".ckpt")
-
+    model.save(directory + "/"  + nn_id + ".ckpt")
     tfmsa_logger("save model completed for ")
-    """
-    TO-DO : save trained data on the data base
-    """
+
     return model
 
 
@@ -76,24 +73,9 @@ def remove_trained_data(nn_id):
         if not os.path.exists(directory):
             os.makedirs(directory)
 
-        if os.path.isfile(directory + nn_id + ".ckpt"):
-            os.remove(directory + nn_id + ".ckpt")
-            os.remove(directory + nn_id + ".ckpt.meta")
+        if os.path.isfile(directory + "/" + nn_id + ".ckpt"):
+            os.remove(directory + "/" + nn_id + ".ckpt")
+            os.remove(directory + "/" + nn_id + ".ckpt.meta")
             tfmsa_logger("remove model completed for [ " + nn_id + "]")
     except Exception as e:
         tfmsa_logger("remove trained error : {0}".format(e))
-
-
-
-
-def test_data_move():
-    """
-    only for the test purpose
-    :return:
-    """
-    to_path = settings.HDFS_MODEL_ROOT
-    #from_path = os.path.dirname(os.path.realpath(__file__))
-    from_path = os.path.dirname(os.getcwd() +"/tfmsacore/data/")
-    shutil.copy(os.path.join(from_path, "sample_conf.json"), to_path)
-    shutil.copy(os.path.join(from_path, "sample_data.json"), to_path)
-    shutil.copy(os.path.join(from_path, "sample_tag.json"), to_path)

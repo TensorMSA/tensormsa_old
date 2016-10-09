@@ -1,6 +1,7 @@
 from tfmsacore import train
 from tfmsacore import netconf
 from tfmsarest import livy
+from tfmsacore import data
 from tfmsacore.service import JobStateLoader,ServerConfLoader,ServerStateChecker
 from tfmsacore.utils.logger import tfmsa_logger
 import json
@@ -58,8 +59,6 @@ class JobManager:
             if(type == '1'):
                 # run dataframe data preprocess
                 nn_info = netconf.get_network_config(nnid)
-                livy_client = livy.LivyDfClientManager()
-                livy_client.create_session()
 
                 json_obj = json.loads(str(nn_info['datadesc']).replace("'", "\""))
                 cate_column_list = []
@@ -68,8 +67,8 @@ class JobManager:
                         cate_column_list.append(column)
 
                 nninfo = netconf.get_network_config(nnid)
-                dist_col_list = livy_client.get_distinct_column(nninfo['dir'], nninfo['table'], cate_column_list)
-                netconf.set_train_datasets(nnid, str(dist_col_list))
+                dist_col_list = data.DataMaster().get_distinct_dataframe(nninfo['dir'], nninfo['table'], cate_column_list)
+                netconf.set_train_datasets(nnid, str(json.dumps(dist_col_list)))
 
             elif(type == '2'):
                 # run neural network training

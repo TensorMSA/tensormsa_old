@@ -20,7 +20,7 @@ class DataFrameSchema(APIView):
         :return: create schema result
         """
         try:
-            result = data.HadoopManager().create_database(baseid)
+            result = data.DataMaster().create_database(baseid)
             return_data = {"status": "200", "result": result}
             return Response(json.dumps(return_data))
         except Exception as e:
@@ -35,7 +35,7 @@ class DataFrameSchema(APIView):
         :return: list of schemaa (database)
         """
         try:
-            result = data.HadoopManager().search_all_database()
+            result = data.DataMaster().search_all_database()
             return_data = {"status": "200", "result": result}
             return Response(json.dumps(return_data))
         except Exception as e:
@@ -50,7 +50,7 @@ class DataFrameSchema(APIView):
         """
         try:
             json_data = json.loads(request.body)
-            result = data.HadoopManager().rename_database(json_data['origin'], json_data['modify'])
+            result = data.DataMaster().rename_database(json_data['origin'], json_data['modify'])
             return_data = {"status": "200", "result": result}
             return Response(json.dumps(return_data))
         except Exception as e:
@@ -64,7 +64,7 @@ class DataFrameSchema(APIView):
         :return: renamed database name
         """
         try:
-            result = data.HadoopManager().delete_database(baseid)
+            result = data.DataMaster().delete_database(baseid)
             return_data = {"status": "200", "result": result}
             return Response(json.dumps(return_data))
         except Exception as e:

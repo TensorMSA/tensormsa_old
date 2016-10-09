@@ -1,5 +1,6 @@
-from .csv_loader import CsvLoader
-from .json_loader import load_data, load_tag
 from .table_preprocess import DFPreProcessor
-from .hdfs_manager import HadoopManager
-from .spark_loader import SparkManager
+from .hdfs_manager import HDFSManager
+from .hive_manager import HiveManager
+from .locfile_manager import LocalFileManager
+from .aws_s3_manager import S3Manager
+from .data_master import DataMaster

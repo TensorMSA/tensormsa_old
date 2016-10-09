@@ -1,5 +1,6 @@
 import json, requests, textwrap, time, random, os
 from django.conf import settings
+#from tfmsacore.data.hdfs_manager import HadoopManager
 
 class JsonObject:
     """
@@ -34,8 +35,8 @@ class LivyDfClientManager:
 
         data = {'kind': 'pyspark',
                 "name": "tensormsa",
-                "executorCores": int(settings.SPARK_CORE),
-                "executorMemory": settings.SPARK_MEMORY,
+                "executorCores": int(settings.SPARK_WORKER_CORE),
+                "executorMemory": settings.SPARK_WORKER_MEMORY,
                 "driverCores": int(settings.SPARK_CORE),
                 "driverMemory": settings.SPARK_MEMORY}
         r = requests.post("http://" + settings.LIVY_HOST + "/sessions", data=json.dumps(data), headers=self.headers)
@@ -163,10 +164,10 @@ class LivyDfClientManager:
         response_obj = json.loads(resp.content, object_hook=JsonObject)
 
         if(response_obj.state == 'running'):
-            time.sleep(1)
+            time.sleep(2)
             return self.get_response(session_id, statements_id)
         elif(response_obj.state == 'starting'):
-            time.sleep(1)
+            time.sleep(2)
             return self.get_response(session_id, statements_id)
         else:
             print("Response : {0}".format(resp.json()))
@@ -259,3 +260,45 @@ class LivyDfClientManager:
                                           json.loads(resp.content, object_hook=JsonObject).id)
 
         return result["output"]["data"]["text/plain"].replace("\"", "")
+
+
+    def delete_all_session(self):
+        """
+        delete all alive sessions on livy
+        :return:
+        """
+        self.get_available_sess_id()
+        for sess_id in self.alive_sess_list:
+            requests.delete("http://" + settings.LIVY_HOST + "/sessions/" + str(sess_id), headers=self.headers)
+
+        while(self.alive_sess_cnt == 0):
+            self.check_alive_sessions()
+
+    def save_csv_to_df(self, data_frame, table_name, csv_file):
+        """
+        create new table with inserted csv data
+        :param net_id:
+        :return:
+        """
+        self.get_available_sess_id()
+
+        try:
+            file_path = settings.FILE_ROOT + "/" + data_frame + "/" + table_name + "/" + csv_file
+            hdfs_path =  "hdfs://" + settings.HDFS_HOST + settings.HDFS_DF_ROOT + "/" + data_frame + "/" + table_name
+            data = {
+                'code': ''.join(['from pyspark.sql import SQLContext\n',
+                                 'import pandas as pd\n',
+                                 'sqlContext = SQLContext(sc)\n',
+                                 'tp = pd.read_csv("' , str(file_path) , '")\n',
+                                 'df_writer = sqlContext.createDataFrame(data=tp).write\n',
+                                 'df.write.parquet("', str(hdfs_path) ,'" ,mode="append", partitionBy=None)\n',
+                                 ])
+            }
+            resp = requests.post("http://" + settings.LIVY_HOST + "/sessions/" + str(min(self.avail_sess_list)) + \
+                                 "/statements", data=json.dumps(data), headers=self.headers)
+            result = self.get_response(str(min(self.avail_sess_list)), \
+                                       json.loads(resp.content, object_hook=JsonObject).id)
+            return result["output"]["data"]["text/plain"].replace("'", "")
+
+        except Exception as e:
+            raise Exception(e)

@@ -8,7 +8,7 @@ from django.conf import settings
 #https://realpython.com/blog/python/api-integration-in-python/
 #http://www.slideshare.net/Byungwook/rest-api-60505484
 
-url = "8ea172cae00f:8989"
+url = "8b817bad1154:8989"
 
 
 ####################################################################################
@@ -114,14 +114,8 @@ def dataframe_format_post():
                                "name" : "none" ,
                                "sex" : "cate",
                                "age" : "cont",
-                               "sibsp" : "cate" ,
-                               "parch": "cate",
-                               "ticket": "none",
-                               "fare": "none",
-                               "cabin": "cate",
                                "embarked": "cate",
-                               "boat": "cate",
-                               "body": "none",
+                               "boat": "cate"
                                })
     data = json.loads(resp.json())
     print("test result : {0}".format(data))
@@ -138,14 +132,8 @@ def dataframe_format_put():
                                "name" : "none" ,
                                "sex" : "cate",
                                "age" : "cont",
-                               "sibsp" : "cate" ,
-                               "parch": "cate",
-                               "ticket": "none",
-                               "fare": "none",
-                               "cabin": "cate",
                                "embarked": "cate",
-                               "boat": "cate",
-                               "body": "none",
+                               "boat": "cate"
                                })
     data = json.loads(resp.json())
     print("test result : {0}".format(data))
@@ -361,16 +349,11 @@ def cnn_predict_post():
     resp = requests.post('http://' + url + '/api/v1/type/cnn/predict/nn0000010/',
                          json= [
                              {"pclass": "1st",
+                              "survived": "tag",
                               "sex": "female",
                               "age": "30",
-                              "sibsp": "0",
-                              "parch": "0",
-                              "ticket": "24160",
-                              "fare": "200",
-                              "cabin": "B5",
                               "embarked": "Southampton",
-                              "boat": "2",
-                              "body": "NA",
+                              "boat": "2"
                               }]
                          )
     data = json.loads(resp.json())
@@ -434,6 +417,24 @@ def common_env_get():
     print("test result : {0}".format(data))
 
 
+####################################################################################
+# Livy Session
+####################################################################################
+
+def common_livy_post():
+    resp = requests.post('http://' + url + '/api/v1/type/common/livy/')
+    data = json.loads(resp.json())
+    print("test result : {0}".format(data))
+
+def common_livy_get():
+    resp = requests.get('http://' + url + '/api/v1/type/common/livy/')
+    data = json.loads(resp.json())
+    print("test result : {0}".format(data))
+
+def common_livy_delete():
+    resp = requests.delete('http://' + url + '/api/v1/type/common/livy/')
+    data = json.loads(resp.json())
+    print("test result : {0}".format(data))
 
 ####################################################################################
 # TEST - TEST - TEST
@@ -454,9 +455,9 @@ Test Sequence !!
 10. cnn - predict- post
 """
 #common, dataframe, cnn
-category1 = "cnn"
+category1 = "dataframe"
 # checker, predict, stat, test, train, conf, nnfino, base, data, format, table, pre
-category2 = "predict"
+category2 = "pre"
 # post, get, put, delete
 request = "post"
 

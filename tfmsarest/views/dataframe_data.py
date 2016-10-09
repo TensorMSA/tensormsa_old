@@ -25,9 +25,7 @@ class DataFrameData(APIView):
             if(args == "JSON"):
                 jd = jc.load_obj_json(request.body)
                 conf_data = json.dumps(jd.data, cls=CusJsonEncoder)
-                livy_client = livy.LivyDfClientManager()
-                livy_client.create_session()
-                livy_client.create_table(baseid, tb, conf_data)
+                data.DataMaster().post_josn_data(baseid, tb, conf_data)
 
             elif(args == "CSV"):
                 logger.tfmsa_logger("start uploading csv on file system")
@@ -45,7 +43,7 @@ class DataFrameData(APIView):
                     fp.close()
 
                     #update to hdfs
-                    data.CsvLoader().save_csv_to_df(baseid, tb, filename)
+                    data.DataMaster().save_csv_to_df(baseid, tb, filename)
 
                     #delete file after upload
                     if os.path.isfile("{0}/{1}/{2}/{3}".format(settings.FILE_ROOT, baseid, tb, filename)):
@@ -69,12 +67,10 @@ class DataFrameData(APIView):
         :return: query result on json form (list - dict)
         """
         try:
-            livy_client = livy.LivyDfClientManager()
-            livy_client.create_session()
             if(args == None):
-                result = livy_client.query_data(baseid, tb, "select * from " + str(tb))
+                result = data.DataMaster().query_data(baseid, tb, "select * from " + str(tb), 100)
             else:
-                result = livy_client.query_data(baseid, tb, args)
+                result = data.DataMaster().query_data(baseid, tb, args, 100)
 
             return_data = {"status": "ok", "result": result}
             return Response(json.dumps(return_data))
@@ -92,9 +88,7 @@ class DataFrameData(APIView):
             if (args == "JSON"):
                 jd = jc.load_obj_json(request.body)
                 conf_data = json.dumps(jd.data, cls=CusJsonEncoder)
-                livy_client = livy.LivyDfClientManager()
-                livy_client.create_session()
-                livy_client.append_data(baseid, tb, conf_data.replace("\"","'"))
+                data.DataMaster().put_josn_data(baseid, tb, conf_data)
 
             elif (args == "CSV"):
                 logger.tfmsa_logger("start uploading csv on file system")
@@ -112,7 +106,7 @@ class DataFrameData(APIView):
                     fp.close()
 
                     #upload data to hdfs
-                    data.CsvLoader().save_csv_to_df(baseid, tb, filename)
+                    data.DataMaster().save_csv_to_df(baseid, tb, filename)
 
                     #delete file after upload
                     if os.path.isfile("{0}/{1}/{2}/{3}".format(settings.FILE_ROOT, baseid, tb, filename)):

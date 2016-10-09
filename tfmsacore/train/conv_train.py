@@ -14,6 +14,7 @@ import json, math
 
 
 
+
 def save_changed_data_info(nn_id, spark_loader):
     """
     save train data size related information on db
@@ -50,18 +51,23 @@ def train_conv_network(nn_id, epoch, testset):
 
     try :
         # check network is ready to train
+        utils.tfmsa_logger("[1]check request nn data")
         utils.check_requested_nn(nn_id)
 
         # get train data from spark
+        utils.tfmsa_logger("[2]get data from spark")
         sp_loader = td.DFPreProcessor().get_train_data(nn_id)
 
         # change conf info
+        utils.tfmsa_logger("[3]save recalculated data info")
         save_changed_data_info(nn_id, sp_loader)
 
         # load NN conf form db
+        utils.tfmsa_logger("[4]load net conf form db")
         conf = netconf.load_conf(nn_id)
 
         # set train and test data
+        utils.tfmsa_logger("[5]set tensor variables")
         train_x = np.array(sp_loader.m_train , np.float32)
         train_y = np.array(sp_loader.m_tag , np.float32)
         test_x = np.array(sp_loader.m_train, np.float32)
@@ -76,6 +82,7 @@ def train_conv_network(nn_id, epoch, testset):
         test_x = np.reshape(test_x, (-1, matrix[0], matrix[1],1))
 
         # create network conifg
+        utils.tfmsa_logger("[6]set networks on tflearn")
         num_layers = len(conf.layer)
         for i in range(0, int(num_layers)):
 
@@ -110,20 +117,25 @@ def train_conv_network(nn_id, epoch, testset):
                 raise SyntaxError("there is no such kind of nn type : " + str(data.active))
 
         # set to real tensorflow
+        utils.tfmsa_logger("[7]set net conf on real tensorflow")
         model = tflearn.DNN(network, tensorboard_verbose=0)
 
         #load network
+        utils.tfmsa_logger("[8]load pretrained model")
         model = netconf.nn_data_manager.load_trained_data(nn_id, model)
 
         #train network
+        utils.tfmsa_logger("[9]Start Train")
         model.fit({'input': train_x}, {'target': train_y}, n_epoch=int(epoch),
                   validation_set=({'input': test_x}, {'target': test_y}),
                   snapshot_step=100, show_metric=True, run_id='convnet_mnist')
 
         # save trained network
+        utils.tfmsa_logger("[10]save trained model")
         netconf.nn_data_manager.save_trained_data(nn_id, model)
 
         # save train statistics result
+        utils.tfmsa_logger("[11]test accuracy and save")
         acc = model.evaluate(test_x, test_y)
         netconf.nn_common_manager.set_train_result(nn_id, acc)
 
