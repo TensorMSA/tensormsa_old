@@ -36,6 +36,8 @@ class HDFSManager:
         if (self.client.content("{0}/".format(settings.HDFS_MODEL_ROOT), strict=False) == None):
             self.client.makedirs("{0}/".format(settings.HDFS_MODEL_ROOT), permission=777)
 
+        self.root = "{0}/".format(settings.HDFS_DF_ROOT)
+
     def spark_session_create(self):
         """
         spark Loader Class
@@ -53,7 +55,7 @@ class HDFSManager:
 
         self.sc = SparkContext(conf=conf)
 
-        self.root = "{0}/".format(settings.HDFS_DF_ROOT)
+
 
     def search_all_database(self):
         """
@@ -129,7 +131,7 @@ class HDFSManager:
         :return:
         """
         try:
-            if (self.client.content("{0}{1}".format(self.root, db_name), strict=False) != None):
+            if (self.client.content("{0}{1}".format(self.root, db_name), strict=False) == None):
                 tfmsa_logger("Warning DataBase not exist, auto create : {0}".format(db_name))
                 self.create_database(db_name)
 
