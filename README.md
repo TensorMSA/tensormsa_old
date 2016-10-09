@@ -28,14 +28,11 @@ python legacy systems can use deep learning easily
 <p align="center">
   <img src="https://raw.githubusercontent.com/seungwookim/TensorMSA/master/ProjectDesc3.png" width="750"/>
 </p>
-# Docker Trouble Shooting 
-  *[(Base Size Trouble Shooting)](http://wp.me/p7xrpI-ep)* : if you suffer not enough space related error with docker check
-  
 
-# Docker(Local File Mode)*[(Docker Hub)](https://hub.docker.com/r/tmddno1/tensormsa/)**[(usage)](http://wp.me/p7xrpI-dr)*
-  If you want to test TensorMSA without any complicated ECO system. you can run TensorMSA with single Docker image
-  this will include postgrestsql, django, spark and TensorMSA. </br>
-  [Remeber] this mode will write all files on your local file system 
+# Docker(File Mode)*[(Docker Hub)](https://hub.docker.com/r/tmddno1/tensormsa/)**[(usage)](http://wp.me/p7xrpI-dr)*
+  If you want to use TensorMSA without any complicated eco system. You can run TensorMSA with single Docker image.
+  This simply include postgrestsql, django, spark and TensorMSA. </br>
+  [Remeber] This mode will write all files on your local file system 
  
    - install Docker 
    ```python
@@ -78,10 +75,10 @@ python legacy systems can use deep learning easily
       [root@db44c088318c bin]#  /home/dev/TensorMSA/stop_tensormsa.sh
    ```
 
-# Docker(HDFS-TensorMSA)*[(Docker Hub)](https://hub.docker.com/r/tmddno1/tensormsa/)**[(usage)](http://wp.me/p7xrpI-dr)*
+# Docker(HDFS mode)*[(Docker Hub)](https://hub.docker.com/r/tmddno1/tensormsa/)**[(usage)](http://wp.me/p7xrpI-dr)*
   Spark support all functions that Hadoop eco system provide except datastore. This is a architecture use HDFS as data store
-  but no other features of HADOOP ECO system will be used (like mapreduce, ETL, SQL ,etc..) 
-  "HDFS - SPARK - TensorMSA Architecute" is recommended if you don't have lagacy Bigdata system. </br>
+  but no other features of HADOOP ECO system (like mapreduce, ETL, SQL ,etc..) 
+  "HDFS - SPARK - TensorMSA Architecute" is recommended (fast & concise) If you don't have lagacy bigdata system. </br>
   *cluster version will be ready in 2017* 
   
    - install Docker 
@@ -134,7 +131,33 @@ python legacy systems can use deep learning easily
       [root@db44c088318c bin]#  /home/dev/TensorMSA/start_tensormsa.sh 
       [root@db44c088318c bin]#  /home/dev/TensorMSA/stop_tensormsa.sh
    ```
-   
+
+# Docker - Settings 
+   - Server information  
+   ```python
+      path : /home/dev/TensorMSA/TensorMSA/settings.py
+      
+      # custom setting need for tensormsa
+      DATA_STORE_MODE = '1' # 1 (HDFS), 2(HIVE), 3(S3), 4(Local)
+      LIVY_HOST = '8b817bad1154:8998'
+      LIVY_SESS = '1'
+      SPARK_HOST = '8b817bad1154:7077'
+      SPARK_CORE = '1'
+      SPARK_MEMORY = '1G'
+      SPARK_WORKER_CORE = '2'
+      SPARK_WORKER_MEMORY = '4G'
+      FILE_ROOT = '/tensormsa'
+      HDFS_HOST = '587ed1df9441:9000'
+      HDFS_ROOT = '/tensormsa'
+      HDFS_DF_ROOT = '/tensormsa/dataframe'
+      HDFS_CONF_ROOT = '/tensormsa/config'
+      HDFS_MODEL_ROOT = '/tensormsa/model'
+   ```
+
+# Docker Trouble Shooting 
+  *[(Base Size Trouble Shooting)](http://wp.me/p7xrpI-ep)* : if you suffer "not enough space" related error with docker
+  
+
 # Install*[(link)](http://hugrypiggykim.com/2016/09/03/python-tensorflow-django-%ea%b0%9c%eb%b0%9c%ed%99%98%ea%b2%bd-%ea%b5%ac%ec%b6%95-%ec%a2%85%ed%95%a9/)*
 
 <b>1.Install Anaconda </b> </br>
