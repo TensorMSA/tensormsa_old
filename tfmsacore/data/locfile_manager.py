@@ -253,7 +253,7 @@ class LocalFileManager:
         try:
             self.spark_session_create()
             tfmsa_logger("start find distinct column !")
-            hdfs_path = "/" + settings.HDFS_HOST + settings.HDFS_DF_ROOT + "/" + data_frame + "/" + table_name
+            hdfs_path = settings.HDFS_DF_ROOT + "/" + data_frame + "/" + table_name
             query_str = "select * from " + table_name
 
             sqlContext = SQLContext(self.sc)
