@@ -289,7 +289,7 @@ class LocalFileManager:
         try:
             self.spark_session_create()
             tfmsa_logger("start query data !")
-            hdfs_path = "/" + settings.HDFS_HOST + settings.HDFS_DF_ROOT + "/" + data_frame + "/" + table_name
+            hdfs_path = settings.HDFS_DF_ROOT + "/" + data_frame + "/" + table_name
 
             sqlContext = SQLContext(self.sc)
             df = sqlContext.read.load(hdfs_path, "parquet")
