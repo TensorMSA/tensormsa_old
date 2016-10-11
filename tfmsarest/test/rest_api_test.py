@@ -8,7 +8,7 @@ from django.conf import settings
 #https://realpython.com/blog/python/api-integration-in-python/
 #http://www.slideshare.net/Byungwook/rest-api-60505484
 
-url = "8b817bad1154:8989"
+url = "c943303845a2:8989"
 
 
 ####################################################################################
@@ -334,7 +334,7 @@ def cnn_conf_delete():
 def cnn_train_post():
     resp = requests.post('http://' + url + '/api/v1/type/cnn/train/nn0000010/',
                          json= {
-                             "epoch" : "50",
+                             "epoch" : "10",
                              "testset" : "10"
                          })
     data = json.loads(resp.json())
@@ -437,6 +437,16 @@ def common_livy_delete():
     print("test result : {0}".format(data))
 
 ####################################################################################
+# cnn - checker - post
+####################################################################################
+
+def cnn_checker_post():
+    resp = requests.post('http://' + url + '/api/v1/type/cnn/checker/nn0000010/')
+    data = json.loads(resp.json())
+    print("test result : {0}".format(data))
+
+
+####################################################################################
 # TEST - TEST - TEST
 ####################################################################################
 
@@ -451,13 +461,14 @@ Test Sequence !!
 6. dataframe - format - post
 7. dataframe - pre - post
 8. cnn - conf - post
-9. cnn - train - post
-10. cnn - predict- post
+9. cnn - checker - post
+10. cnn - train - post
+11. cnn - predict- post
 """
 #common, dataframe, cnn
-category1 = "dataframe"
+category1 = "cnn"
 # checker, predict, stat, test, train, conf, nnfino, base, data, format, table, pre
-category2 = "pre"
+category2 = "checker"
 # post, get, put, delete
 request = "post"
 

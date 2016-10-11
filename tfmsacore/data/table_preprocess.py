@@ -92,8 +92,8 @@ class DFPreProcessor:
         modified_tag_row = []
 
         for data in origin_data:
-            modified_train_row[:] = []
-            modified_tag_row[:] = []
+            modified_train_row = []
+            modified_tag_row = []
 
             if (isinstance(data, (types.Row))):
                 data = data.asDict()

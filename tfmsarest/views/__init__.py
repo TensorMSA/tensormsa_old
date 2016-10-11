@@ -10,3 +10,4 @@ from .cnn_predict import ConvNeuralNetPredict
 from .common_env import CommonEnvInfo
 from .common_job import CommonJobInfo
 from .common_livy import CommonLivySession
+from .cnn_checker import ConvNeuralNetChecker
