@@ -27,8 +27,6 @@ class ConvNeuralNetChecker(APIView):
         :return: {"status": "", "result": [[]]}
         """
         try:
-            print("!!!!!!!!!!!!!")
-            print(nnid)
             jd = jc.load_obj_json(request.body)
             result = validation.CNNChecker().check_sequence(nnid)
             return_data = {"status": "ok", "result": result}
