@@ -17,7 +17,7 @@ def predict_conv_network(nn_id , req_data):
     """
         Predict Convolutional Neural Network and save all result on data base
         :param nn_id : neural network id
-        :param req_data : test request data
+        :param req_data : evaluation request data
         :return: predict result in array
         """
 

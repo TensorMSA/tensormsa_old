@@ -3,8 +3,9 @@ from tfmsacore import netconf
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from tfmsacore.utils.json_conv import JsonDataConverter as jc
-from tfmsarest import livy
+from TensorMSA import const
 from tfmsacore import service
+
 
 class DataFramePre(APIView):
     """
@@ -21,7 +22,7 @@ class DataFramePre(APIView):
         :return: create schema result
         """
         try:
-            service.JobManager().regit_job(nnid, "1")
+            service.JobManager().regit_job(nnid, const.JOB_TYPE_DF_PRE_PROCESS)
             return_data = {"status": "200", "result": tb}
             return Response(json.dumps(return_data))
         except Exception as e:
@@ -50,7 +51,7 @@ class DataFramePre(APIView):
         :return: renamed table name
         """
         try:
-            service.JobManager().regit_job(nnid, "1")
+            service.JobManager().regit_job(nnid, const.JOB_TYPE_DF_PRE_PROCESS)
             return_data = {"status": "200", "result": tb}
             return Response(json.dumps(return_data))
         except Exception as e:

@@ -66,7 +66,7 @@ def train_conv_network(nn_id, epoch, testset):
         utils.tfmsa_logger("[4]load net conf form db")
         conf = netconf.load_conf(nn_id)
 
-        # set train and test data
+        # set train and evaluation data
         utils.tfmsa_logger("[5]set tensor variables")
         train_x = np.array(sp_loader.m_train , np.float32)
         train_y = np.array(sp_loader.m_tag , np.float32)
@@ -135,9 +135,9 @@ def train_conv_network(nn_id, epoch, testset):
         netconf.nn_data_manager.save_trained_data(nn_id, model)
 
         # save train statistics result
-        utils.tfmsa_logger("[11]test accuracy and save")
+        utils.tfmsa_logger("[11]evaluation accuracy and save")
         acc = model.evaluate(test_x, test_y)
-        netconf.nn_common_manager.set_train_result(nn_id, acc)
+        netconf.nn_common_manager.set_train_result(nn_id, round(acc, 3))
 
         return acc
 
@@ -145,5 +145,5 @@ def train_conv_network(nn_id, epoch, testset):
         print ("Error Message : {0}".format(e))
         raise Exception(e)
 
-#for test purpose
+#for evaluation purpose
 #train_conv_network("sample")
