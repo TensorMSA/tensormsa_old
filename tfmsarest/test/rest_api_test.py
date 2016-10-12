@@ -8,7 +8,7 @@ from django.conf import settings
 #https://realpython.com/blog/python/api-integration-in-python/
 #http://www.slideshare.net/Byungwook/rest-api-60505484
 
-url = "c943303845a2:8989"
+url = "5e5b6cb099aa:8989"
 
 
 ####################################################################################
@@ -19,14 +19,14 @@ def common_nninfo_post():
     resp = requests.post('http://' + url + '/api/v1/type/common/nninfo/',
                          json={
                              "nn_id": "nn0000010",
-                             "category": "test",
+                             "category": "evaluation",
                              "subcate" : "csv",
-                             "name": "test",
+                             "name": "evaluation",
                              "desc" : "xxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
                          })
 
     data = json.loads(resp.json())
-    print("test result : {0}".format(data))
+    print("evaluation result : {0}".format(data))
 
 
 def common_nninfo_get():
@@ -34,25 +34,25 @@ def common_nninfo_get():
     #resp = requests.get('http://' + url + '/api/v1/type/common/nninfo//category//subcate/subcate1/')
     resp = requests.get('http://' + url + '/api/v1/type/common/nninfo//category//subcate//')
     data = json.loads(resp.json())
-    print("test result : {0}".format(data))
+    print("evaluation result : {0}".format(data))
 
 def common_nninfo_put():
     resp = requests.put('http://' + url + '/api/v1/type/common/nninfo/',
                          json={
                              "nn_id": "nn0000010",
-                             "category": "test",
+                             "category": "evaluation",
                              "subcate" : "csv",
-                             "name": "test",
+                             "name": "evaluation",
                              "desc" : "sssssssssssssssssssssss"
                          })
     data = json.loads(resp.json())
-    print("test result : {0}".format(data))
+    print("evaluation result : {0}".format(data))
 
 def common_nninfo_delete():
     resp = requests.delete('http://' + url + '/api/v1/type/common/nninfo/',
                          json=['nn0000008', 'nn0000009'])
     data = json.loads(resp.json())
-    print("test result : {0}".format(data))
+    print("evaluation result : {0}".format(data))
 
 ####################################################################################
 # DataFrame - database
@@ -61,23 +61,23 @@ def common_nninfo_delete():
 def dataframe_base_post():
     resp = requests.post('http://' + url + '/api/v1/type/dataframe/base/csvtest/',)
     data = json.loads(resp.json())
-    print("test result : {0}".format(data))
+    print("evaluation result : {0}".format(data))
 
 def dataframe_base_get():
     resp = requests.get('http://' + url + '/api/v1/type/dataframe/base/',)
     data = json.loads(resp.json())
-    print("test result : {0}".format(data))
+    print("evaluation result : {0}".format(data))
 
 def dataframe_base_put():
     resp = requests.put('http://' + url + '/api/v1/type/dataframe/base/',
                         json={"origin" : "test1" , "modify" : "xxxxx"})
     data = json.loads(resp.json())
-    print("test result : {0}".format(data))
+    print("evaluation result : {0}".format(data))
 
 def dataframe_base_delete():
     resp = requests.delete('http://' + url + '/api/v1/type/dataframe/base/csvtest/')
     data = json.loads(resp.json())
-    print("test result : {0}".format(data))
+    print("evaluation result : {0}".format(data))
 
 ####################################################################################
 # DataFrame - table
@@ -85,27 +85,27 @@ def dataframe_base_delete():
 def dataframe_table_post():
     resp = requests.post('http://' + url + '/api/v1/type/dataframe/base/csvtest/table/titanic/')
     data = json.loads(resp.json())
-    print("test result : {0}".format(data))
+    print("evaluation result : {0}".format(data))
 
 def dataframe_table_get():
     resp = requests.get('http://' + url + '/api/v1/type/dataframe/base/csvtest/table/')
     data = json.loads(resp.json())
-    print("test result : {0}".format(data))
+    print("evaluation result : {0}".format(data))
 
 def dataframe_table_put():
     resp = requests.put('http://' + url + '/api/v1/type/dataframe/base/csvtest/table/',
                         json={"origin" : "ddd" , "modify" : "zzz"})
     data = json.loads(resp.json())
-    print("test result : {0}".format(data))
+    print("evaluation result : {0}".format(data))
 
 def dataframe_table_delete():
     resp = requests.delete('http://' + url + '/api/v1/type/dataframe/base/csvtest/table/titanic/')
     data = json.loads(resp.json())
-    print("test result : {0}".format(data))
+    print("evaluation result : {0}".format(data))
 
 ####################################################################################
 # DataFrame - format
-####################################################################################
+##########################################################5e5b6cb099aa##########################
 
 def dataframe_format_post():
     resp = requests.post('http://' + url + '/api/v1/type/dataframe/base/csvtest/table/titanic/format/nn0000010/',
@@ -118,12 +118,12 @@ def dataframe_format_post():
                                "boat": "cate"
                                })
     data = json.loads(resp.json())
-    print("test result : {0}".format(data))
+    print("evaluation result : {0}".format(data))
 
 def dataframe_format_get():
     resp = requests.get('http://' + url + '/api/v1/type/dataframe/base/csvtest/table/titanic/format/nn0000010/')
     data = json.loads(resp.json())
-    print("test result : {0}".format(data))
+    print("evaluation result : {0}".format(data))
 
 def dataframe_format_put():
     resp = requests.put('http://' + url + '/api/v1/type/dataframe/base/csvtest/table/titanic/format/nn0000010/',
@@ -136,12 +136,12 @@ def dataframe_format_put():
                                "boat": "cate"
                                })
     data = json.loads(resp.json())
-    print("test result : {0}".format(data))
+    print("evaluation result : {0}".format(data))
 
 def dataframe_format_delete():
     resp = requests.delete('http://' + url + '/api/v1/type/dataframe/base/csvtest/table/ddd/format/nn0000010/')
     data = json.loads(resp.json())
-    print("test result : {0}".format(data))
+    print("evaluation result : {0}".format(data))
 
 ####################################################################################
 # DataFrame - data
@@ -168,7 +168,7 @@ def dataframe_data_post():
                         })
 
     data = json.loads(resp.json())
-    print("test result : {0}".format(data))
+    print("evaluation result : {0}".format(data))
 
 def dataframe_data_get():
     """
@@ -181,7 +181,7 @@ def dataframe_data_get():
     resp = requests.get('http://' + url + '/api/v1/type/dataframe/base/csvtest/table/titanic/data/')
 
     data = json.loads(resp.json())
-    print("test result : {0}".format(data))
+    print("evaluation result : {0}".format(data))
 
 def dataframe_data_put():
     """
@@ -203,7 +203,7 @@ def dataframe_data_put():
                         })
 
     data = json.loads(resp.json())
-    print("test result : {0}".format(data))
+    print("evaluation result : {0}".format(data))
 
 ####################################################################################
 # DataFrame - preprocess
@@ -211,22 +211,22 @@ def dataframe_data_put():
 def dataframe_pre_post():
     resp = requests.post('http://' + url + '/api/v1/type/dataframe/base/csvtest/table/titanic/pre/nn0000010/')
     data = json.loads(resp.json())
-    print("test result : {0}".format(data))
+    print("evaluation result : {0}".format(data))
 
 def dataframe_pre_get():
     resp = requests.get('http://' + url + '/api/v1/type/dataframe/base/csvtest/table/titanic/pre/nn0000010/')
     data = json.loads(resp.json())
-    print("test result : {0}".format(data))
+    print("evaluation result : {0}".format(data))
 
 def dataframe_pre_put():
     resp = requests.put('http://' + url + '/api/v1/type/dataframe/base/csvtest/table/titanic/pre/nn0000010/')
     data = json.loads(resp.json())
-    print("test result : {0}".format(data))
+    print("evaluation result : {0}".format(data))
 
 def dataframe_pre_delete():
     resp = requests.delete('http://' + url + '/api/v1/type/dataframe/base/csvtest/table/titanic/pre/nn0000010/')
     data = json.loads(resp.json())
-    print("test result : {0}".format(data))
+    print("evaluation result : {0}".format(data))
 
 
 ####################################################################################
@@ -272,12 +272,12 @@ def cnn_conf_post():
                                      ]
                              })
     data = json.loads(resp.json())
-    print("test result : {0}".format(data))
+    print("evaluation result : {0}".format(data))
 
 def cnn_conf_get():
     resp = requests.get('http://' + url + '/api/v1/type/cnn/conf/nn0000010/')
     data = json.loads(resp.json())
-    print("test result : {0}".format(data))
+    print("evaluation result : {0}".format(data))
 
 def cnn_conf_put():
     resp = requests.put('http://' + url + '/api/v1/type/cnn/conf/nn0000010/',
@@ -319,12 +319,12 @@ def cnn_conf_put():
                                      ]
                              })
     data = json.loads(resp.json())
-    print("test result : {0}".format(data))
+    print("evaluation result : {0}".format(data))
 
 def cnn_conf_delete():
     resp = requests.delete('http://' + url + '/api/v1/type/cnn/conf/nn0000010/')
     data = json.loads(resp.json())
-    print("test result : {0}".format(data))
+    print("evaluation result : {0}".format(data))
 
 
 ####################################################################################
@@ -338,7 +338,7 @@ def cnn_train_post():
                              "testset" : "10"
                          })
     data = json.loads(resp.json())
-    print("test result : {0}".format(data))
+    print("evaluation result : {0}".format(data))
 
 
 ####################################################################################
@@ -357,7 +357,7 @@ def cnn_predict_post():
                               }]
                          )
     data = json.loads(resp.json())
-    print("test result : {0}".format(data))
+    print("evaluation result : {0}".format(data))
 
 
 
@@ -371,19 +371,19 @@ def common_job_post():
                          json= {'year':2013, 'month':6, 'day' :5, 'hour' :23 , 'min' : 59, 'sec' : 59}
                          )
     data = json.loads(resp.json())
-    print("test result : {0}".format(data))
+    print("evaluation result : {0}".format(data))
 
 
 def common_job_get():
     resp = requests.get('http://' + url + '/api/v1/type/common/job/')
     data = json.loads(resp.json())
-    print("test result : {0}".format(data))
+    print("evaluation result : {0}".format(data))
 
 
 def common_job_delete():
     resp = requests.delete('http://' + url + '/api/v1/type/common/job/nn0000009/')
     data = json.loads(resp.json())
-    print("test result : {0}".format(data))
+    print("evaluation result : {0}".format(data))
 
 ####################################################################################
 # common server setting
@@ -408,13 +408,13 @@ def common_env_post():
                                 }
                          )
     data = json.loads(resp.json())
-    print("test result : {0}".format(data))
+    print("evaluation result : {0}".format(data))
 
 
 def common_env_get():
     resp = requests.get('http://' + url + '/api/v1/type/common/env/')
     data = json.loads(resp.json())
-    print("test result : {0}".format(data))
+    print("evaluation result : {0}".format(data))
 
 
 ####################################################################################
@@ -424,17 +424,17 @@ def common_env_get():
 def common_livy_post():
     resp = requests.post('http://' + url + '/api/v1/type/common/livy/')
     data = json.loads(resp.json())
-    print("test result : {0}".format(data))
+    print("evaluation result : {0}".format(data))
 
 def common_livy_get():
     resp = requests.get('http://' + url + '/api/v1/type/common/livy/')
     data = json.loads(resp.json())
-    print("test result : {0}".format(data))
+    print("evaluation result : {0}".format(data))
 
 def common_livy_delete():
     resp = requests.delete('http://' + url + '/api/v1/type/common/livy/')
     data = json.loads(resp.json())
-    print("test result : {0}".format(data))
+    print("evaluation result : {0}".format(data))
 
 ####################################################################################
 # cnn - checker - post
@@ -443,7 +443,23 @@ def common_livy_delete():
 def cnn_checker_post():
     resp = requests.post('http://' + url + '/api/v1/type/cnn/checker/nn0000010/')
     data = json.loads(resp.json())
-    print("test result : {0}".format(data))
+    print("evaluation result : {0}".format(data))
+
+
+####################################################################################
+# cnn - eval - post
+####################################################################################
+
+def cnn_eval_post():
+    resp = requests.post('http://' + url + '/api/v1/type/cnn/eval/nn0000010/',
+                         json={'samplenum': 0.1, 'samplemethod' : '1'})
+    data = json.loads(resp.json())
+    print("evaluation result : {0}".format(data))
+
+def cnn_eval_get():
+    resp = requests.get('http://' + url + '/api/v1/type/cnn/eval/nn0000010/')
+    data = json.loads(resp.json())
+    print("evaluation result : {0}".format(data))
 
 
 ####################################################################################
@@ -467,8 +483,8 @@ Test Sequence !!
 """
 #common, dataframe, cnn
 category1 = "cnn"
-# checker, predict, stat, test, train, conf, nnfino, base, data, format, table, pre
-category2 = "checker"
+# checker, predict, stat, evaluation, train, conf, nnfino, base, data, format, table, pre
+category2 = "train"
 # post, get, put, delete
 request = "post"
 

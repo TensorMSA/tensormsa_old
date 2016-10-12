@@ -87,9 +87,13 @@ urlpatterns = [
      url(r'^api/v1/type/common/livy/',
          csrf_exempt(rest_view.CommonLivySession.as_view())),
 
-    # Livy Session Control API
+    # Check Cnn configuration validation
      url(r'^api/v1/type/cnn/checker/(?P<nnid>.*)/',
           csrf_exempt(rest_view.ConvNeuralNetChecker.as_view())),
+
+    # Evaluate accuracy of CNN model
+     url(r'^api/v1/type/cnn/eval/(?P<nnid>.*)/',
+          csrf_exempt(rest_view.ConvNeuralNetEval.as_view())),
 
     # UI / View index
          url(r'^view/index/$',

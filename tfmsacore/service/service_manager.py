@@ -1,6 +1,6 @@
 from tfmsacore import train
 from tfmsacore import netconf
-from tfmsarest import livy
+from TensorMSA import const
 from tfmsacore import data
 from tfmsacore.service import JobStateLoader,ServerConfLoader,ServerStateChecker
 from tfmsacore.utils.logger import tfmsa_logger
@@ -56,21 +56,10 @@ class JobManager:
             ServerStateChecker().check_servers()
 
             # run real jobs
-            if(type == '1'):
-                # run dataframe data preprocess
-                nn_info = netconf.get_network_config(nnid)
+            if(type == const.JOB_TYPE_DF_PRE_PROCESS):
+                self.dataframe_pre_process(nnid)
 
-                json_obj = json.loads(str(nn_info['datadesc']).replace("'", "\""))
-                cate_column_list = []
-                for column in json_obj.keys():
-                    if (json_obj[column] == 'cate' or json_obj[column] == 'tag' or json_obj[column] == 'rank'):
-                        cate_column_list.append(column)
-
-                nninfo = netconf.get_network_config(nnid)
-                dist_col_list = data.DataMaster().get_distinct_dataframe(nninfo['dir'], nninfo['table'], cate_column_list)
-                netconf.set_train_datasets(nnid, str(json.dumps(dist_col_list)))
-
-            elif(type == '2'):
+            elif(type == const.JOB_TYPE_CNN_TRAIN):
                 # run neural network training
                 train.train_conv_network(nnid, epoch, testsets)
 
@@ -83,6 +72,26 @@ class JobManager:
             JobStateLoader().set_error(nnid)
             tfmsa_logger("invoke_job : {0}".format(e))
             raise Exception(e)
+
+    def dataframe_pre_process(self, nnid):
+        """
+        dataframe_pre_process
+        :param nnid:
+        :return:
+        """
+        # run dataframe data preprocess
+        nn_info = netconf.get_network_config(nnid)
+
+        json_obj = json.loads(str(nn_info['datadesc']).replace("'", "\""))
+        cate_column_list = []
+        for column in json_obj.keys():
+            if (json_obj[column] == 'cate' or json_obj[column] == 'tag' or json_obj[column] == 'rank'):
+                cate_column_list.append(column)
+
+        nninfo = netconf.get_network_config(nnid)
+        dist_col_list = data.DataMaster().get_distinct_dataframe(nninfo['dir'], nninfo['table'], cate_column_list)
+        netconf.set_train_datasets(nnid, str(json.dumps(dist_col_list)))
+
 
     def set_job_state(self, nn_id, state):
         """
