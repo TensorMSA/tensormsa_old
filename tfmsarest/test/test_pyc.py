@@ -98,13 +98,13 @@ class CNNConfCheck:
             for i in range(0, int(num_layers)):
                 ft = conf.layer[i]
                 if len(ft.cnnfilter) >0 and ft.cnnfilter[0] < 2:
-                    errMsg = "Error[000004]: Filter must be larger than [2, 2] Filter:[" + str(ft.cnnfilter) + "," + str(ft.cnnfilter) + "]"
+                    errMsg = "Error[000002]: Filter must be larger than [2, 2] Filter:[" + str(ft.cnnfilter) + "," + str(ft.cnnfilter) + "]"
 
                 if gValue.log == "Y" and errMsg == "S":
                     msg = "check_Filter_MinValue Clear..........len(ft.cnnfilter)="+str(len(ft.cnnfilter))+"  ft.cnnfilter="+ str(ft.cnnfilter)
                     print(msg)
         except Exception as e:
-            print("Exception check_Filter : ", e)
+            print("Exception check_Filter_MinValue : ", e)
             errMsg = e
 
         return errMsg
@@ -115,14 +115,32 @@ class CNNConfCheck:
             errMsg = "S"
 
             if matrix[0] < cnnfilter[0] or matrix[1] < cnnfilter[1]:
-                errMsg = "Error[000002]: Filter must not be larger than the input: Filter:[" + str(
+                errMsg = "Error[000003]: Filter must not be larger than the input: Filter:[" + str(
                     cnnfilter) + "," + str(cnnfilter) + "] Input: " + str(matrix)
 
             if gValue.log == "Y" and errMsg == "S":
                 msg = "check_Filter_Size Clear..........cnnfilter="+str(cnnfilter)+"  matrix="+ str(matrix)
                 print(msg)
         except Exception as e:
-            print("Exception check_Filter : ", e)
+            print("Exception check_Filter_Size : ", e)
+            errMsg = e
+
+        return errMsg
+
+    def check_Droprate(self, droprate):
+        try:
+            errMsg = "S"
+            print("droprate=",droprate)
+            print("droprate=", len(droprate))
+            if len(droprate) == 0:
+                errMsg = "Error[000002]: Droprate is Null("+str(droprate)+")"
+
+            gValue = gVal()
+            if gValue.log == "Y" and errMsg == "S":
+                msg = "check_Droprate Clear..........droprate="+str(droprate)
+                print(msg)
+        except Exception as e:
+            print("Exception check_Droprate : ", e)
             errMsg = e
 
         return errMsg
@@ -131,7 +149,7 @@ class NetworkClass:
     def __int__(self):
         self.msg = "Y"
 
-    def get_CNN_train(self, conf, inData):
+    def get_CNN_train(self, conf):
         errMsg = "S"
         matrix = conf.data.matrix
 
@@ -156,10 +174,11 @@ class NetworkClass:
                     matrix[1] = network.get_shape()[2].value
 
             elif (data.type == "drop"):
-                network = fully_connected(network, data.node_in_out[0], activation=str(data.active))
-                network = dropout(network, int(data.droprate))
-                network = fully_connected(network, data.node_in_out[1], activation=str(data.active))
-                network = dropout(network, int(data.droprate))
+                errMsg = CNNConfCheck().check_Droprate(data.droprate)
+
+                if errMsg == "S":
+                    network = fully_connected(network, data.node_in_out[0], activation=str(data.active))
+                    network = dropout(network, float(data.droprate))
 
             elif (data.type == "out"):
                 network = fully_connected(network, data.node_in_out[1], activation=str(data.active))
@@ -221,7 +240,7 @@ def main(case):
         errMsg = CNNConfCheck().check_Filter_MinValue(conf)
 
     if errMsg == "S":
-        net, errMsg = NetworkClass().get_CNN_train(conf, train_x)
+        net, errMsg = NetworkClass().get_CNN_train(conf)
 
 
     print("====================================================================")
