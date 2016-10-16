@@ -61,6 +61,19 @@ urlpatterns = [
      url(r'^api/v1/type/cnn/conf/(?P<nnid>.*)/',
          csrf_exempt(rest_view.ConvNeuralNetConfig.as_view())),
 
+
+    # WDNN config data manage
+     url(r'^api/v1/type/wdnn/conf/(?P<nnid>.*)/',
+         csrf_exempt(rest_view.WideDeepNetConfig.as_view())),
+
+    # WDNN predict
+     url(r'^api/v1/type/wdnn/predict/(?P<nnid>.*)/',
+         csrf_exempt(rest_view.WideDeepNetPredict.as_view())),
+
+    # WDNN Train
+     url(r'^api/v1/type/wdnn/train/(?P<nnid>.*)/',
+         csrf_exempt(rest_view.WideDeepNetTrain.as_view())),
+
     # CNN training
      url(r'^api/v1/type/cnn/train/(?P<nnid>.*)/',
          csrf_exempt(rest_view.ConvNeuralNetTrain.as_view())),

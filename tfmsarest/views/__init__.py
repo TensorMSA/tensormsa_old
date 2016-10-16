@@ -12,3 +12,6 @@ from .common_job import CommonJobInfo
 from .common_livy import CommonLivySession
 from .cnn_checker import ConvNeuralNetChecker
 from .cnn_eval import ConvNeuralNetEval
+from .wdnn_config import WideDeepNetConfig
+from .wdnn_train import WideDeepNetTrain
+from .wdnn_predict import WideDeepNetPredict

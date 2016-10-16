@@ -8,7 +8,7 @@ from django.conf import settings
 #https://realpython.com/blog/python/api-integration-in-python/
 #http://www.slideshare.net/Byungwook/rest-api-60505484
 
-url = "5e5b6cb099aa:8989"
+url = "2fd17f7a6b09:8989"
 
 
 ####################################################################################
@@ -16,14 +16,23 @@ url = "5e5b6cb099aa:8989"
 ####################################################################################
 
 def common_nninfo_post():
+    # resp = requests.post('http://' + url + '/api/v1/type/common/nninfo/',
+    #                      json={
+    #                          "nn_id": "nn0000011",
+    #                          "category": "evaluation",
+    #                          "subcate" : "csv",
+    #                          "name": "evaluation",
+    #                          "desc" : "wdnn_protoType"
+    #                      })
     resp = requests.post('http://' + url + '/api/v1/type/common/nninfo/',
                          json={
-                             "nn_id": "nn0000010",
+                             "nn_id": "nn0000012",
                              "category": "evaluation",
                              "subcate" : "csv",
                              "name": "evaluation",
-                             "desc" : "xxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+                             "desc" : "wdnn_protoType"
                          })
+
 
     data = json.loads(resp.json())
     print("evaluation result : {0}".format(data))
@@ -83,7 +92,8 @@ def dataframe_base_delete():
 # DataFrame - table
 ####################################################################################
 def dataframe_table_post():
-    resp = requests.post('http://' + url + '/api/v1/type/dataframe/base/csvtest/table/titanic/')
+    #resp = requests.post('http://' + url + '/api/v1/type/dataframe/base/csvtest/table/titanic/')
+    resp = requests.post('http://' + url + '/api/v1/type/dataframe/base/scm/table/tb_test_incomedata_wdnn3/')
     data = json.loads(resp.json())
     print("evaluation result : {0}".format(data))
 
@@ -108,14 +118,41 @@ def dataframe_table_delete():
 ##########################################################5e5b6cb099aa##########################
 
 def dataframe_format_post():
-    resp = requests.post('http://' + url + '/api/v1/type/dataframe/base/csvtest/table/titanic/format/nn0000010/',
-                         json={"pclass":"cate",
-                               "survived":"tag",
-                               "name" : "none" ,
-                               "sex" : "cate",
-                               "age" : "cont",
-                               "embarked": "cate",
-                               "boat": "cate"
+    # resp = requests.post('http://' + url + '/api/v1/type/dataframe/base/csvtest/table/titanic/format/nn0000010/',
+    #                      json={"pclass":"cate",
+    #                            "survived":"tag",
+    #                            "name" : "none" ,
+    #                            "sex" : "cate",
+    #                            "age" : "cont",
+    #                            "embarked": "cate",
+    #                            "boat": "cate"
+    #                            })
+    resp = requests.post('http://' + url + '/api/v1/type/dataframe/base/scm/table/tb_test_incomedata_wdnn3/format/nn0000012/',
+                         json={ "cross_cell":
+                                    {
+                                      "col12": {"column2_0": "native_country", "column2_1": "occupation"},
+                                      "col1": {"column_1": "occupation", "column_0": "education"}
+                                    },
+                                  "cell_feature":
+                                    {
+                                      "hours_per_week": "CONTINUOUS_COLUMNS",
+                                      "native_country": "CATEGORICAL",
+                                      "relationship": "CATEGORICAL",
+                                      "gender": "CATEGORICAL",
+                                      "age": "CONTINUOUS_COLUMNS",
+                                      "marital_status": "CATEGORICAL",
+                                      "race": "CATEGORICAL",
+                                      "capital_gain": "CONTINUOUS_COLUMNS",
+                                      "workclass": "CATEGORICAL",
+                                      "capital_loss": "CONTINUOUS_COLUMNS",
+                                      "education": "CATEGORICAL",
+                                      "education_num": "CONTINUOUS_COLUMNS",
+                                      "occupation": "CATEGORICAL"
+                                    },
+                                  "label":
+                                    {
+                                       "income_bracket" : "LABEL"
+                                    }
                                })
     data = json.loads(resp.json())
     print("evaluation result : {0}".format(data))
@@ -177,9 +214,8 @@ def dataframe_data_get():
     col type (cate) : categorical data needs to be modified
     :return:
     """
-
-    resp = requests.get('http://' + url + '/api/v1/type/dataframe/base/csvtest/table/titanic/data/')
-
+    resp = requests.get('http://' + url + '/api/v1/type/dataframe/base/scm/table/tb_test_incomedata_wdnn3/data/a')
+    #resp = requests.get('http://' + url + '/api/v1/type/dataframe/scm/table/tb_test_imcomedata_wdnn/data/a')
     data = json.loads(resp.json())
     print("evaluation result : {0}".format(data))
 
@@ -228,6 +264,30 @@ def dataframe_pre_delete():
     data = json.loads(resp.json())
     print("evaluation result : {0}".format(data))
 
+
+####################################################################################
+# WDNN - Config
+####################################################################################
+def wdnn_conf_post():
+    resp = requests.post('http://' + url + '/api/v1/type/wdnn/conf/nn0000012/',
+                         json={
+                                 "layer":[100,50,20]
+                             })
+    data = json.loads(resp.json())
+    print("evaluation result : {0}".format(data))
+
+def wdnn_train_post():
+    #resp = requests.post('http://' + url + '/api/v1/type/wdnn/train/nn0000011/')
+    resp = requests.post('http://' + url + '/api/v1/type/wdnn/train/nn0000012/')
+    data = json.loads(resp.json())
+    print("evaluation result : {0}".format(data))
+
+
+def wdnn_predict_post():
+    #resp = requests.post('http://' + url + '/api/v1/type/wdnn/predict/nn0000011/')
+    resp = requests.post('http://' + url + '/api/v1/type/wdnn/predict/nn0000012/')
+    data = json.loads(resp.json())
+    print("evaluation result : {0}".format(data))
 
 ####################################################################################
 # CNN - Config
@@ -471,20 +531,42 @@ Test Sequence !!
 1. common - env - post
 2. common - nninfo - post
 3. dataframe - base - post
+    3.1 Hbase does not need it
 4. dataframe - table - post
+
 5. JSON(dataframe - data - post)
+    5.1 Json devolop for next time
 5. CSV(use ui http://localhost:8989/view/ftptest)
+
 6. dataframe - format - post
 7. dataframe - pre - post
+   7.1 doesn't need it for wdnnb
 8. cnn - conf - post
 9. cnn - checker - post
 10. cnn - train - post
 11. cnn - predict- post
 """
-#common, dataframe, cnn
-category1 = "cnn"
+
+
+"""
+Wdnn Test Sequence !!
+
+2. common - nninfo - post
+
+4. dataframe - table - post
+
+5. CSV(use ui http://localhost:8989/view/ftptest)
+
+6. dataframe - format - post
+
+8.wdnn - conf - post
+10. wdnn - train - post
+11. wdnn - predict- post
+"""
+#common, dataframe, cnn, wdnn
+category1 = "wdnn"
 # checker, predict, stat, evaluation, train, conf, nnfino, base, data, format, table, pre
-category2 = "train"
+category2 = "predict"
 # post, get, put, delete
 request = "post"
 

@@ -43,14 +43,14 @@ class DataFrameData(APIView):
                     fp.close()
 
                     #update to hdfs
-                    data.DataMaster().save_csv_to_df(baseid, tb, filename)
-
+                    results_data = data.DataMaster().save_csv_to_df(baseid, tb, filename)
+                    #print("where is error")
                     #delete file after upload
-                    if os.path.isfile("{0}/{1}/{2}/{3}".format(settings.FILE_ROOT, baseid, tb, filename)):
-                        os.remove("{0}/{1}/{2}/{3}".format(settings.FILE_ROOT, baseid, tb, filename))
-                    fp.close()
-                    logger.tfmsa_logger("finish uploading csv on file system")
-                    return HttpResponse('File Uploaded')
+                    #if os.path.isfile("{0}/{1}/{2}/{3}".format(settings.FILE_ROOT, baseid, tb, filename)):
+                    #    os.remove("{0}/{1}/{2}/{3}".format(settings.FILE_ROOT, baseid, tb, filename))
+                    #fp.close()
+                    #logger.tfmsa_logger("finish uploading csv on file system")
+                    return HttpResponse(json.dumps(results_data))
             else :
                 raise Exception("not supported type")
 
@@ -68,9 +68,9 @@ class DataFrameData(APIView):
         """
         try:
             if(args == None):
-                result = data.DataMaster().query_data(baseid, tb, "select * from " + str(tb), 100)
+                result = data.DataMaster().query_data(baseid, tb, "select * from " + str(tb), 30000)
             else:
-                result = data.DataMaster().query_data(baseid, tb, args, 100)
+                result = data.DataMaster().query_data(baseid, tb, args, 30000)
 
             return_data = {"status": "ok", "result": result}
             return Response(json.dumps(return_data))
@@ -106,14 +106,14 @@ class DataFrameData(APIView):
                     fp.close()
 
                     #upload data to hdfs
-                    data.DataMaster().save_csv_to_df(baseid, tb, filename)
-
+                    cols = data.DataMaster().save_csv_to_df(baseid, tb, filename)
+                    #return Response(json.dumps(cols))
                     #delete file after upload
-                    if os.path.isfile("{0}/{1}/{2}/{3}".format(settings.FILE_ROOT, baseid, tb, filename)):
-                        os.remove("{0}/{1}/{2}/{3}".format(settings.FILE_ROOT, baseid, tb, filename))
+                    #if os.path.isfile("{0}/{1}/{2}/{3}".format(settings.FILE_ROOT, baseid, tb, filename)):
+                    #    os.remove("{0}/{1}/{2}/{3}".format(settings.FILE_ROOT, baseid, tb, filename))
 
-                    fp.close()
-                    logger.tfmsa_logger("finish uploading csv on file system")
+                    #fp.close()
+                    #logger.tfmsa_logger("finish uploading csv on file system")
                     return HttpResponse('File Uploaded')
 
             else:
