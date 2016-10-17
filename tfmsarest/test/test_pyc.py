@@ -55,7 +55,8 @@ def preprocess(detailData, to_ignore, to_outtag):
 
     for id in sorted(to_ignore, reverse=True):
         [r.pop(id) for r in detailData]
-
+    # print("detailData=", detailData)
+    # print("headerData=", headerData)
     train_x = np.array(detailData, np.float32)
     train_y = np.array(headerData, np.float32)
 
@@ -71,25 +72,36 @@ class CNNConfCheck:
     def __int__(self):
         self.msg = "Y"
 
-    def check_Matrix(self, conf):
+    def check_CNN_Matrix(self, conf):
         try:
             errMsg = "S"
+            gValue = gVal()
+
             matrix = conf.data.matrix
-            len = conf.data.datalen
-            if matrix[0] * matrix[1] <> len:
-                errMsg = "Error[000001]: Matrix is not Valid"
+            x_shape = conf.data.x_shape # [4,5] 4 row, 5 column indata
+            y_shape = conf.data.y_shape # [4,2] 4 row, 2 column outdata
+
+            if matrix[0] * matrix[1] < x_shape[1]:
+                errMsg = "Error[000004]: Matrix is not Valid(Small)"
+            elif (x_shape[0]*x_shape[1])%(matrix[0] * matrix[1]) <> 0:
+                errMsg = "Error[000004]: Matrix is not Valid"
 
             gValue = gVal()
             if gValue.log == "Y" and errMsg == "S":
-                msg = "check_Matrix Clear..........matrix[0]="+str(matrix[0])+" matrix[1]="+str(matrix[1])+" len="+str(len)
+                msg = "check_Matrix Clear..........matrix[0]="+str(matrix[0])+" matrix[1]="+str(matrix[1])
                 print(msg)
+
+            if gValue.log == "Y":
+                print("conf.data.matrix", conf.data.matrix)
+                print("conf.data.x_shape", conf.data.x_shape)
+                print("conf.data.y_shape", conf.data.y_shape)
         except Exception as e:
             print("Exception check_Matrix : ", e)
             errMsg = e
 
         return errMsg
 
-    def check_Filter_MinValue(self, conf):
+    def check_CNN_Filter_MinValue(self, conf):
         try:
             gValue = gVal()
             errMsg = "S"
@@ -98,46 +110,43 @@ class CNNConfCheck:
             for i in range(0, int(num_layers)):
                 ft = conf.layer[i]
                 if len(ft.cnnfilter) >0 and ft.cnnfilter[0] < 2:
-                    errMsg = "Error[000002]: Filter must be larger than [2, 2] Filter:[" + str(ft.cnnfilter) + "," + str(ft.cnnfilter) + "]"
+                    errMsg = "Error[000001]: Filter must be larger than [2, 2] Filter:[" + str(ft.cnnfilter) + "," + str(ft.cnnfilter) + "]"
 
-                if gValue.log == "Y" and errMsg == "S":
-                    msg = "check_Filter_MinValue Clear..........len(ft.cnnfilter)="+str(len(ft.cnnfilter))+"  ft.cnnfilter="+ str(ft.cnnfilter)
-                    print(msg)
+                # if gValue.log == "Y" and errMsg == "S" and len(ft.cnnfilter) >0:
+                #     msg = "check_Filter_MinValue Clear.........."+str(ft.type)+"  len(ft.cnnfilter)="+str(len(ft.cnnfilter))+"  ft.cnnfilter="+ str(ft.cnnfilter)
+                #     print(msg)
         except Exception as e:
             print("Exception check_Filter_MinValue : ", e)
             errMsg = e
 
         return errMsg
 
-    def check_Filter_Size(self, matrix, cnnfilter):
+    def check_CNN_Filter_Size(self, matrix, cnnfilter):
         try:
             gValue = gVal()
             errMsg = "S"
-
             if matrix[0] < cnnfilter[0] or matrix[1] < cnnfilter[1]:
-                errMsg = "Error[000003]: Filter must not be larger than the input: Filter:[" + str(
+                errMsg = "Warnning[000003]: Filter must not be larger than the input: Filter:[" + str(
                     cnnfilter) + "," + str(cnnfilter) + "] Input: " + str(matrix)
 
             if gValue.log == "Y" and errMsg == "S":
-                msg = "check_Filter_Size Clear..........cnnfilter="+str(cnnfilter)+"  matrix="+ str(matrix)
+                msg = "get_CNN_train Clear..........filtersize="+str(cnnfilter)+"  matrix="+ str(matrix)
                 print(msg)
         except Exception as e:
             print("Exception check_Filter_Size : ", e)
             errMsg = e
-
         return errMsg
 
-    def check_Droprate(self, droprate):
+    def check_CNN_Droprate(self, droprate):
         try:
+            gValue = gVal()
             errMsg = "S"
-            print("droprate=",droprate)
-            print("droprate=", len(droprate))
+
             if len(droprate) == 0:
                 errMsg = "Error[000002]: Droprate is Null("+str(droprate)+")"
 
-            gValue = gVal()
             if gValue.log == "Y" and errMsg == "S":
-                msg = "check_Droprate Clear..........droprate="+str(droprate)
+                msg = "get_CNN_train Clear..........droprate="+str(droprate)
                 print(msg)
         except Exception as e:
             print("Exception check_Droprate : ", e)
@@ -147,53 +156,106 @@ class CNNConfCheck:
 
 class NetworkClass:
     def __int__(self):
-        self.msg = "Y"
+        self.msg = "S"
 
     def get_CNN_train(self, conf):
+        gValue = gVal()
         errMsg = "S"
+        outFlag = "N"
         matrix = conf.data.matrix
 
         learnrate = conf.data.learnrate
         num_layers = len(conf.layer)
 
-        network = input_data(shape=[None, matrix[0], matrix[1], 1], name='input')
+        if errMsg == "S":
+            errMsg = CNNConfCheck().check_CNN_Matrix(conf)
+
+        if errMsg == "S":
+            errMsg = CNNConfCheck().check_CNN_Filter_MinValue(conf)
 
         for i in range(0, int(num_layers)):
             data = conf.layer[i]
-            print(data.type)
-            if (data.type == "cnn"):
-                errMsg = CNNConfCheck().check_Filter_Size( matrix, data.cnnfilter )
+            if (data.type == "input"):
+                network = input_data(shape=[None, matrix[0], matrix[1], 1], name='input')
+            elif (data.type == "cnn"):
+                if errMsg == "S":
+                    errMsg = CNNConfCheck().check_CNN_Filter_Size( matrix, data.cnnfilter )
 
                 if errMsg == "S":
-                    network = conv_2d(network, data.node_in_out[1], data.cnnfilter, activation=str(data.active),
-                                      regularizer=data.regualizer)
+                    if gValue.log == "Y":
+                        print("get_CNN_train Clear.........."+str(data.type))
+                    network = conv_2d(network, data.node_in_out[1], data.cnnfilter, activation=str(data.active),regularizer=data.regualizer)
                     network = max_pool_2d(network, data.maxpoolmatrix)
                     network = local_response_normalization(network)
 
                     matrix[0] = network.get_shape()[1].value
                     matrix[1] = network.get_shape()[2].value
-
             elif (data.type == "drop"):
-                errMsg = CNNConfCheck().check_Droprate(data.droprate)
+                if errMsg == "S":
+                    errMsg = CNNConfCheck().check_CNN_Droprate(data.droprate)
 
                 if errMsg == "S":
-                    network = fully_connected(network, data.node_in_out[0], activation=str(data.active))
+                    if gValue.log == "Y":
+                        print("get_CNN_train Clear.........." + str(data.type))
+                    network = fully_connected(network, data.node_in_out[1], activation=str(data.active))
                     network = dropout(network, float(data.droprate))
 
             elif (data.type == "out"):
-                network = fully_connected(network, data.node_in_out[1], activation=str(data.active))
+                if gValue.log == "Y":
+                    print("get_CNN_train Clear.........." + str(data.type))
+                network = fully_connected(network, conf.data.y_shape[1], activation=str(data.active))
                 network = regression(network, optimizer='adam', learning_rate=learnrate,
                                      loss='categorical_crossentropy', name='target')
+                outFlag = "Y"
 
-            elif (data.type == "fully"):
-                network = fully_connected(network, data.node_in_out[1], activation=str(data.active))
 
-                # else:
-                #     raise SyntaxError("there is no such kind of nn type : " + str(data.active))
+        if outFlag == "N":
+            errMsg = "Error[000003]: Out Layer must be input."
 
         return network, errMsg
 
+    # def get_RNN_train(self, conf):
+    #     gValue = gVal()
+    #     errMsg = "S"
+    #     outFlag = "N"
+    #     matrix = conf.data.matrix
+    #
+    #     learnrate = conf.data.learnrate
+    #     num_layers = len(conf.layer)
+    #
+    #     network = input_data(shape=[None, matrix[0], matrix[1], 1], name='input')
+    #
+    #     for i in range(0, int(num_layers)):
+    #         data = conf.layer[i]
+    #
+    #         if (data.type == "rnn"):
+    #             if errMsg == "S":
+    #                 errMsg = CNNConfCheck().check_Filter_Size( matrix, data.cnnfilter )
+    #
+    #             if errMsg == "S":
+    #                 if gValue.log == "Y":
+    #                     print("get_RNN_train Clear.........."+str(data.type))
+    #                 # lstm_cell = tf.nn.rnn_cell.BasicLSTMCell(n_hidden, forget_bias=1.0)
+    #                 # outputs, states = tf.nn.rnn(lstm_cell, x_input, dtype=tf.float32)
+    #                 # pred = tf.matmul(outputs[-1], weights) + biases
+    #
+    #                 matrix[0] = network.get_shape()[1].value
+    #                 matrix[1] = network.get_shape()[2].value
+    #         elif (data.type == "out"):
+    #                 if gValue.log == "Y":
+    #                     print("get_CNN_train Clear.........." + str(data.type))
+    #                 # cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(pred, y))
+    #                 # optimizer = tf.train.AdamOptimizer(learning_rate=learnrate).minimize(cost)
+    #                 outFlag = "Y"
+
+
+
+        return network, errMsg
+
+
 def main(case):
+    gValue = gVal()
+    errMsg = "S"
     directory = "/home/dev/TensorMSA/tfmsarest/test/"
 
     net_id = "test"
@@ -205,55 +267,56 @@ def main(case):
     with open(confFile) as dataFile:
         detailData = json.loads(dataFile.read(), object_hook=JsonObject)[1:]
 
-    # print("data=",detailData)
-    #
-    # print(type(conf))
+    to_ignore = ""
+    to_outtag = ""
+    # to_ignore = [3, 4, 8]
+    # to_outtag = [0, 1]
+    matrix = conf.data.matrix
+    learnrate = conf.data.learnrate
 
-    to_ignore = [3, 4]
-    to_outtag = [0, 1]
-    epoch = 10
+    # to_ignore = [2, 3, 4, 6, 7, 11]
+    # to_outtag = [0, 1]
+
+    # to_ignore = [3, 4, 6, 7, 11]
+    # to_outtag = [0, 1, 2]
+
+    to_ignore = [4, 6, 7, 11]
+    to_outtag = [0, 1, 2, 3]
 
     train_x, train_y = preprocess(detailData, to_ignore, to_outtag)
-    train_x = np.reshape(train_x, (-1, conf.data.matrix[0], conf.data.matrix[1], 1))
-    test_x = train_x
-    test_y = train_y
 
-    # # # # Build neural network
-    # # net = tflearn.input_data(shape=[None, len(inData[0])])
-    # # net = tflearn.fully_connected(net, 32)
-    # # net = tflearn.fully_connected(net, 32)
-    # # net = tflearn.fully_connected(net, len(outData[0]), activation='softmax')
-    # # net = tflearn.regression(net)
-    #
-    # # # Define model
-    # # model = tflearn.DNN(net)
-    # #
-    # # model.fit(inData, outData, n_epoch=10, batch_size=16, show_metric=True)
-    #
     # # # create network conifg
-    errMsg = "S"
-
-    if errMsg == "S":
-        errMsg = CNNConfCheck().check_Matrix(conf)
-
-    if errMsg == "S":
-        errMsg = CNNConfCheck().check_Filter_MinValue(conf)
-
-    if errMsg == "S":
-        net, errMsg = NetworkClass().get_CNN_train(conf)
+    # from tfmsacore import validation
+    # network, errMsg = validation.NetworkClass().get_CNN_traconf.data.x_shapein(conf)
+    conf.data.x_shape = train_x.shape
+    conf.data.y_shape = train_y.shape
+    network, errMsg = NetworkClass().get_CNN_train(conf)
 
 
-    print("====================================================================")
-    print(errMsg)
-    print("====================================================================")
+    # if errMsg == "S":
+    # train_x = np.reshape(train_x, (-1, conf.data.matrix[0], conf.data.matrix[1], 1))
+    #     network, errMsg = NetworkClass().get_RNN_train(conf)
+
+
+
+
+    if gValue.log == "Y":
+        print("====================================================================")
+        print(errMsg)
+        print("====================================================================")
 
     # # Define model
-    if errMsg == "S":
-        model = tflearn.DNN(net)
+    if errMsg == "S" or errMsg[0:1] == "W":
+        train_x = np.reshape(train_x, (-1, conf.data.matrix[0], conf.data.matrix[1], 1))
+        test_x = train_x
+        test_y = train_y
+        model = tflearn.DNN(network)
         # model.fit(inData, outData, n_epoch=10, batch_size=16, show_metric=True)
-        model.fit({'input': train_x}, {'target': train_y}, n_epoch=int(epoch),
+        model.fit({'input': train_x}, {'target': train_y}, n_epoch=int(conf.data.epoch),
                   validation_set=({'input': test_x}, {'target': test_y}),
                   snapshot_step=100, show_metric=True, run_id='convnet_mnist')
+        acc = model.evaluate(test_x, test_y)
+        print(acc)
 
 if __name__ == '__main__':
     tf.app.run()
