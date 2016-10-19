@@ -29,109 +29,43 @@ python legacy systems can use deep learning easily
   <img src="https://raw.githubusercontent.com/seungwookim/TensorMSA/master/ProjectDesc3.png" width="750"/>
 </p>
 
-# Docker(File Mode)*[(Docker Hub)](https://hub.docker.com/r/tmddno1/tensormsa/)**[(usage)](http://wp.me/p7xrpI-dr)*
-  If you want to use TensorMSA without any complicated eco system. You can run TensorMSA with single Docker image.
-  This simply include postgrestsql, django, spark and TensorMSA. </br>
-  [Remeber] This mode will write all files on your local file system 
+# Docker(Cluster Mode)*[(Docker Hub)](https://hub.docker.com/r/tmddno1/tensormsa/)**[(usage)](http://wp.me/p7xrpI-dr)*
+   - Docker Packages </br>
+   ```python
+      data-master : docker pull tmddno1/tfmsa_name_node:v1
+      data-slave : docker pull tmddno1/tfmsa_data_node:v1 
+      tfmsa-was : docker pull tmddno1/tensormsa:v1 
+      CI tools : docker pull tmddno1/jenkins:v1  
+   ```
+
+   - Start master/slave node container *[(set up)](http://wp.me/p7xrpI-eH)*   </br>
+   ```python
+      docker run --net=host -d tmddno1/tfmsa_name_node:v1
+      docker run --net=host -d tmddno1/tfmsa_name_node:v1
+   ```
+   - Start tfmsa-was container (dev purpose)  </br>
+   ```python
+       docker run -it --env="DISPLAY" --env="QT_X11_NO_MITSHM=1" --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw"  -p 8998:8998  tmddno1/tensormsa:v1
+   ```
+   - Start tfmsa-was container (dev purpose) </br>
+   
+   ```python
+       docker run -it -p 8989:8989 -d --name tmddno1/tensormsa:v1
+   ```   
+   - Start CI Tool  </br>
  
-   - install Docker 
    ```python
-      sudo yum update 
-      curl -fsSL https://get.docker.com/ | sh
-      sudo docker start
-   ```
+       docker run -it -p 8080:8080 -d --name tmddno1/jenkins:v1
+   ```    
    
-   - pull TensorMSA Docker 
+   - Check servers  </br>
    ```python
-      docker pull tmddno1/tensormsa:v1 
-      docker pull -a tmddno1/tensormsa (if v1 not works)
-   ```
-   
-   - start container with graphical environment (first time only)
-   ```python
-      docker run -it --env="DISPLAY" --env="QT_X11_NO_MITSHM=1" --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" -p 8080:8080 -p 8998:8998 -p 8989:8989 -p 7077:7077 --name tfmsa tmddno1/tensormsa:v1
-   ```
-   
-   - check contrainer id
-   ```python
-      sudo docker ps -a
-   ```
-   
-   - start container 
-   ```python
-      sudo docker start <containerID>
-      sudo docker attach <containerID>
-   ```
-   
-   - execute shell script </br>
-      start_tensormsa.sh will provide 4 types of data store (Local, HDFS, HIVE, S3) </br>
-      choose number 4 for local mode </br>
-
       TensorMSA : http://locahost:8989  </br>
-      Spark Manager : http://locahost:8080  </br>
-
-   ```python
-      [root@db44c088318c bin]#  /home/dev/TensorMSA/start_tensormsa.sh
-      [root@db44c088318c bin]#  /home/dev/TensorMSA/stop_tensormsa.sh
-   ```
-
-# Docker(HDFS mode)*[(Docker Hub)](https://hub.docker.com/r/tmddno1/tensormsa/)**[(usage)](http://wp.me/p7xrpI-dr)*
-  Spark support all functions that Hadoop eco system provide except datastore. This is a architecture use HDFS as data store
-  but no other features of HADOOP ECO system (like mapreduce, ETL, SQL ,etc..) 
-  "HDFS - SPARK - TensorMSA Architecute" is recommended (fast & concise) If you don't have lagacy bigdata system. </br>
-  *cluster version will be ready in 2017* 
-  
-   - install Docker 
-   ```python
-      sudo yum update 
-      curl -fsSL https://get.docker.com/ | sh
-      sudo docker start
-   ```
-   
-   - pull TensorMSA Docker 
-   ```python
-      docker pull -a tmddno1/tensormsa
-   ```
-   
-   - pull sequenceiq/hadoop-docker 
-   ```python
-      docker pull sequenceiq/hadoop-docker:2.7.1
-   ```
-   
-   - start hadoop container (first time only)*[(link)](https://github.com/sequenceiq/hadoop-docker)*
-   ```python
-      docker run -it -p 50090:50090 -p 50010:50010 -p 50075:50075 -p 50020:50020 -p 50070:50070 -p 50030:50030 -p 50060:50060 -p 8020:8020 --name hdfs sequenceiq/hadoop-docker:2.7.1 /etc/bootstrap.sh -bash
-   ```  
-   
-   - start container with graphical environment (first time only)
-   ```python
-      docker run -it --env="DISPLAY" --env="QT_X11_NO_MITSHM=1" --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" -p 8080:8080 -p 8998:8998 -p 8989:8989 -p 7077:7077 --name tfmsa --link hdfs:hdfs tmddno1/tensormsa:v1
-   ```
-   
-   - check contrainer id
-   ```python
-      sudo docker ps -a
-   ```
-   
-   - start container 
-   ```python
-      sudo docker start <containerID>
-      sudo docker attach <containerID>
-   ```
-   
-   - execute shell script </br>
-      start_tensormsa.sh will provide 4 types of data store (Local, HDFS, HIVE, S3) </br>
-      choose number 1 for Spark mode </br>
-
-      TensorMSA : http://locahost:8989  </br>
-      Spark Manager : http://locahost:8080  </br>
+      Jenkins : http://locahost:8080  </br>
       Hadoop :http://localhost:50070 </br>
-
-   ```python
-      [root@db44c088318c bin]#  /home/dev/TensorMSA/start_tensormsa.sh 
-      [root@db44c088318c bin]#  /home/dev/TensorMSA/stop_tensormsa.sh
-   ```
-
+      Yarn : http://localhost:8088  </br>
+      Hbase : http://localhost:16010
+   ``` 
 # Docker - Settings 
    - Server information  
    ```python
