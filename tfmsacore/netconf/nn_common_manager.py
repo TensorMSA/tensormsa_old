@@ -2,7 +2,8 @@
 from tfmsacore import models
 from tfmsacore.utils import serializers
 from tfmsacore.utils.logger import tfmsa_logger
-
+from django.core import serializers as serial
+import json
 
 def create_new_network(req):
     """
@@ -14,10 +15,11 @@ def create_new_network(req):
         serializer = serializers.NNInfoSerializer(data=req)
         if serializer.is_valid():
             serializer.save()
-            return req["nn_id"]
     except Exception as e:
         tfmsa_logger(e)
         raise Exception (e)
+    finally :
+        return req["nn_id"]
 
 
 def update_network(req):
@@ -74,29 +76,18 @@ def set_train_datasets(nn_id , datasets):
 def filter_network_config(nn_id = None, category = None, subcate = None):
     """
     get selected nn_id config info
-    :param nn_id: neural network id
-    :param category: business category
-    :return:
-        [{ "nn_id": "",
-           "category":"",
-           "name" : "",
-           "type" : "",
-           "acc" : "",
-           "train" : "",
-           "config" : "",
-           "table" : "",
-           "query" : "",
-           "datadesc":"{object : value}",
-           "datasets":"{object : []}",
-           "dir" : ""}]
+    :param nn_id: serarch condition nn_id
+    :param category: serarch condition category
+    :param subcate: serach condition subcate
+    :return : all column data from nn_info as list-dict format
     """
 
     try:
         query_set = models.NNInfo.objects.filter(nn_id__contains= nn_id, \
                                                  category__contains = category, \
                                                  subcate__contains = subcate)
-        return query_set.values()
-
+        query_set = serial.serialize("json", query_set)
+        return json.loads(query_set, 'utf-8')
     except Exception as e:
         raise Exception(e)
 
@@ -104,23 +95,9 @@ def filter_network_config(nn_id = None, category = None, subcate = None):
 def get_network_config(nn_id):
     """
     get selected nn_id config info
-    :param nn_id: neural network id
-    :param category: business category
-    :return:
-        [{ "nn_id": "",
-           "category":"",
-           "name" : "",
-           "type" : "",
-           "acc" : "",
-           "train" : "",
-           "config" : "",
-           "table" : "",
-           "query" : "",
-           "datadesc":"{object : value}",
-           "datasets":"{object : []}",
-           "dir" : ""}]
+    :param nn_id: serarch condition nn_id
+    :return : all column data from nn_info as dic format
     """
-
     try:
         data_set = models.NNInfo.objects.get(nn_id__contains= nn_id)
         return data_set.json()

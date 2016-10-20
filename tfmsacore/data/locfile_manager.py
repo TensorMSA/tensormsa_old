@@ -28,7 +28,7 @@ class LocalFileManager:
             os.makedirs(settings.HDFS_MODEL_ROOT)
         self.root = "{0}/".format(settings.HDFS_DF_ROOT)
 
-    def spark_session_create(self):
+    def spark_session_create(self, app_name):
         """
         spark Loader Class
         creadted for the purpose of handling Spark Jobs
@@ -36,13 +36,13 @@ class LocalFileManager:
         tfmsa_logger("Spark Session Created")
         conf = SparkConf()
         conf.setMaster('spark://{0}'.format(settings.SPARK_HOST))
-        conf.setAppName('save_csv_to_df')
+        conf.setAppName(app_name)
         conf.set('spark.driver.cores', settings.SPARK_CORE)
         conf.set('spark.driver.memory', settings.SPARK_MEMORY)
         conf.set('spark.executor.cores', settings.SPARK_WORKER_CORE)
         conf.set('spark.executor.memory', settings.SPARK_WORKER_MEMORY)
-
-        self.sc = SparkContext(conf=conf)
+        conf.set('spark.driver.allowMultipleContexts', "true")
+        return SparkContext(conf=conf)
 
 
     def search_all_database(self):
@@ -251,12 +251,12 @@ class LocalFileManager:
         :return: query result as json Object
         """
         try:
-            self.spark_session_create()
+            sc = self.spark_session_create("get_distinct_dataframe")
             tfmsa_logger("start find distinct column !")
-            hdfs_path = "/" + settings.HDFS_HOST + settings.HDFS_DF_ROOT + "/" + data_frame + "/" + table_name
+            hdfs_path = settings.HDFS_DF_ROOT + "/" + data_frame + "/" + table_name
             query_str = "select * from " + table_name
 
-            sqlContext = SQLContext(self.sc)
+            sqlContext = SQLContext(sc)
 
             df = sqlContext.read.load(hdfs_path, "parquet")
             df.registerTempTable(table_name)
@@ -276,7 +276,11 @@ class LocalFileManager:
             raise Exception(e)
         finally:
             df.unpersist()
-            self.sc.stop()
+            sqlContext.clearCache()
+            sqlContext.dropTempTable(table_name)
+            sc.clearFiles()
+            sc.stop()
+            tfmsa_logger("stop context")
 
 
     def query_data(self, data_frame, table_name, query_str, limit_cnt=0):
@@ -287,28 +291,30 @@ class LocalFileManager:
         :return: query result as json Object
         """
         try:
-            self.spark_session_create()
+            sc = self.spark_session_create("query_data")
             tfmsa_logger("start query data !")
-            hdfs_path = "/" + settings.HDFS_HOST + settings.HDFS_DF_ROOT + "/" + data_frame + "/" + table_name
+            hdfs_path = settings.HDFS_DF_ROOT + "/" + data_frame + "/" + table_name
 
-            sqlContext = SQLContext(self.sc)
+            sqlContext = SQLContext(sc)
             df = sqlContext.read.load(hdfs_path, "parquet")
             df.registerTempTable(table_name)
             if (limit_cnt == 0):
                 result = sqlContext.sql(str(query_str)).collect()
             else:
                 result = sqlContext.sql(str(query_str)).limit(limit_cnt).collect()
-            return result
 
-            tfmsa_logger("End query data!")
+            return result
 
         except Exception as e:
             tfmsa_logger(e)
             raise Exception(e)
         finally:
             df.unpersist()
-            self.sc.stop()
-
+            sqlContext.clearCache()
+            sqlContext.dropTempTable(table_name)
+            sc.clearFiles()
+            sc.stop()
+            tfmsa_logger("stop context")
 
     def post_json_data(self, data_frame, table_name, json_data):
         """
@@ -318,11 +324,11 @@ class LocalFileManager:
         :return: success or failure
         """
         try:
-            self.spark_session_create()
+            sc = self.spark_session_create("post_json_data")
             tfmsa_logger("start create_table !")
             hdfs_path = settings.HDFS_DF_ROOT + "/" + data_frame + "/" + table_name
 
-            sqlContext = SQLContext(self.sc)
+            sqlContext = SQLContext(sc)
             df_writer = sqlContext.createDataFrame(str(json_data)).write
             df_writer.parquet(hdfs_path, mode="append", partitionBy=None)
             tfmsa_logger("End create_table !")
@@ -332,7 +338,10 @@ class LocalFileManager:
             raise Exception(e)
         finally:
             df_writer.unpersist()
-            self.sc.stop()
+            sqlContext.clearCache()
+            sc.clearFiles()
+            sc.stop()
+            tfmsa_logger("stop context")
 
 
     def put_json_data(self, data_frame, table_name, json_data):
@@ -343,11 +352,11 @@ class LocalFileManager:
         :return: success or failure
         """
         try:
-            self.spark_session_create()
+            sc = self.spark_session_create("put_json_data")
             tfmsa_logger("start append_data !")
             hdfs_path = settings.HDFS_DF_ROOT + "/" + data_frame + "/" + table_name
 
-            sqlContext = SQLContext(self.sc)
+            sqlContext = SQLContext(sc)
             df = sqlContext.read.load(hdfs_path, "parquet")
             df_writer = sqlContext.createDataFrame(str(json_data))
             df.unionAll(df_writer)
@@ -358,9 +367,12 @@ class LocalFileManager:
             tfmsa_logger(e)
             raise Exception(e)
         finally:
-            df_writer.unpersist()
             df.unpersist()
-            self.sc.stop()
+            df_writer.unpersist()
+            sqlContext.clearCache()
+            sc.clearFiles()
+            sc.stop()
+            tfmsa_logger("stop context")
 
 
     def save_csv_to_df(self, data_frame, table_name, csv_file):
@@ -370,12 +382,12 @@ class LocalFileManager:
         :return:
         """
         try:
-            self.spark_session_create()
+            sc = self.spark_session_create("save_csv_to_df")
             tfmsa_logger("start uploading csv on Hadoop")
             # clear current exist table
             self.reset_table(data_frame, table_name)
 
-            sqlContext = SQLContext(self.sc)
+            sqlContext = SQLContext(sc)
 
             file_path = settings.FILE_ROOT + "/" + data_frame + "/" + table_name + "/" + csv_file
             df = sqlContext.createDataFrame(pd.read_csv(file_path))
@@ -383,13 +395,15 @@ class LocalFileManager:
                              mode="append", partitionBy=None)
             tfmsa_logger("uploading csv on Hadoop finished")
 
-
         except Exception as e:
             tfmsa_logger(e)
             raise Exception(e)
         finally:
             df.unpersist()
-            self.sc.stop()
+            sqlContext.clearCache()
+            sc.clearFiles()
+            sc.stop()
+            tfmsa_logger("stop context")
 
 
     def update_csv_to_df(self, data_frame, table_name, csv_file):
@@ -401,8 +415,8 @@ class LocalFileManager:
         :return:
         """
         try:
-            self.spark_session_create()
-            sqlContext = SQLContext(self.sc)
+            sc = self.spark_session_create("update_csv_to_df")
+            sqlContext = SQLContext(sc)
             df = sqlContext.read.load("{0}/{1}/{2}".format(settings.HDFS_DF_ROOT, data_frame, table_name), "parquet")
             file_path = settings.FILE_ROOT + "/" + data_frame + "/" + table_name + "/" + csv_file
             append_df = sqlContext.createDataFrame(pd.read_csv(file_path))
@@ -413,8 +427,39 @@ class LocalFileManager:
         except Exception as e:
             tfmsa_logger(e)
             raise Exception(e)
-
         finally:
             df.unpersist()
-            append_df.unpersist()
-            self.sc.stop()
+            sqlContext.clearCache()
+            sc.clearFiles()
+            sc.stop()
+            tfmsa_logger("stop context")
+
+
+    def query_random_sample(self, data_frame, table_name, query_str, sample_per=0.1):
+        """
+        get query data from spark
+        :param table_name: name of table you want to get data
+        :param query_str: sql strings
+        :return: query result as json Object
+        """
+        try:
+            sc = self.spark_session_create("query_radom_sample")
+            tfmsa_logger("start query data !")
+            hdfs_path = settings.HDFS_DF_ROOT + "/" + data_frame + "/" + table_name
+
+            sqlContext = SQLContext(sc)
+            df = sqlContext.read.load(hdfs_path, "parquet")
+            df.registerTempTable(table_name)
+            result = sqlContext.sql(str(query_str)).sample(False, float(sample_per), seed=0).collect()
+
+            return result
+        except Exception as e:
+            tfmsa_logger(e)
+            raise Exception(e)
+        finally:
+            df.unpersist()
+            sqlContext.clearCache()
+            sqlContext.dropTempTable(table_name)
+            sc.clearFiles()
+            sc.stop()
+            tfmsa_logger("stop context")

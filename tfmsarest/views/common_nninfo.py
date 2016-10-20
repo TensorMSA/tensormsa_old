@@ -25,7 +25,7 @@ class CommonNetInfo(APIView):
         """
         try:
             result = netconf.create_new_network(json.loads(request.body))
-            return_data = {"status": "200", "result": str(result)}
+            return_data = {"status": "200", "result": result}
             return Response(json.dumps(return_data))
         except Exception as e:
             return_data = {"status": "400", "result": str(e)}
@@ -39,7 +39,7 @@ class CommonNetInfo(APIView):
         """
         try:
             result = netconf.filter_network_config(nnid, cate, sub)
-            return_data = {"status": "200", "result": str(result)}
+            return_data = {"status": "200", "result": result}
             return Response(json.dumps(return_data))
         except Exception as e:
             return_data = {"status": "400", "result": str(e)}
@@ -54,7 +54,7 @@ class CommonNetInfo(APIView):
         try:
             jd = jc.load_obj_json(request.body)
             result = netconf.update_network(jd)
-            return_data = {"status": "200", "result": str(result)}
+            return_data = {"status": "200", "result": result}
             return Response(json.dumps(return_data))
         except Exception as e:
             return_data = {"status": "400", "result": str(e)}
@@ -68,7 +68,7 @@ class CommonNetInfo(APIView):
         """
         try:
             result = netconf.delete_net_info(json.loads(request.body))
-            return_data = {"status": "200", "result": str(result)}
+            return_data = {"status": "200", "result": result}
             return Response(json.dumps(return_data))
         except Exception as e:
             return_data = {"status": "400", "result": str(e)}

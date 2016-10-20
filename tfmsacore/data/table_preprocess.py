@@ -11,6 +11,42 @@ class DFPreProcessor:
         self.train_len = None
         self.tag_len = None
 
+    def get_eval_data(self, nn_id):
+        """
+        (1) get net column descritions
+        (2) get user selected data , exclude user check None
+        (3) modify train data for 'categorical data'
+        (4) caculate size of arrays need for neural networks
+        (5) change neural network configurioatns automtically
+        :param nn_id:neural network id want to train
+        :return: Train Data Sets
+        """
+        try :
+            tfmsa_logger("Get Evaluation Data Start!")
+            # (1) get data configuration info
+            net_conf = netconf.get_network_config(nn_id)
+            datadesc = JsonDataConverter().load_obj_json(net_conf['datadesc'])
+            datasets = JsonDataConverter().load_obj_json(net_conf['datasets'])
+
+            # (2) get user seleceted data from spark
+            sql_stmt = self.get_sql_state(datadesc , net_conf['table'])
+            origin_data = DataMaster().query_random_sample(net_conf['dir'], net_conf['table'], sql_stmt, net_conf['samplepercent'])
+
+            # (3) modify train data for 'categorical data'
+            self.m_train[:] = []
+            self.m_tag[:] = []
+            self.m_train, self.m_tag = self.reform_train_data(origin_data, datasets, datadesc)
+
+            # (4) caculate size of arrays need for neural networks
+            self.train_len = len(next(iter(self.m_train), None))
+            self.tag_len = len(next(iter(self.m_tag), None))
+
+            tfmsa_logger("Get Evaluation Data Finished!")
+            return self
+
+        except IOError as e:
+            return e
+
     def get_train_data(self, nn_id):
         """
         (1) get net column descritions
@@ -92,8 +128,8 @@ class DFPreProcessor:
         modified_tag_row = []
 
         for data in origin_data:
-            modified_train_row[:] = []
-            modified_tag_row[:] = []
+            modified_train_row = []
+            modified_tag_row = []
 
             if (isinstance(data, (types.Row))):
                 data = data.asDict()

@@ -8,14 +8,26 @@ class NNInfo(models.Model):
     name = models.CharField(max_length=100, blank=True, default='')              # business name
     desc = models.CharField(max_length=5000, blank=True, default='')             # description for network
     type = models.CharField(max_length=100, blank=True, default='')              # network types
-    acc = models.CharField(max_length=5, blank=True, default='')                 # accuracy of model from last training
-    train = models.CharField(max_length=1, blank=True, default='')               # if trained model exist
-    config = models.CharField(max_length=1, blank=True, default='')              # if config exist
+    acc = models.CharField(max_length=20, blank=True, default='')                # accuracy of model from last training
+    train = models.CharField(max_length=1, blank=True, default='')               # if trained model exist  (Y,N)
+    config = models.CharField(max_length=1, blank=True, default='')              # if config exist (Y, N)
     dir = models.CharField(max_length=200, blank=True, default='')               # path where conf files saved
     table = models.CharField(max_length=100, blank=True, default='')             # table name to get data
     query = models.CharField(max_length=5000, blank=True, default='')            # SQL query to get data
-    datadesc = models.CharField(max_length=50000, blank=True, default='')        # column data defination
-    datasets = models.CharField(max_length=50000, blank=True, default='')        # specific data strucuture
+    preprocess = models.CharField(max_length=50, blank=True, default='')         # preprocess type (1, dataframe, 2, image, ..etc)
+    datadesc = models.CharField(max_length=50000, blank=True, default='')        # if data format specified (null = N, len>0 = Y)
+    datasets = models.CharField(max_length=50000, blank=True, default='')        # if data preprocess done (null = N, eln>0 = Y)
+    datasize = models.CharField(max_length=50, blank=True, default='')           # length of data read from spark at once
+    imagex = models.CharField(max_length=50, blank=True, default='')             # image prerpcoess x size
+    imagey = models.CharField(max_length=50, blank=True, default='')             # image preprocess y size
+    imagepre = models.CharField(max_length=1, blank=True, default='')            # if image preprocessed (Y,N)
+    datavaild = models.CharField(max_length=1, blank=True, default='')           # vaildation check for data (Y,N)
+    confvaild = models.CharField(max_length=1, blank=True, default='')           # validation check for conf (Y,N)
+    samplepercent = models.CharField(max_length=1000, blank=True, default='')    # percentage of sampling from raw data
+    samplenum = models.CharField(max_length=1000, blank=True, default='')        # number of samples for test
+    samplemethod = models.CharField(max_length=10, blank=True, default='')       # samplling method (1 : random)
+    testpass = models.CharField(max_length=1000, blank=True, default='')         # number of match
+    testfail = models.CharField(max_length=1000, blank=True, default='')         # number of unmatch
     created = models.DateTimeField(auto_now_add=True)                            # day created
 
     def json(self):
@@ -32,8 +44,20 @@ class NNInfo(models.Model):
             dir=self.dir,
             table=self.table,
             query=self.query,
+            preprocess=self.preprocess,
             datadesc=self.datadesc,
-            datasets=self.datasets
+            datasets=self.datasets,
+            datasize=self.datasize,
+            imagex=self.imagex,
+            imagey=self.imagey,
+            imagepre=self.imagepre,
+            datavaild=self.datavaild,
+            confvaild=self.confvaild,
+            samplepercent=self.samplepercent,
+            samplenum=self.samplenum,
+            samplemethod=self.samplemethod,
+            testpass=self.testpass,
+            testfail=self.testfail
         )
 
     def __getitem__(self, item):
@@ -47,10 +71,11 @@ class JobManagement(models.Model):
     start = models.DateTimeField(auto_now_add=False, null=True, blank=True )                # time job started
     end = models.DateTimeField(auto_now_add=False, null=True, blank=True )                  # time job finished
     status = models.CharField(max_length=3, blank=True, default='')                         # request(1), running(3), finish(5), error(9)
-    progress = models.CharField(max_length=3, blank=True, default='')                       # data(10), pre(30), train(50), test(70), finish(100)
+    progress = models.CharField(max_length=3, blank=True, default='')                       # data(10), pre(30), train(50), evaluation(70), finish(100)
     acc = models.CharField(max_length=5, blank=True, default='')                            # accuracy of model from last training
     epoch = models.CharField(max_length=20, blank=True, default='')                         # itetraions time of training
-    testsets = models.CharField(max_length=20, blank=True, default='')                      # number of test data set
+    testsets = models.CharField(max_length=20, blank=True, default='')                      # number of evaluation data set
+    datapointer = models.CharField(max_length=100, blank=True, default='')                  # current data pointer (used when data is too big)
 
     def json(self):
         return dict(
