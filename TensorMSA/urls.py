@@ -15,7 +15,7 @@ Including another URLconf
 Multi Relational service (not need for now )
     ex: #url(r'^snippets/(?P<pk>[0-9]+)/highlight/$', views.SnippetHighlight.as_view()),
 """
-from django.conf.urls import url
+from django.conf.urls import url, include
 from django.contrib import admin
 from tfmsarest import views as rest_view
 from tfmsaview import views as ui_view
@@ -24,6 +24,9 @@ from django.conf.urls.static import static
 from django.views.decorators.csrf import csrf_exempt
 
 urlpatterns = [
+
+    url(r'^docs/',  include('rest_framework_swagger.urls')),
+
     url(r'^admin/', csrf_exempt(admin.site.urls)),
     # network info
     url(r'^api/v1/type/common/nninfo/(?P<nnid>.*)/category/(?P<cate>.*)/subcate/(?P<sub>.*)/',

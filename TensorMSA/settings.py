@@ -41,7 +41,11 @@ INSTALLED_APPS = [
     'tfmsarest.apps.TensormsarestapiConfig',
     'tfmsaview.apps.TfmsaviewConfig',
     'django_jenkins',
+    'rest_framework',
+    'rest_framework_swagger',
+
 ]
+
 
 MIDDLEWARE_CLASSES = [
     'django.middleware.security.SecurityMiddleware',
@@ -132,10 +136,10 @@ STATICFILES_DIRS = [
 ]
 
 # custom setting need for tensormsa
-DATA_STORE_MODE = '2' # 1 (HDFS), 2(HIVE), 3(S3), 4(Local)
+DATA_STORE_MODE = '1' # 1 (HDFS), 2(HIVE), 3(S3), 4(Local)
 LIVY_HOST = '8b817bad1154:8998'
 LIVY_SESS = '1'
-SPARK_HOST = '192.168.92.167:7077'
+SPARK_HOST = '8b817bad1154:7077'
 SPARK_CORE = '1'
 SPARK_MEMORY = '1G'
 SPARK_WORKER_CORE = '2'
