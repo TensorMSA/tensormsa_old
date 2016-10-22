@@ -8,18 +8,61 @@ from tfmsacore import netconf
 
 class DataFrameFormat(APIView):
     """
-    1. POST :
-    2. PUT :
-    3. GET :
-    4. DELETE :
+    1. Name : DataFrameData (step 6)
+    2. Steps - WDNN essential steps
+        - post /api/v1/type/common/env/
+        - post /api/v1/type/common/job/{nnid}/
+        - post /api/v1/type/dataframe/base/{baseid}/table/{tb}/
+        - post /api/v1/type/dataframe/base/{baseid}/table/{tb}/data/
+        - post /api/v1/type/dataframe/base/{baseid}/table/{tb}/data/{args}/
+        - post /api/v1/type/dataframe/base/{baseid}/table/{tb}/format/{nnid}/
+        - post /api/v1/type/wdnn/conf/{nnid}/
+        - post /api/v1/type/wdnn/train/{nnid}/
+        - post /api/v1/type/wdnn/eval/{nnid}/
+        - post /api/v1/type/wdnn/predict/{nnid}/
+    3. Description \n
+        Manage Data Structure (Column type, Combine Columns)
     """
     def post(self, request, baseid, tb, nnid):
         """
-        create a format data
-        :param request: update network info
-        :param baseid: schemaId
-        :param tb : table name
-        :return: create schema result
+        - desc : create a format data
+        - desc : update data format information \n
+            <textfield>
+            <font size = 1>
+
+                { "cross_cell":
+                    {
+                      "col12": {"column2_0": "native_country", "column2_1": "occupation"},
+                      "col1": {"column_1": "occupation", "column_0": "education"}
+                    },
+                  "cell_feature":
+                    {
+                      "hours_per_week": "CONTINUOUS_COLUMNS",
+                      "native_country": "CATEGORICAL",
+                      "relationship": "CATEGORICAL",
+                      "gender": "CATEGORICAL",
+                      "age": "CONTINUOUS_COLUMNS",
+                      "marital_status": "CATEGORICAL",
+                      "race": "CATEGORICAL",
+                      "capital_gain": "CONTINUOUS_COLUMNS",
+                      "workclass": "CATEGORICAL",
+                      "capital_loss": "CONTINUOUS_COLUMNS",
+                      "education": "CATEGORICAL",
+                      "education_num": "CONTINUOUS_COLUMNS",
+                      "occupation": "CATEGORICAL"
+                    },
+                  "label":
+                    {
+                       "income_bracket" : "LABEL"
+                    }
+                }
+            </font>
+            </textfield>
+            ---
+            parameters:
+            - name: body
+              paramType: body
+              pytype: json
         """
         try:
             jd = jc.load_obj_json("{}")
@@ -36,10 +79,7 @@ class DataFrameFormat(APIView):
 
     def get(self, request, baseid, tb, nnid):
         """
-        return all table
-        :param request: Not used
-        :param baseid: schemaId
-        :return: list of table
+        - desc : return network data format information
         """
         try:
             result = netconf.get_network_config(nnid)
@@ -51,11 +91,7 @@ class DataFrameFormat(APIView):
 
     def put(self, request, baseid, tb, nnid):
         """
-        same as create
-        :param request: update network info
-        :param baseid: schemaId
-        :param tb : table name
-        :return: create schema result
+        - desc : update data format information
         """
         try:
             jd = jc.load_obj_json("{}")
@@ -72,9 +108,7 @@ class DataFrameFormat(APIView):
 
     def delete(self, request, baseid, tb, nnid):
         """
-        delete table
-        :param request: request data
-        :return: renamed table name
+        - desc : delete data format information
         """
         try:
             jd = jc.load_obj_json("{}")

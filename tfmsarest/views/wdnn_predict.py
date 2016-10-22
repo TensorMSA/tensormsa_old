@@ -15,18 +15,41 @@ from json import JSONEncoder, JSONDecoder
 
 class WideDeepNetPredict(APIView):
     """
-    1. POST :
-    2. PUT :
-    3. GET :
-    4. DELETE :
+    1. Name : WideDeepNetPredict (step 10)
+    2. Steps - WDNN essential steps
+        - post /api/v1/type/common/env/
+        - post /api/v1/type/common/job/{nnid}/
+        - post /api/v1/type/dataframe/base/{baseid}/table/{tb}/
+        - post /api/v1/type/dataframe/base/{baseid}/table/{tb}/data/
+        - post /api/v1/type/dataframe/base/{baseid}/table/{tb}/data/{args}/
+        - post /api/v1/type/dataframe/base/{baseid}/table/{tb}/format/{nnid}/
+        - post /api/v1/type/wdnn/conf/{nnid}/
+        - post /api/v1/type/wdnn/train/{nnid}/
+        - post /api/v1/type/wdnn/eval/{nnid}/
+        - post /api/v1/type/wdnn/predict/{nnid}/
+    3. Description \n
+        Manage data store data CRUD (strucutre : schema - table - data)
     """
 
     def post(self, request, nnid):
         """
-        predict
-        :param networkid
-        :return: {"status": "", "result": ""}
+        - desc : predict result with given data
+        - Request json data example \n
+        <textfield>
+            <font size = 1>
+
+               [{"pclass": "1st","survived": "tag","sex": "female","age": "30","embarked": "Southampton","boat": "2"},
+               {"pclass": "1st","survived": "tag","sex": "female","age": "30","embarked": "Southampton","boat": "2"},
+               {"pclass": "1st","survived": "tag","sex": "female","age": "30","embarked": "Southampton","boat": "2"}]
+
+        </textfield>
+            ---
+            parameters:
+            - name: body
+              paramType: body
+              pytype: json
         """
+
         try:
             logger.tfmsa_logger("[Predict] start uploading csv on file system")
             if 'file' in request.FILES:

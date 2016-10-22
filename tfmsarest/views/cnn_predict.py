@@ -8,23 +8,39 @@ from tfmsacore.utils.json_conv import JsonDataConverter as jc
 
 class ConvNeuralNetPredict(APIView):
     """
-    1. POST :
-    2. PUT :
-    3. GET :
-    4. DELETE :
+    1. Name : ConvNeuralNetPredict (step 10)
+    2. Steps - CNN essential steps
+        - post /api/v1/type/common/env/
+        - post /api/v1/type/common/job/{nnid}/
+        - post /api/v1/type/dataframe/base/{baseid}/table/{tb}/
+        - post /api/v1/type/dataframe/base/{baseid}/table/{tb}/data/
+        - post /api/v1/type/dataframe/base/{baseid}/table/{tb}/data/{args}/
+        - post /api/v1/type/dataframe/base/{baseid}/table/{tb}/format/{nnid}/
+        - post /api/v1/type/cnn/conf/{nnid}/
+        - post /api/v1/type/cnn/train/{nnid}/
+        - post /api/v1/type/cnn/eval/{nnid}/
+        - post /api/v1/type/cnn/predict/{nnid}/
+    3. Description \n
+        Manage data store schema (strucutre : schema - table - data)
     """
 
-    # read
     def post(self, request, nnid):
         """
-        train requested model and save
-        :param request: json={ "nn_id": "sample" ,
-                               "nn_type" : "cnn",
-                               "run_type" : "local",
-                               "epoch" : 50,
-                               "testset" : 10 ,
-                               "predict_data":<essential>})
-        :return: {"status": "", "result": [[]]}
+        - desc : predict result with given data
+        - Request json data example \n
+        <textfield>
+            <font size = 1>
+
+               [{"pclass": "1st","survived": "tag","sex": "female","age": "30","embarked": "Southampton","boat": "2"},
+               {"pclass": "1st","survived": "tag","sex": "female","age": "30","embarked": "Southampton","boat": "2"},
+               {"pclass": "1st","survived": "tag","sex": "female","age": "30","embarked": "Southampton","boat": "2"}]
+
+        </textfield>
+            ---
+            parameters:
+            - name: body
+              paramType: body
+              pytype: json
         """
         try:
             jd = jc.load_obj_json(request.body)

@@ -2,64 +2,6 @@ echo "======================="
 echo "Starting TensorMSA !!!!"
 echo "======================="
 
-echo "[A] set up server info"
-echo "location : /home/dev/TensorMSA/TensorMSA/setting.py"
-echo "[B] First Param : choose data source types"
-echo "- 1) HDFS - SPARK"
-echo "- 2) HDFS - HIVE - SPARK"
-echo "- 3) S3 - SPARK"
-echo "- 4) LOCAL - SPARK"
-echo "[C] Second Param : "
-echo "- 1) HDFS - SPARK : IP:PORT of HDFS "
-echo "- 2) HDFS - HIVE - SPARK : on development" 
-echo "- 3) S3 - SPARK : on development "
-echo "- 4) LOCAL - SPARK : no parm needed" 
-echo "[D] more info :  http://github.com/tensormsa"
-
-if [ $# -lt 1 ]
-  then
-    echo "======================="
-    echo "[Parameter Error]      "
-    echo "======================="
-
-    echo "[ERROR : select Data Source Mode]"
-    echo "choose data souce type"
-    echo "[First parm] : data source mode "
-    echo "- 1 : HDFS - SPARK"
-    echo "- 2 : HDFS - HIVE - SPARK"
-    echo "- 3 : S3 - SPARK"
-    echo "- 4 : LOCAL - SPARK"
-    echo "Select Type [1 ~ 4] : "
-    read TYPE
-    echo "Insert Your Container ID(or IP)"
-    read LOC
-fi
-
-
-if [ $TYPE -eq 1 ]
-  then 
-    echo "Insert HDFS Container ID(or IP)"
-    read HDFS
-fi 
-
-if [ $TYPE -eq 2 ]
-  then 
-    echo "HIVE mode not supported yet"
-    exit 1
-fi 
-
-if [ $TYPE -eq 3 ]
-  then
-    echo "S3 mode not supported yet"
-    exit 1
-fi
-
-if [ $TYPE -eq 4 ]
-  then
-    echo "[WARNING] Local mode store all data on local disk"
-fi
-
-
 echo "======================="
 echo "set path, env variables"
 echo "======================="
@@ -104,16 +46,16 @@ echo "==========================================="
 echo "==========================================="
 echo "step4 : Set HDFS Server Info      "
 echo "==========================================="
-if [ $TYPE -eq  1 ]
-  then
-    cp /root/.hdfscli_temp.cfg /root/.hdfscli.cfg
-    echo "[global]"   >>  /root/.hdfscli.cfg
-    echo "default.alias = dev"   >>  /root/.hdfscli.cfg
-    echo "[dev.alias]"   >>  /root/.hdfscli.cfg
-    echo "url = http://${HDFS}:50070"   >>  /root/.hdfscli.cfg
-    echo "[prod.alias]"   >>  /root/.hdfscli.cfg
-    echo "url = http://${HDFS}:50070"   >>  /root/.hdfscli.cfg
-fi
+#if [ $TYPE -eq  1 ]
+#  then
+#    cp /root/.hdfscli_temp.cfg /root/.hdfscli.cfg
+#    echo "[global]"   >>  /root/.hdfscli.cfg
+#    echo "default.alias = dev"   >>  /root/.hdfscli.cfg
+#    echo "[dev.alias]"   >>  /root/.hdfscli.cfg
+#    echo "url = http://${HDFS}:50070"   >>  /root/.hdfscli.cfg
+#    echo "[prod.alias]"   >>  /root/.hdfscli.cfg
+#    echo "url = http://${HDFS}:50070"   >>  /root/.hdfscli.cfg
+#fi
 
 echo "==========================================="
 echo "step5 : Django Settings      "
@@ -138,9 +80,9 @@ echo "==========================================="
 echo "step6 : Start TensorMSA Webserver      "
 echo "==========================================="
 
-echo ./python manage.py runserver ${LOC}:8989 &
+echo ./python manage.py runserver $HOSTNAME:8989 &
 cd /home/dev/TensorMSA/
-python manage.py runserver ${LOC}:8989 &
+python manage.py runserver $HOSTNAME:8989 &
 
 
 
