@@ -10,16 +10,38 @@ from django.conf import settings
 
 class DataFrameData(APIView):
     """
-    1. POST :
-    2. PUT :
-    3. GET :
-    4. DELETE :
+    1. Name : DataFrameData (step 5)
+    2. Steps - WDNN essential steps
+        - post /api/v1/type/common/env/
+        - post /api/v1/type/common/job/{nnid}/
+        - post /api/v1/type/dataframe/base/{baseid}/table/{tb}/
+        - post /api/v1/type/dataframe/base/{baseid}/table/{tb}/data/
+        - post /api/v1/type/dataframe/base/{baseid}/table/{tb}/data/{args}/
+        - post /api/v1/type/dataframe/base/{baseid}/table/{tb}/format/{nnid}/
+        - post /api/v1/type/wdnn/conf/{nnid}/
+        - post /api/v1/type/wdnn/train/{nnid}/
+        - post /api/v1/type/wdnn/eval/{nnid}/
+        - post /api/v1/type/wdnn/predict/{nnid}/
+    3. Description \n
+        Manage data store data CRUD (strucutre : schema - table - data)
     """
     def post(self, request, baseid, tb, args):
         """
-        insert data into table
-        :param request: request data
-        :return: create table success or failure
+        - desc : insert data into table
+        - Request json data example \n
+            <texfied>
+            <font size = 1>
+
+               <form action="/api/v1/type/dataframe/base/scm/table/tb_test_incomedata_wdnn3/data/CSV/"
+                     method="post"
+                     enctype="multipart/form-data">
+            </font>
+            </textfield>
+            ---
+            parameters:
+            - name: body
+              paramType: body
+              pytype: json
         """
         try:
             if(args == "JSON"):
@@ -42,14 +64,9 @@ class DataFrameData(APIView):
                         fp.write(chunk)
                     fp.close()
 
-                    #update to hdfs
+                    #update on hdfs
                     results_data = data.DataMaster().save_csv_to_df(baseid, tb, filename)
-                    #print("where is error")
-                    #delete file after upload
-                    #if os.path.isfile("{0}/{1}/{2}/{3}".format(settings.FILE_ROOT, baseid, tb, filename)):
-                    #    os.remove("{0}/{1}/{2}/{3}".format(settings.FILE_ROOT, baseid, tb, filename))
-                    #fp.close()
-                    #logger.tfmsa_logger("finish uploading csv on file system")
+
                     return HttpResponse(json.dumps(results_data))
             else :
                 raise Exception("not supported type")
@@ -62,9 +79,7 @@ class DataFrameData(APIView):
 
     def get(self, request, baseid, tb, args = None):
         """
-        select data form spark table
-        :param request: request data
-        :return: query result on json form (list - dict)
+        - desc : select data form spark table
         """
         try:
             if(args == None):
@@ -80,9 +95,20 @@ class DataFrameData(APIView):
 
     def put(self, request, baseid, tb, args = None):
         """
-        append data on the spark table
-        :param request: request data
-        :return: create table success or failure
+        - desc : append data on the spark table
+        - Request json data example \n
+            <texfied>
+            <font size = 1>
+
+               <form action="/api/v1/type/dataframe/base/scm/table/tb_test_incomedata_wdnn3/data/CSV/"
+                     method="post"
+                     enctype="multipart/form-data">
+            </font>
+            </textfield>
+            ---
+            parameters:
+            - name: body
+              paramType: body
         """
         try:
             if (args == "JSON"):

@@ -8,23 +8,26 @@ from tfmsacore.netconf.nn_common_manager import get_network_config
 
 class ConvNeuralNetEval(APIView):
     """
-    1. POST :
-    2. PUT :
-    3. GET :
-    4. DELETE :
+    1. Name : ConvNeuralNetEval (step 10)
+    2. Steps - CNN essential steps
+        - post /api/v1/type/common/env/
+        - post /api/v1/type/common/job/{nnid}/
+        - post /api/v1/type/dataframe/base/{baseid}/table/{tb}/
+        - post /api/v1/type/dataframe/base/{baseid}/table/{tb}/data/
+        - post /api/v1/type/dataframe/base/{baseid}/table/{tb}/data/{args}/
+        - post /api/v1/type/dataframe/base/{baseid}/table/{tb}/format/{nnid}/
+        - post /api/v1/type/cnn/conf/{nnid}/
+        - post /api/v1/type/cnn/train/{nnid}/
+        - post /api/v1/type/cnn/eval/{nnid}/
+        - post /api/v1/type/cnn/predict/{nnid}/
+    3. Description \n
+        Manage data store schema (strucutre : schema - table - data)
     """
 
     # read
     def post(self, request, nnid):
         """
-        train requested model and save
-        :param request: json={ "nn_id": "sample" ,
-                               "nn_type" : "cnn",
-                               "run_type" : "local",
-                               "epoch" : 50,
-                               "testset" : 10 ,
-                               "predict_data":<essential>})
-        :return: {"status": "", "result": [[]]}
+        - desc : evaluate train result
         """
         try:
             jd = jc.load_obj_json(request.body)
@@ -38,10 +41,7 @@ class ConvNeuralNetEval(APIView):
 
     def get(self, request, nnid):
         """
-        return all databases
-        :param request: Not used
-        :param baseid: schemaId
-        :return: list of schemaa (database)
+        - desc : get network evaluation result
         """
         try:
             result = get_network_config(nnid)

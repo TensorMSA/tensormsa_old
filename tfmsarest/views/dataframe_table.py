@@ -7,17 +7,24 @@ from tfmsacore import data
 
 class DataFrameTable(APIView):
     """
-    1. POST :
-    2. PUT :
-    3. GET :
-    4. DELETE :
+    1. Name : DataFrameTable (step 4)
+    2. Steps - WDNN essential steps
+        - post /api/v1/type/common/env/
+        - post /api/v1/type/common/job/{nnid}/
+        - post /api/v1/type/dataframe/base/{baseid}/table/{tb}/
+        - post /api/v1/type/dataframe/base/{baseid}/table/{tb}/data/
+        - post /api/v1/type/dataframe/base/{baseid}/table/{tb}/data/{args}/
+        - post /api/v1/type/dataframe/base/{baseid}/table/{tb}/format/{nnid}/
+        - post /api/v1/type/wdnn/conf/{nnid}/
+        - post /api/v1/type/wdnn/train/{nnid}/
+        - post /api/v1/type/wdnn/eval/{nnid}/
+        - post /api/v1/type/wdnn/predict/{nnid}/
+    3. Description \n
+        Manage data store table (strucutre : schema - table - data)
     """
     def post(self, request, baseid, tb):
         """
-        create table with given name
-        :param request: Not used
-        :param baseid: schemaId
-        :return: create schema result
+        - desc :create table with given name
         """
         try:
             result = data.DataMaster().create_table(baseid, tb)
@@ -29,10 +36,7 @@ class DataFrameTable(APIView):
 
     def get(self, request, baseid):
         """
-        return all table
-        :param request: Not used
-        :param baseid: schemaId
-        :return: list of table
+        - desc : return all table
         """
         try:
             result = data.DataMaster().search_database(baseid)
@@ -44,9 +48,20 @@ class DataFrameTable(APIView):
 
     def put(self, request, baseid):
         """
-        rename table
-        :param request: {origin : , modify : }
-        :return: renamed table name
+        - desc : rename table
+        - Request json data example \n
+        <texfield>
+            <font size = 1>
+
+                {"origin" : "A" ,
+                 "modify" : "B"}
+            </font>
+        </textfield>
+            ---
+            parameters:
+            - name: body
+              paramType: body
+              pytype: json
         """
         try:
             json_data = json.loads(request.body)
@@ -59,9 +74,7 @@ class DataFrameTable(APIView):
 
     def delete(self, request, baseid, tb):
         """
-        delete table
-        :param request: request data
-        :return: renamed table name
+        -desc : delete table
         """
         try:
             result = data.DataMaster().delete_table(baseid, tb)

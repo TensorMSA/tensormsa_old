@@ -8,22 +8,24 @@ from tfmsacore import netconf
 
 class ConvNeuralNetConfig(APIView):
     """
-    1. POST :
-    2. PUT :
-    3. GET :
-    4. DELETE :
+    1. Name : ConvNeuralNetConfig (step 8)
+    2. Steps - CNN essential steps
+        - post /api/v1/type/common/env/
+        - post /api/v1/type/common/job/{nnid}/
+        - post /api/v1/type/dataframe/base/{baseid}/table/{tb}/
+        - post /api/v1/type/dataframe/base/{baseid}/table/{tb}/data/
+        - post /api/v1/type/dataframe/base/{baseid}/table/{tb}/data/{args}/
+        - post /api/v1/type/dataframe/base/{baseid}/table/{tb}/format/{nnid}/
+        - post /api/v1/type/cnn/conf/{nnid}/
+        - post /api/v1/type/cnn/train/{nnid}/
+        - post /api/v1/type/cnn/eval/{nnid}/
+        - post /api/v1/type/cnn/predict/{nnid}/
+    3. Description \n
+        Manage data store schema (strucutre : schema - table - data)
     """
     def post(self, request, nnid):
         """
-        insert new neural network information
-        :param request:
-        {
-            "nn_info" : {  },
-            "nn_conf" : {"data":{},
-                         "layer":[{},]}
-        }
-
-        :return: registered network id
+        - desc : insert cnn configuration data
         """
         try:
             jd = jc.load_obj_json("{}")
@@ -39,13 +41,7 @@ class ConvNeuralNetConfig(APIView):
 
     def get(self, request, nnid):
         """
-        insert new neural network information
-        :param pk:
-        :param request:
-        :return: {
-                    "data":{"datalen": 96,"taglen": 2,"matrix": [12, 8],"learnrate": 0.01,"epoch":50},
-                    "layer":[{},{}]
-                 }
+        - desc : get cnn configuration data
         """
         try:
             result = netconf.load_ori_conf(nnid)
@@ -57,15 +53,7 @@ class ConvNeuralNetConfig(APIView):
 
     def put(self, request, nnid):
         """
-        insert new neural network information
-        :param request:
-        {
-            "nn_info" : {  },
-            "nn_conf" : {"data":{},
-                         "layer":[{},]}
-        }
-
-        :return: registered network id
+        - desc ; update cnn configuration data
         """
         try:
             netconf.save_conf(nnid, json.dumps(request.body))
@@ -77,11 +65,7 @@ class ConvNeuralNetConfig(APIView):
 
     def delete(self, request, nnid):
         """
-        delete selected net work conf
-        :param request:
-        :param pk: nn_id wanna delete
-        :param format:
-        :return:
+        - desc : delete cnn configuration data
         """
         try:
             jd = jc.load_obj_json("{}")
