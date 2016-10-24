@@ -32,20 +32,21 @@ python legacy systems can use deep learning easily
 # Docker(Cluster Mode)*[(Docker Hub)](https://hub.docker.com/r/tmddno1/tensormsa/)**[(usage)](http://wp.me/p7xrpI-dr)*
    - Docker Packages </br>
    ```python
-      data-master : docker pull tmddno1/tfmsa_name_node:v1
-      data-slave : docker pull tmddno1/tfmsa_data_node:v1 
-      tfmsa-was : docker pull tmddno1/tensormsa:v1 
+      data-master : docker pull tmddno1/tfmsa_name_node:v2
+      data-slave : docker pull tmddno1/tfmsa_data_node:v2
+      tfmsa-was : docker pull tmddno1/tensormsa:v2 
       CI tools : docker pull tmddno1/jenkins:v1  
    ```
 
    - Start master/slave node container *[(set up)](http://wp.me/p7xrpI-eH)*   </br>
    ```python
-      docker run --net=host -d tmddno1/tfmsa_name_node:v1
-      docker run --net=host -d tmddno1/tfmsa_name_node:v1
+      docker run --net=host -d tmddno1/tfmsa_name_node:v2
+      docker run --net=host -d tmddno1/tfmsa_name_node:v2
    ```
    - Start tfmsa-was container (dev purpose)  </br>
+   
    ```python
-       docker run -it --env="DISPLAY" --env="QT_X11_NO_MITSHM=1" --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw"  -p 8998:8998  tmddno1/tensormsa:v1
+       docker run -it --env="DISPLAY" --env="QT_X11_NO_MITSHM=1" --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw"  -p 8989:8989 tmddno1/tensormsa:v2
    ```
    - Start tfmsa-was container (dev purpose) </br>
    
@@ -60,10 +61,10 @@ python legacy systems can use deep learning easily
    
    - Check servers  </br>
    ```python
-      TensorMSA : http://locahost:8989  </br>
-      Jenkins : http://locahost:8080  </br>
-      Hadoop :http://localhost:50070 </br>
-      Yarn : http://localhost:8088  </br>
+      TensorMSA : http://locahost:8989  
+      Jenkins : http://locahost:8080  
+      Hadoop :http://localhost:50070 
+      Yarn : http://localhost:8088  
       Hbase : http://localhost:16010
    ``` 
 # Docker - Settings 
