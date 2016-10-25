@@ -89,7 +89,7 @@ class HiveManager:
             column_order_key = key + 'column_order'
             column_order_dict = table.row(column_order_key, columns=[cf])
             column_order = list()
-            for i in xrange(len(column_order_dict)):
+            for i in range(len(column_order_dict)):
                 column_order.append(column_order_dict[':'.join((cf, struct.pack('>q', i)))])
 
             row_start = key + 'rows' + struct.pack('>q', 0)
@@ -114,7 +114,7 @@ class HiveManager:
                     print ("[" + data_frame + "] table_name :" + table_name + " readRows(" + str(rowcnt) + ")")
             for column, data_type in columns.items():
                 df[column] = df[column].astype(np.dtype(data_type))
-            if("None" <> with_label):
+            if("None" != with_label):
                 print("no label")
                 #label_name = label_with
                 df['label'] = (

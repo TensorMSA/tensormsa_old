@@ -7,8 +7,8 @@ echo "set path, env variables"
 echo "======================="
 
 source ~/.bashrc
-export PATH="/root/anaconda2/bin:$PATH"
-source ~/anaconda2/bin/activate ~/anaconda2/
+export PATH="/root/anaconda3/bin:$PATH"
+source ~/anaconda3/bin/activate ~/anaconda3/
 export PATH="/home/dev/java/bin:$PATH"
 export SPARK_HOME=/home/dev/spark
 export HADOOP_CONF_DIR=/home/dev/hadoop/conf

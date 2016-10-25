@@ -22,10 +22,13 @@ from tfmsaview import views as ui_view
 from django.conf import settings
 from django.conf.urls.static import static
 from django.views.decorators.csrf import csrf_exempt
+from rest_framework_swagger.views import get_swagger_view
+
+schema_view = get_swagger_view(title='Pastebin API')
 
 urlpatterns = [
 
-    url(r'^docs/',  include('rest_framework_swagger.urls')),
+    url(r'^docs/',  schema_view),
 
     url(r'^admin/', csrf_exempt(admin.site.urls)),
     # network info
@@ -107,9 +110,9 @@ urlpatterns = [
      url(r'^api/v1/type/cnn/checker/(?P<nnid>.*)/',
           csrf_exempt(rest_view.ConvNeuralNetChecker.as_view())),
 
-    # Evaluate accuracy of CNN model
-     url(r'^api/v1/type/cnn/eval/(?P<nnid>.*)/',
-          csrf_exempt(rest_view.ConvNeuralNetEval.as_view())),
+    # # Evaluate accuracy of CNN model
+    #  url(r'^api/v1/type/cnn/eval/(?P<nnid>.*)/',
+    #       csrf_exempt(rest_view.ConvNeuralNetEval.as_view())),
 
     # UI / View index
          url(r'^view/index/$',

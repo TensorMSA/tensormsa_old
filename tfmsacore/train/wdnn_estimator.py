@@ -180,7 +180,7 @@ def wdnn_build(nnid, model_dir = "No", train=True):
         if(train):
             model_dir = settings.HDFS_MODEL_ROOT + "/"+nnid + "/"+tempfile.mkdtemp().split("/")[2]
         else:
-            if(model_dir <> "No"):
+            if(model_dir != "No"):
                 model_dir = model_dir
         print("((1.Make WDN Network Build)) set up WDNN directory("+nnid +") ---> " + model_dir)
 

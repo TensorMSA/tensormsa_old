@@ -8,7 +8,7 @@ from django.conf import settings
 #https://realpython.com/blog/python/api-integration-in-python/
 #http://www.slideshare.net/Byungwook/rest-api-60505484
 
-url = "2fd17f7a6b09:8989"
+url = "ca8dfed70a82:8989"
 
 
 ####################################################################################
@@ -564,10 +564,11 @@ Wdnn Test Sequence !!
 11. wdnn - predict- post
 """
 #common, dataframe, cnn, wdnn
-category1 = "wdnn"
+category1 = "dataframe"
 # checker, predict, stat, evaluation, train, conf, nnfino, base, data, format, table, pre
-category2 = "predict"
+category2 = "table"
 # post, get, put, delete
+
 request = "post"
 
 
