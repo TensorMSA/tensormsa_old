@@ -44,6 +44,27 @@ class HiveManager:
             tfmsa_logger("Error : {0}".format(e))
             raise Exception(e)
 
+    def create_database(self, db_name):
+        """
+
+        :param db_name: target database name
+        :return: none
+        """
+        try:
+            print("create hbase database" + db_name)
+            raise Exception("Hbase can not make db")
+            #conn = self.spark_session_create()
+            #conn.table_prefix = db_name
+            #conn.table_prefix_separator = ":"
+            #print(db_name)
+            #table = conn.create_table(db_name,{'data':dict(),})
+            #return json.dumps(table)
+        except Exception as e:
+            tfmsa_logger("Error : {0}".format(e))
+            raise Exception(e)
+
+
+
     def search_database(self, db_name):
         """
         return all tables names
@@ -51,6 +72,7 @@ class HiveManager:
         :return: table list
         """
         try:
+            print("why dbname" + db_name)
             conn = self.spark_session_create()
             conn.table_prefix = db_name
             conn.table_prefix_separator = ":"
@@ -148,6 +170,34 @@ class HiveManager:
             # DBNAME probably needs
 
             return table_name
+        except Exception as e:
+            tfmsa_logger("Error : {0}".format(e))
+            raise Exception(e)
+
+    def delete_table(self, db_name, table_name):
+        """
+        hbase delete table
+        :param db_name:target database name
+        :param table_name:target table name
+        :return:
+        """
+        try:
+            tfmsa_logger("delete table !")
+            conn = self.spark_session_create()
+            nameSpace_tableName = db_name + ":" + table_name
+            print("Delete table" + nameSpace_tableName)
+
+            conn.delete_table(nameSpace_tableName, True)
+
+            # DBNAME probably needs
+
+            return table_name
+
+            #if (self.client.content("{0}{1}/{2}".format(self.root, db_name, table_name), strict=False) == None):
+            #    raise Exception("request table : {0} not exist".format(table_name))
+
+            #self.client.delete("{0}{1}/{2}".format(self.root, db_name, table_name), recursive=True)
+            #return table_name
         except Exception as e:
             tfmsa_logger("Error : {0}".format(e))
             raise Exception(e)

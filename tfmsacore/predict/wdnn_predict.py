@@ -10,55 +10,10 @@ import tempfile
 from django.conf import settings
 from tfmsacore import utils
 from rest_framework.response import Response
-
-def wdd_train(nnid):
-    """
-            Wide & Deep Network Training
-            :param nnid : network id in tfmsacore_nninfo
-            :return: acturacy
-    """
-    try:
-        #make wide & deep model
-        wdnn_model = wdnn_build(nnid)
-
-        #get json from postgres by nnid
-        json_string = get_json_by_nnid(nnid)
-        #parse database, table_name for select data from hbase
-        database = str(json_string['dir'])
-        table_name = str(json_string['table'])
-
-        #Make NetworkConfiguration Json Objct
-        json_ob = json.loads(json_string['datadesc'])
-
-        #get label column from hbase nn config json
-        t_label = json_ob['label']
-        #for key, value in t_label.iteritems():
-        #    print("label key   " , key)
-        label_key =   t_label.keys()
-        label_column = label_key[0]
-
-        print("((2.Get Dataframe from Hbase)) ##Start## (" + database+ " , "+ table_name + " , " + label_column + ")")
-        #dataframe, tablename
-        limit_no = 3000 #limit number for hbase cnt
-        df = data.DataMaster().query_data(database, table_name, "a", limit_no,with_label=label_column)
-        print("((2.Get Dataframe from Hbase)) ##End## (" + database +" , " + table_name + " , " + label_column + " , "+  str(limit_no) + ")")
-
-        print("((3.Wide & Deep Network Train )) ##Start##  (" + nnid + ")")
-        wdnn_model.fit(input_fn=lambda: input_fn(df, nnid), steps=200)
-        print("((3.Wide & Deep Network Train )) ##End##  (" + nnid + ")")
-
-        #conf dir need
-
-        results = wdnn_model.evaluate(input_fn=lambda: input_fn(df, nnid), steps=1)
-
-        for key in sorted(results):
-            print("((4.Wide & Deep Network Accurary)) %s: %s" % (key, results[key]))
-    except Exception as e:
-        print ("Error Message : {0}".format(e))
-        raise Exception(e)
+import pandas as pd
 
 
-def wdd_predict(nnid):
+def wdd_predict(nnid, filename=None):
     """
             Wide & Deep Network predict
             :param nnid : network id in tfmsacore_nninfo
@@ -70,6 +25,7 @@ def wdd_predict(nnid):
         database = str(json_string['dir'])
         table_name = str(json_string['table'])
         json_object = json_string['datadesc']
+        #should be change
         model_dir = str(json_string['datasets'])
         json_ob = json.loads(json_object)
 
@@ -85,19 +41,34 @@ def wdd_predict(nnid):
         label_key =   t_label.keys()
         label_column = label_key[0]
 
-        limit_no = 100
-        print("((2.Get Dataframe from Hbase)) ##Start## (" + database + " , " + table_name + " , " + label_column + ")")
-        df = data.DataMaster().query_data(database, table_name, "a", limit_no ,with_label=label_column)
-        print("((2.Get Dataframe from Hbase)) ##End## (" + database + " , " + table_name + " , " + label_column + " , " + str(limit_no) + ")")
-
-
+        if filename == None:
+            limit_no = 100
+            print("((2.Get Dataframe from Hbase)) ##Start## (" + database + " , " + table_name + " , " + label_column + ")")
+            df = data.DataMaster().query_data(database, table_name, "a", limit_no ,with_label=label_column)
+            print("((2.Get Dataframe from Hbase)) ##End## (" + database + " , " + table_name + " , " + label_column + " , " + str(limit_no) + ")")
+        else:
+            print("((2.Get Dataframe from CSV)) ##Start## (" + nnid + " , " + filename + ")")
+            file_path = settings.FILE_ROOT + "/predict/" + nnid + "/" + filename
+            print("((2.Get Dataframe from CSV)) ##filePath## (" + file_path + ")")
+            print(file_path)
+            df = pd.read_csv(
+                 tf.gfile.Open(file_path),
+                 # names=COLUMNS,
+                 skipinitialspace=True,
+                 engine="python")
+            # add label feature for wdnn netowrk
+            df['label'] = (df[label_column].apply(lambda x: ">50K" in x)).astype(int)
 
         print("((3.Wide & Deep Network Predict )) ##Start## ")
-        results = wdnn_model.evaluate(input_fn=lambda: input_fn(df, nnid), steps=1)
+        predicts = wdnn_model.evaluate(input_fn=lambda: input_fn(df, nnid), steps=1)
         print("((3.Wide & Deep Network Predict )) ##End## ")
+        results={}
 
-        for key in sorted(results):
-            print("((4.Wide & Deep Network Accurary)) %s: %s" % (key, results[key]))
+        for key in sorted(predicts):
+            print("((4.Wide & Deep Network Accurary)) %s: %s" % (key, predicts[key]))
+            results[key]= str(predicts[key])
+
+        return results
     except Exception as e:
         print ("Error Message : {0}".format(e))
         raise Exception(e)
@@ -209,7 +180,7 @@ def wdnn_build(nnid, model_dir = "No", train=True):
         if(train):
             model_dir = settings.HDFS_MODEL_ROOT + "/"+nnid + "/"+tempfile.mkdtemp().split("/")[2]
         else:
-            if(model_dir != "No"):
+            if(model_dir <> "No"):
                 model_dir = model_dir
         print("((1.Make WDN Network Build)) set up WDNN directory("+nnid +") ---> " + model_dir)
 
@@ -324,5 +295,3 @@ def network_update(nnid, model_dir):
     finally:
         return return_data
 
-def main(_):
-    wdd_train()

@@ -45,9 +45,9 @@ class WideDeepNetConfig(APIView):
             jd = jc.load_obj_json("{}")
             jd.config = "Y"
             jd.nn_id = nnid
-            jd.datasize = request.body
+            #jd.datasize = request.body
             netconf.update_network(jd)
-            #netconf.save_conf(nnid, request.body)
+            netconf.save_conf(nnid, request.body)
             return_data = {"status": "200", "result": nnid}
             return Response(json.dumps(return_data))
         except Exception as e:
