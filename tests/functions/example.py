@@ -1,6 +1,6 @@
 import unittest
-#from django.utils import unittest
-import unitCase
+#from django.utils import unittes
+from tfmsaview import unitCase
 
 TestMethod = unitCase.TestMethod()
 

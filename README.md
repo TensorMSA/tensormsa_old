@@ -34,7 +34,7 @@ python legacy systems can use deep learning easily
    ```python
       data-master : docker pull tmddno1/tfmsa_name_node:v2
       data-slave : docker pull tmddno1/tfmsa_data_node:v2
-      tfmsa-was : docker pull tmddno1/tensormsa:v2 
+      tfmsa-was : docker pull tmddno1/tensormsa:v3
       CI tools : docker pull tmddno1/jenkins:v1  
    ```
 
@@ -65,7 +65,7 @@ python legacy systems can use deep learning easily
       Jenkins : http://locahost:8080  
       Hadoop :http://localhost:50070 
       Yarn : http://localhost:8088  
-      Hbase : http://localhost:16010
+      Hbase : http://localhost:9095
    ``` 
 # Docker - Settings 
    - Server information  
@@ -73,20 +73,21 @@ python legacy systems can use deep learning easily
       path : /home/dev/TensorMSA/TensorMSA/settings.py
       
       # custom setting need for tensormsa
-      DATA_STORE_MODE = '1' # 1 (HDFS), 2(HIVE), 3(S3), 4(Local)
-      LIVY_HOST = '8b817bad1154:8998'
-      LIVY_SESS = '1'
       SPARK_HOST = '8b817bad1154:7077'
       SPARK_CORE = '1'
       SPARK_MEMORY = '1G'
       SPARK_WORKER_CORE = '2'
       SPARK_WORKER_MEMORY = '4G'
+      HBASE_HOST = '52.78.179.14'
+      HBASE_HOST_PORT = 9090
       FILE_ROOT = '/tensormsa'
       HDFS_HOST = '587ed1df9441:9000'
       HDFS_ROOT = '/tensormsa'
       HDFS_DF_ROOT = '/tensormsa/dataframe'
+      HDFS_IMG_ROOT = '/tensormsa/image'
       HDFS_CONF_ROOT = '/tensormsa/config'
       HDFS_MODEL_ROOT = '/tensormsa/model'
+      TRAIN_SERVER1 = '52.78.20.251:8989'
    ```
 
 # Docker Trouble Shooting 

@@ -136,13 +136,17 @@ class HiveManager:
                     print ("[" + data_frame + "] table_name :" + table_name + " readRows(" + str(rowcnt) + ")")
             for column, data_type in columns.items():
                 df[column] = df[column].astype(np.dtype(data_type))
-            if("None" != with_label):
-                print("no label")
-                #label_name = label_with
+                print (" column :" + column + " data_type(" + str(data_type) + ")")
+            if("None" <> with_label):
+                print("label exsist --> " + with_label)
+                #Label auto check
+                label_values = df[with_label].unique()
+                label_first_value = sorted(label_values)[0]
+                print("sorted label value : " + label_first_value)
                 df['label'] = (
-                    df[with_label].apply(lambda x: ">50K" in x)).astype(int)
-
+                    df[with_label].apply(lambda x: label_first_value in x)).astype(int) #16.10.25 auto check label values for 2 type values
             tfmsa_logger("End query data!")
+            #print(df)
             return df
 
         except Exception as e:
@@ -250,7 +254,7 @@ class HiveManager:
                 #print(row[1])
                 print("Insert Row count      " + str(rownum))
             b.send()
-            print("((To_base)) ###start batch###")
+            print("((To_base)) ###end batch###")
             conn.close()
         except Exception as e:
             tfmsa_logger(e)

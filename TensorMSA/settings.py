@@ -136,19 +136,18 @@ STATICFILES_DIRS = [
 ]
 
 # custom setting need for tensormsa
-DATA_STORE_MODE = '2' # 1 (HDFS), 2(HIVE), 3(S3), 4(Local)
-LIVY_HOST = '8b817bad1154:8998'
-LIVY_SESS = '1'
-SPARK_HOST = '8b817bad1154:7077'
+SPARK_HOST = '52.78.19.96:7077'
 SPARK_CORE = '1'
 SPARK_MEMORY = '1G'
 SPARK_WORKER_CORE = '2'
 SPARK_WORKER_MEMORY = '4G'
+HBASE_HOST = '52.78.179.14'
+HBASE_HOST_PORT = 9090
 FILE_ROOT = '/tensormsa'
 HDFS_HOST = '587ed1df9441:9000'
 HDFS_ROOT = '/tensormsa'
 HDFS_DF_ROOT = '/tensormsa/dataframe'
+HDFS_IMG_ROOT = '/tensormsa/image'
 HDFS_CONF_ROOT = '/tensormsa/config'
 HDFS_MODEL_ROOT = '/tensormsa/model'
-HBASE_HOST = '52.78.179.14'
-HBASE_HOST_PORT = 9090
+TRAIN_SERVER = ['52.78.20.251:8989',]
