@@ -8,30 +8,46 @@ from tfmsacore import netconf
 
 class WideDeepNetConfig(APIView):
     """
-    1. POST :
-    2. PUT :
-    3. GET :
-    4. DELETE :
+    1. Name : WideDeepNetConfig (step 7)
+    2. Steps - WDNN essential steps
+        - post /api/v1/type/common/env/
+        - post /api/v1/type/common/job/{nnid}/
+        - post /api/v1/type/dataframe/base/{baseid}/table/{tb}/
+        - post /api/v1/type/dataframe/base/{baseid}/table/{tb}/data/
+        - post /api/v1/type/dataframe/base/{baseid}/table/{tb}/data/{args}/
+        - post /api/v1/type/dataframe/base/{baseid}/table/{tb}/format/{nnid}/
+        - post /api/v1/type/wdnn/conf/{nnid}/
+        - post /api/v1/type/wdnn/train/{nnid}/
+        - post /api/v1/type/wdnn/eval/{nnid}/
+        - post /api/v1/type/wdnn/predict/{nnid}/
+    3. Description \n
+        Manage data store data CRUD (strucutre : schema - table - data)
     """
     def post(self, request, nnid):
         """
-        insert new neural network information
-        :param request:
-        {
-            "nn_info" : {  },
-            "nn_conf" : {"data":{},
-                         "layer":[{},]}
-        }
+        - desc : insert new neural network information
+        - Request json data example \n
+        <texfield>
+            <font size = 1>
 
-        :return: registered network id
+               {
+                    "layer":[100,50,20]
+               }
+
+        </textfield>
+            ---
+            parameters:
+            - name: body
+              paramType: body
+              pytype: json
         """
         try:
             jd = jc.load_obj_json("{}")
             jd.config = "Y"
             jd.nn_id = nnid
-            jd.datasize = request.body
+            #jd.datasize = request.body
             netconf.update_network(jd)
-            #netconf.save_conf(nnid, request.body)
+            netconf.save_conf(nnid, request.body)
             return_data = {"status": "200", "result": nnid}
             return Response(json.dumps(return_data))
         except Exception as e:
@@ -41,13 +57,7 @@ class WideDeepNetConfig(APIView):
 
     def get(self, request, nnid):
         """
-        insert new neural network information
-        :param pk:
-        :param request:
-        :return: {
-                    "data":{"datalen": 96,"taglen": 2,"matrix": [12, 8],"learnrate": 0.01,"epoch":50},
-                    "layer":[{},{}]
-                 }
+        - desc : insert new neural network information
         """
         try:
             result = netconf.load_ori_conf(nnid)
@@ -59,15 +69,7 @@ class WideDeepNetConfig(APIView):
 
     def put(self, request, nnid):
         """
-        insert new neural network information
-        :param request:
-        {
-            "nn_info" : {  },
-            "nn_conf" : {"data":{},
-                         "layer":[{},]}
-        }
-
-        :return: registered network id
+        - desc : insert new neural network information
         """
         try:
             netconf.save_conf(nnid, json.dumps(request.body))
@@ -79,11 +81,7 @@ class WideDeepNetConfig(APIView):
 
     def delete(self, request, nnid):
         """
-        delete selected net work conf
-        :param request:
-        :param pk: nn_id wanna delete
-        :param format:
-        :return:
+        -desc : delete selected net work conf
         """
         try:
             jd = jc.load_obj_json("{}")

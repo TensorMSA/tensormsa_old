@@ -8,7 +8,7 @@ var envPlugin = new webpack.DefinePlugin({
 module.exports = {
     entry: {
         TensorMSA: './js/app.js',
-        playground: './ts/playground.ts'
+        netconf: './tsx/NetConf.tsx'
     }, // Multiple Entry
     devtool: 'sourcemaps',
     cache: true,
@@ -19,19 +19,19 @@ module.exports = {
     },
     resolve: {
         // Add `.ts` and `.tsx` as a resolvable extension. 
-        extensions: ['', '.webpack.js', '.web.js', '.js', '.ts', '.tsx']
+        extensions: ['', '.webpack.js', '.web.js', '.js', '.jsx', '.ts', '.tsx']
     },  
     // When to use Minification, 
     plugins : [
         envPlugin
         //new webpack.optimize.UglifyJsPlugin()
-    ]  ,
+    ],
     module: { // An array of extensions that should be used to resolve modules.
         loaders: [
             { 
                 test: /\.jsx?$/,         // Match both .js and .jsx files
                 exclude: /node_modules/, 
-                loader: "babel", 
+                loader: "babel",
                 query:
                 {
                     presets:['es2015','react']
@@ -39,9 +39,21 @@ module.exports = {
             },
             {
                 // test: A condition that must be met <-> exclude
-                test: /\.ts$/,
+                test: /\.tsx?$/,
                 exclude: /node_modules/,  
                 loader: 'ts-loader'
+            },
+            {
+                test: /\.css$/, 
+                loader: "style-loader!css-loader"
+            },
+            {
+                test: /\.scss$/,
+                loader: "style-loader!css-loader!sass-loader"
+            },
+            {
+                test: /\.png$/,
+                loader: "url-loader"
             }
         ]
     },

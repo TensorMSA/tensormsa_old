@@ -1,1 +1,1 @@
-from .conv_checker import CNNChecker
+# from .conv_checker import CNNChecker

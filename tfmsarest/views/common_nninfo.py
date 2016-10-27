@@ -12,16 +12,41 @@ from tfmsacore.utils.json_conv import JsonDataConverter as jc
 
 class CommonNetInfo(APIView):
     """
-    1. POST : Insert network base info
-    2. GET : Search network base info (id, cate, subcate)
-    3. PUT : Update selected network base info
-    4. DELETE :Delete selected network base info
+    1. Name : CommonNetInfo (step 2)
+    2. Steps - WDNN essential steps
+        - post /api/v1/type/common/env/
+        - post /api/v1/type/common/job/{nnid}/
+        - post /api/v1/type/dataframe/base/{baseid}/table/{tb}/
+        - post /api/v1/type/dataframe/base/{baseid}/table/{tb}/data/
+        - post /api/v1/type/dataframe/base/{baseid}/table/{tb}/data/{args}/
+        - post /api/v1/type/dataframe/base/{baseid}/table/{tb}/format/{nnid}/
+        - post /api/v1/type/wdnn/conf/{nnid}/
+        - post /api/v1/type/wdnn/train/{nnid}/
+        - post /api/v1/type/wdnn/eval/{nnid}/
+        - post /api/v1/type/wdnn/predict/{nnid}/
+    3. Description \n
+        Manage Neural Network information. Include business category, description, netconf, data info, tarin result etc
     """
     def post(self, request):
         """
-        insert neural net info
-        :param request:
-        :return:
+        - Request json data example \n
+        <texfied>
+        <font size = 1>
+
+            {
+                 "nn_id": "nn0000012",
+                 "category": "MES",
+                 "subcate" : "M60",
+                 "name": "evaluation",
+                 "desc" : "wdnn_protoType"
+             }
+        </font>
+        </textfield>
+        ---
+        parameters:
+        - name: body
+          paramType: body
+          pytype: json
         """
         try:
             result = netconf.create_new_network(json.loads(request.body))
@@ -33,9 +58,7 @@ class CommonNetInfo(APIView):
 
     def get(self, request, nnid, cate, sub):
         """
-        get  neural network information
-        :param request:
-        :return:
+        - desc : return nn_info data
         """
         try:
             result = netconf.filter_network_config(nnid, cate, sub)
@@ -47,9 +70,24 @@ class CommonNetInfo(APIView):
 
     def put(self, request):
         """
-        put neural network information
-        :param request:
-        :return:
+        - Request json data example \n
+        <texfied>
+        <font size = 1>
+
+            {
+                 "nn_id": "nn0000012",
+                 "category": "MES",
+                 "subcate" : "M60",
+                 "name": "evaluation",
+                 "desc" : "wdnn_protoType"
+             }
+        </font>
+        </textfield>
+        ---
+        parameters:
+        - name: body
+          paramType: body
+          pytype: json
         """
         try:
             jd = jc.load_obj_json(request.body)
@@ -62,9 +100,7 @@ class CommonNetInfo(APIView):
 
     def delete(self, request):
         """
-        get  neural network information
-        :param request:
-        :return:
+        - desc: delete selected nn_info data
         """
         try:
             result = netconf.delete_net_info(json.loads(request.body))

@@ -1,1 +1,1 @@
-from .conv_eval import CNNEval
+# from .conv_eval import CNNEval

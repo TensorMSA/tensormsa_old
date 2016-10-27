@@ -7,17 +7,24 @@ from tfmsacore import data
 
 class DataFrameSchema(APIView):
     """
-    1. POST :
-    2. PUT :
-    3. GET :
-    4. DELETE :
+    1. Name : DataFrameSchema (step 3)
+    2. Steps - WDNN essential steps
+        - post /api/v1/type/common/env/
+        - post /api/v1/type/common/job/{nnid}/
+        - post /api/v1/type/dataframe/base/{baseid}/table/{tb}/
+        - post /api/v1/type/dataframe/base/{baseid}/table/{tb}/data/
+        - post /api/v1/type/dataframe/base/{baseid}/table/{tb}/data/{args}/
+        - post /api/v1/type/dataframe/base/{baseid}/table/{tb}/format/{nnid}/
+        - post /api/v1/type/wdnn/conf/{nnid}/
+        - post /api/v1/type/wdnn/train/{nnid}/
+        - post /api/v1/type/wdnn/eval/{nnid}/
+        - post /api/v1/type/wdnn/predict/{nnid}/
+    3. Description \n
+        Manage data store schema (strucutre : schema - table - data)
     """
     def post(self, request, baseid):
         """
-        create data base with given name
-        :param request: Not used
-        :param baseid: schemaId
-        :return: create schema result
+        - desc : create data base with given name
         """
         try:
             result = data.DataMaster().create_database(baseid)
@@ -29,10 +36,7 @@ class DataFrameSchema(APIView):
 
     def get(self, request):
         """
-        return all databases
-        :param request: Not used
-        :param baseid: schemaId
-        :return: list of schemaa (database)
+        - desc : return all database names
         """
         try:
             result = data.DataMaster().search_all_database()
@@ -44,9 +48,20 @@ class DataFrameSchema(APIView):
 
     def put(self, request):
         """
-        rename data base
-        :param request: {origin : , modify : }
-        :return: renamed database name
+        - desc : change database names
+        - Request json data example \n
+            <texfied>
+            <font size = 1>
+
+                {"origin" : "A" ,
+                 "modify" : "B"}
+            </font>
+            </textfield>
+            ---
+            parameters:
+            - name: body
+              paramType: body
+              pytype: json
         """
         try:
             json_data = json.loads(request.body)
@@ -59,9 +74,7 @@ class DataFrameSchema(APIView):
 
     def delete(self, request, baseid):
         """
-        delete data base
-        :param request: request data
-        :return: renamed database name
+        - desc : delete database
         """
         try:
             result = data.DataMaster().delete_database(baseid)

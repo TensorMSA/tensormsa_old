@@ -9,8 +9,10 @@ def chk_conf(net_id):
     check if configuraiotn data exist with requested net id
     :param net_id: neural network id
     :return:
+    --------------------------------------------------------------
+    16.10.22  jh100  bugfix add "/" make folder od nnid
     """
-    directory = settings.HDFS_CONF_ROOT
+    directory = settings.HDFS_CONF_ROOT + "/" + net_id + "/" #Bug fix by jh100 16.10.22
     net_id = net_id + "_conf.json"
 
     try:
@@ -30,8 +32,10 @@ def load_conf(net_id):
     load json from  path and return it as python object form
     :param net_id: neural network id
     :return:
+    --------------------------------------------------------------
+    16.10.22  jh100  bugfix add "/" make folder od nnid
     """
-    directory = settings.HDFS_CONF_ROOT
+    directory = settings.HDFS_CONF_ROOT + "/" + net_id + "/" #Bug fix by jh100 16.10.22
     net_id = net_id + "_conf.json"
 
     if not os.path.exists(directory):
@@ -52,15 +56,17 @@ def load_ori_conf(net_id):
     load json from  path and return it as str
     :param net_id: neural network id
     :return:
+    --------------------------------------------------------------
+    16.10.22  jh100  bugfix add "/" make folder od nnid
     """
-    directory = settings.HDFS_CONF_ROOT
+    directory = settings.HDFS_CONF_ROOT + "/" + net_id + "/" #Bug fix by jh100 16.10.22
     net_id = net_id + "_conf.json"
 
     if not os.path.exists(directory):
         os.makedirs(directory)
 
     try:
-        model_conf = open(directory + net_id, 'r')
+        model_conf = open(directory +net_id, 'r')
         json_data = model_conf.read().split()
     except :
         raise SystemError("json load error")
@@ -75,9 +81,11 @@ def save_conf(net_id, conf_data):
     :param net_id: neural network id
     :param conf_data: neural network configuration json data
     :return:
+    --------------------------------------------------------------
+    16.10.22  jh100  bugfix add "/" make folder od nnid
     """
 
-    directory = settings.HDFS_CONF_ROOT
+    directory = settings.HDFS_CONF_ROOT + "/" + net_id + "/" #Bug fix by jh100 16.10.22
     net_id = net_id + "_conf.json"
 
     if not os.path.exists(directory):
@@ -98,8 +106,10 @@ def remove_conf(net_id):
     remove json from  path and return it as python object form
     :param net_id: neural network id
     :return:
+    --------------------------------------------------------------
+    16.10.22  jh100  bugfix add "/" make folder od nnid
     """
-    directory = settings.HDFS_CONF_ROOT
+    directory = settings.HDFS_CONF_ROOT + "/" + net_id + "/" #Bug fix by jh100 16.10.22
     net_id = net_id + "_conf.json"
 
     if not os.path.exists(directory):

@@ -15,15 +15,21 @@ Including another URLconf
 Multi Relational service (not need for now )
     ex: #url(r'^snippets/(?P<pk>[0-9]+)/highlight/$', views.SnippetHighlight.as_view()),
 """
-from django.conf.urls import url
+from django.conf.urls import url, include
 from django.contrib import admin
 from tfmsarest import views as rest_view
 from tfmsaview import views as ui_view
 from django.conf import settings
 from django.conf.urls.static import static
 from django.views.decorators.csrf import csrf_exempt
+from rest_framework_swagger.views import get_swagger_view
+
+schema_view = get_swagger_view(title='Pastebin API')
 
 urlpatterns = [
+
+    url(r'^docs/',  schema_view),
+
     url(r'^admin/', csrf_exempt(admin.site.urls)),
     # network info
     url(r'^api/v1/type/common/nninfo/(?P<nnid>.*)/category/(?P<cate>.*)/subcate/(?P<sub>.*)/',
@@ -104,14 +110,16 @@ urlpatterns = [
      url(r'^api/v1/type/cnn/checker/(?P<nnid>.*)/',
           csrf_exempt(rest_view.ConvNeuralNetChecker.as_view())),
 
-    # Evaluate accuracy of CNN model
-     url(r'^api/v1/type/cnn/eval/(?P<nnid>.*)/',
-          csrf_exempt(rest_view.ConvNeuralNetEval.as_view())),
+    # # Evaluate accuracy of CNN model
+    #  url(r'^api/v1/type/cnn/eval/(?P<nnid>.*)/',
+    #       csrf_exempt(rest_view.ConvNeuralNetEval.as_view())),
 
     # UI / View index
          url(r'^view/index/$',
              csrf_exempt(ui_view.UI_Service.as_view())),
          url(r'^view/ftptest/$',
              csrf_exempt(ui_view.FtpTest.as_view())),
+         url(r'^view/ftpcsvpredict/$',
+             csrf_exempt(ui_view.FtpCsvPredict.as_view())),
 
               ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

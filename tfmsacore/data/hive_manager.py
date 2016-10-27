@@ -44,6 +44,27 @@ class HiveManager:
             tfmsa_logger("Error : {0}".format(e))
             raise Exception(e)
 
+    def create_database(self, db_name):
+        """
+
+        :param db_name: target database name
+        :return: none
+        """
+        try:
+            print("create hbase database" + db_name)
+            raise Exception("Hbase can not make db")
+            #conn = self.spark_session_create()
+            #conn.table_prefix = db_name
+            #conn.table_prefix_separator = ":"
+            #print(db_name)
+            #table = conn.create_table(db_name,{'data':dict(),})
+            #return json.dumps(table)
+        except Exception as e:
+            tfmsa_logger("Error : {0}".format(e))
+            raise Exception(e)
+
+
+
     def search_database(self, db_name):
         """
         return all tables names
@@ -51,6 +72,7 @@ class HiveManager:
         :return: table list
         """
         try:
+            print("why dbname" + db_name)
             conn = self.spark_session_create()
             conn.table_prefix = db_name
             conn.table_prefix_separator = ":"
@@ -89,7 +111,7 @@ class HiveManager:
             column_order_key = key + 'column_order'
             column_order_dict = table.row(column_order_key, columns=[cf])
             column_order = list()
-            for i in xrange(len(column_order_dict)):
+            for i in range(len(column_order_dict)):
                 column_order.append(column_order_dict[':'.join((cf, struct.pack('>q', i)))])
 
             row_start = key + 'rows' + struct.pack('>q', 0)
@@ -114,13 +136,17 @@ class HiveManager:
                     print ("[" + data_frame + "] table_name :" + table_name + " readRows(" + str(rowcnt) + ")")
             for column, data_type in columns.items():
                 df[column] = df[column].astype(np.dtype(data_type))
+                print (" column :" + column + " data_type(" + str(data_type) + ")")
             if("None" <> with_label):
-                print("no label")
-                #label_name = label_with
+                print("label exsist --> " + with_label)
+                #Label auto check
+                label_values = df[with_label].unique()
+                label_first_value = sorted(label_values)[0]
+                print("sorted label value : " + label_first_value)
                 df['label'] = (
-                    df[with_label].apply(lambda x: ">50K" in x)).astype(int)
-
+                    df[with_label].apply(lambda x: label_first_value in x)).astype(int) #16.10.25 auto check label values for 2 type values
             tfmsa_logger("End query data!")
+            #print(df)
             return df
 
         except Exception as e:
@@ -148,6 +174,34 @@ class HiveManager:
             # DBNAME probably needs
 
             return table_name
+        except Exception as e:
+            tfmsa_logger("Error : {0}".format(e))
+            raise Exception(e)
+
+    def delete_table(self, db_name, table_name):
+        """
+        hbase delete table
+        :param db_name:target database name
+        :param table_name:target table name
+        :return:
+        """
+        try:
+            tfmsa_logger("delete table !")
+            conn = self.spark_session_create()
+            nameSpace_tableName = db_name + ":" + table_name
+            print("Delete table" + nameSpace_tableName)
+
+            conn.delete_table(nameSpace_tableName, True)
+
+            # DBNAME probably needs
+
+            return table_name
+
+            #if (self.client.content("{0}{1}/{2}".format(self.root, db_name, table_name), strict=False) == None):
+            #    raise Exception("request table : {0} not exist".format(table_name))
+
+            #self.client.delete("{0}{1}/{2}".format(self.root, db_name, table_name), recursive=True)
+            #return table_name
         except Exception as e:
             tfmsa_logger("Error : {0}".format(e))
             raise Exception(e)
@@ -200,7 +254,7 @@ class HiveManager:
                 #print(row[1])
                 print("Insert Row count      " + str(rownum))
             b.send()
-            print("((To_base)) ###start batch###")
+            print("((To_base)) ###end batch###")
             conn.close()
         except Exception as e:
             tfmsa_logger(e)

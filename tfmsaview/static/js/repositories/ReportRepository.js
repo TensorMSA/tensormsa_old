@@ -9,10 +9,11 @@ export default class ReportRepository {
         });
     }
 
-    postConfigNnCnn(params) {
-        return this.api.post(`/api/v1/type/cnn/config/`, params).then((data) => {
-            console.log(data);
-           return data;
+    getCommonNNInfo(params) {
+        return this.api.get(`api/v1/type/common/nninfo/nn0000012/category/MES/subcate/M60/`, params).then((data) => {
+            data = JSON.parse(data);
+            console.log(data.result[0].fields);
+           return data.result[0].fields;
         });
     }
 
