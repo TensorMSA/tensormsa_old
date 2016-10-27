@@ -115,11 +115,13 @@ urlpatterns = [
     #       csrf_exempt(rest_view.ConvNeuralNetEval.as_view())),
 
     # UI / View index
-         url(r'^view/index/$',
+     url(r'^$',
              csrf_exempt(ui_view.UI_Service.as_view())),
-         url(r'^view/ftptest/$',
+     url(r'^view/index/$',
+             csrf_exempt(ui_view.UI_Service.as_view())),
+     url(r'^view/ftptest/$',
              csrf_exempt(ui_view.FtpTest.as_view())),
-         url(r'^view/ftpcsvpredict/$',
+     url(r'^view/ftpcsvpredict/$',
              csrf_exempt(ui_view.FtpCsvPredict.as_view())),
 
               ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

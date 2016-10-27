@@ -14,6 +14,9 @@ export SPARK_HOME=/home/dev/spark
 export HADOOP_CONF_DIR=/home/dev/hadoop/conf
 export M2_HOME=/usr/local/maven
 export PATH=${M2_HOME}/bin:${PATH}
+export HADOOP_MASTER=172.31.5.233
+export SPARK_MASTER=172.31.12.182
+export TFMSA_MASTER=172.31.12.182
 
 echo $SPARK_HOME
 echo $HADOOP_CONF_DIR
@@ -46,16 +49,15 @@ echo "==========================================="
 echo "==========================================="
 echo "step4 : Set HDFS Server Info      "
 echo "==========================================="
-#if [ $TYPE -eq  1 ]
-#  then
-#    cp /root/.hdfscli_temp.cfg /root/.hdfscli.cfg
-#    echo "[global]"   >>  /root/.hdfscli.cfg
-#    echo "default.alias = dev"   >>  /root/.hdfscli.cfg
-#    echo "[dev.alias]"   >>  /root/.hdfscli.cfg
-#    echo "url = http://${HDFS}:50070"   >>  /root/.hdfscli.cfg
-#    echo "[prod.alias]"   >>  /root/.hdfscli.cfg
-#    echo "url = http://${HDFS}:50070"   >>  /root/.hdfscli.cfg
-#fi
+
+cp /root/.hdfscli_temp.cfg /root/.hdfscli.cfg
+echo "[global]"   >>  /root/.hdfscli.cfg
+echo "default.alias = dev"   >>  /root/.hdfscli.cfg
+echo "[dev.alias]"   >>  /root/.hdfscli.cfg
+echo "url = http://${HADOOP_MASTER}:50070"   >>  /root/.hdfscli.cfg
+echo "[prod.alias]"   >>  /root/.hdfscli.cfg
+echo "url = http://${HADOOP_MASTER}:50070"   >>  /root/.hdfscli.cfg
+
 
 echo "==========================================="
 echo "step5 : Django Settings      "

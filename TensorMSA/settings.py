@@ -129,25 +129,26 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
-STATIC_ROOT = os.path.join(BASE_DIR , 'tfmsaview/dist')
+STATIC_ROOT = os.path.join(BASE_DIR , 'tfmsaview/static/dist')
 STATIC_URL = '/dist/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "tfmsaview/static"),
 ]
 
 # custom setting need for tensormsa
-SPARK_HOST = '52.78.19.96:7077'
+SPARK_HOST = '172.31.12.182:7077'
 SPARK_CORE = '1'
 SPARK_MEMORY = '1G'
 SPARK_WORKER_CORE = '2'
 SPARK_WORKER_MEMORY = '4G'
-HBASE_HOST = '52.78.179.14'
+HBASE_HOST = '172.31.5.233'
 HBASE_HOST_PORT = 9090
 FILE_ROOT = '/tensormsa'
-HDFS_HOST = '587ed1df9441:9000'
+HDFS_HOST = '172.31.5.233:9000'
 HDFS_ROOT = '/tensormsa'
 HDFS_DF_ROOT = '/tensormsa/dataframe'
 HDFS_IMG_ROOT = '/tensormsa/image'
 HDFS_CONF_ROOT = '/tensormsa/config'
 HDFS_MODEL_ROOT = '/tensormsa/model'
-TRAIN_SERVER = ['52.78.20.251:8989',]
+TFMSA_MASTER_SERVER = '172.31.12.182'
+TFMSA_TRAIN_SERVER = ['172.31.8.184:8989',]

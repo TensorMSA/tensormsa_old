@@ -9,7 +9,7 @@ import numpy as np
 import tensorflow as tf
 
 
-class HiveManager:
+class HbaseManager:
     def __init__(self):
         print("Hive file manager")
 
@@ -137,7 +137,7 @@ class HiveManager:
             for column, data_type in columns.items():
                 df[column] = df[column].astype(np.dtype(data_type))
                 print (" column :" + column + " data_type(" + str(data_type) + ")")
-            if("None" <> with_label):
+            if("None" != with_label):
                 print("label exsist --> " + with_label)
                 #Label auto check
                 label_values = df[with_label].unique()
