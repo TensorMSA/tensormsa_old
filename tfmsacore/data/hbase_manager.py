@@ -78,13 +78,9 @@ class HbaseManager:
         :return: table list
         """
         try:
-            print("why dbname" + db_name)
             conn = self.spark_session_create()
-            conn.table_prefix = db_name
-            conn.table_prefix_separator = ":"
-            print(db_name)
             table = conn.tables()
-            return json.dumps(table)
+            return list(map(lambda x:str(x,'utf-8').split(':')[1] ,table))
         except Exception as e:
             tfmsa_logger("Error : {0}".format(e))
             raise Exception(e)
