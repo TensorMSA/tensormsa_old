@@ -63,15 +63,16 @@ class DataFrameData(APIView):
                     for chunk in file.chunks():
                         fp.write(chunk)
                     fp.close()
-
+                    logger.tfmsa_logger("Before calling save csv_to df")
                     #update on hdfs
+                    #lastRowKey,  insertedRows, lastRowKey
                     results_data = data.DataMaster().save_csv_to_df(baseid, tb, filename)
 
-                    return HttpResponse(json.dumps(results_data))
+                    #return HttpResponse(json.dumps(results_data))
             else :
                 raise Exception("not supported type")
 
-            return_data = {"status": "ok", "result": tb}
+            return_data = {"status": "ok", "result": results_data}
             return Response(json.dumps(return_data))
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}
