@@ -7,6 +7,8 @@ import struct
 import sys
 import numpy as np
 import tensorflow as tf
+import time
+
 
 
 class HbaseManager:
@@ -15,15 +17,19 @@ class HbaseManager:
 
 
     def spark_session_create(self):
-        """
-        Hbase Loader Class
-        creadted for the purpose of handling Spark Jobs
-        """
+        try:
+            """
+            Hbase Loader Class
+            creadted for the purpose of handling Spark Jobs
+            """
 
-        tfmsa_logger("Hbase Session Created")
-        conn = happybase.Connection(host=settings.HBASE_HOST, port=settings.HBASE_HOST_PORT)
-        #print(conn.__class__)
-        return conn
+            tfmsa_logger("Hbase Session Created")
+            conn = happybase.Connection(host=settings.HBASE_HOST, port=settings.HBASE_HOST_PORT)
+            #print(conn.__class__)
+            return conn
+        except Exception as e:
+            tfmsa_logger("Error : {0}".format(e))
+            raise Exception(e)
 
     def search_all_database(self):
         """
@@ -94,8 +100,8 @@ class HbaseManager:
             conn.table_prefix = data_frame
             conn.table_prefix_separator = ":"
             # DBNAME probably needs
-
-            table = conn.table(table_name)
+            make_prefix = data_frame + ":"  # python 3.5 change
+            table = conn.table(make_prefix + table_name) # python 3.5 change
 
             key = 'networkid'  # shoud be chaned when producing.
 
@@ -110,9 +116,10 @@ class HbaseManager:
             for i in range(len(column_order_dict)):
                 column_order.append(column_order_dict[':'.join((cf, struct.pack('>q', i)))])
 
-            row_start = key + 'rows' + struct.pack('>q', 0)
-            row_end = key + 'rows' + struct.pack('>q', sys.maxint)
-
+            #row_start = key + 'rows' + struct.pack('>q', 0)
+            #row_end = key + 'rows' + struct.pack('>q', sys.maxint)
+            row_start = "1"
+            row_end = str(sys.maxsize)
             #limit check
             rows = dict()
             if limit_cnt == 0:
@@ -212,15 +219,17 @@ class HbaseManager:
         :type cf: str
         """
         try:
+            print("((To_base )) ###start connection###")
             conn = self.spark_session_create()
             conn.table_prefix = data_frame
             conn.table_prefix_separator = ":"
-            conn.timeout = None
+            make_prefix = data_frame+":" # python 3.5 change
 
-            table = conn.table(table_name)
-
+            table = conn.table(make_prefix + table_name,use_prefix=False) #python 3.5 chagne
+            print("((To_base )) ###start batch   1-1###")
             column_dtype_key = key + 'columns'
             column_dtype_value = dict()
+            print("((To_base )) ###start batch###2###")
             for column in df.columns:
                 column_dtype_value[':'.join((cf, column))] = df.dtypes[column].name
 
@@ -229,39 +238,57 @@ class HbaseManager:
             # for i, column_name in enumerate(df.columns.tolist()):
             #    order_key = struct.pack('>q', i)
             #    column_order_value[':'.join((cf, order_key))] = column_name
-
+            print("((To_base )) ###start batch###3###")
             row_key_template = key + 'rows'
             rownum = 1
             #with table.batch(transaction=True,) as b:
             b = table.batch(transaction=True)
             b.put(column_dtype_key, column_dtype_value)
             print("((To_base )) ###start batch###")
-            #print(df.count())
+
+            to_hbase_results = dict()
 
             for row in df.iterrows():
                 # row_key = row_key_template + struct.pack('>q', row[0])
-                row_key = row_key_template + str(rownum)
+                #row_key = row_key_template + str(rownum)
+                row_key = self.make_hbasekey() #+ str(rownum)
                 row_value = dict()
+                #Save first row key for select nextTime
+                if rownum == 1:
+                    to_hbase_results['firstRowKey'] = row_key
                 for column, value in row[1].iteritems():
                     if not pd.isnull(value):
                         row_value[':'.join((cf, column))] = str(value)
                 b.put(row_key, row_value)
                 rownum += 1
-                #print(row[1])
-                print("Insert Row count      " + str(rownum))
+                if rownum%100 == 0:
+                    print("Insert Row count      " + str(rownum))
             b.send()
+            to_hbase_results['lastRowKey'] = row_key
+            to_hbase_results['insertedRows'] = rownum
             print("((To_base)) ###end batch###")
             conn.close()
+            #send to  to json string
+            return json.dumps(to_hbase_results)
         except Exception as e:
             tfmsa_logger(e)
-            #raise Exception(e)
+            raise Exception(e)
 
+    def make_hbasekey(self):
+        """
+        make_hbasekey (reverse timestamp key)
+        :param net_id:
+        :return: unique hbase key (reverse timestamp key)
+        """
+        #key = str(sys.maxsize - int(time.mktime(time.gmtime())))
+        key = str(time.time())
+        return key
 
     def save_csv_to_df(self, data_frame, table_name, csv_file):
         """
         create new table with inserted csv data
         :param net_id:
-        :return:
+        :return: rownum
         """
         try:
             print("hbase_save_csv_to_df")
@@ -269,7 +296,6 @@ class HbaseManager:
             print(data_frame)
             print(table_name)
             print(csv_file)
-
             file_path = settings.FILE_ROOT + "/" + data_frame + "/" + table_name + "/" + csv_file
             print(file_path)
             df = pd.read_csv(
@@ -278,13 +304,13 @@ class HbaseManager:
                  skipinitialspace=True,
                  engine="python")
             #when data insert to hbase, It occurs error about time out. I just pass the error
-            self.to_hbase(df, data_frame, table_name, 'networkid')
+            rownum = self.to_hbase(df, data_frame, table_name, 'networkid')
 
         except Exception as e:
             tfmsa_logger(e)
             raise Exception(e)
         finally:
             tfmsa_logger("stop hbase context")
-            return df.columns.values.tolist()
+            return rownum #df.columns.values.tolist()
 
 

@@ -8,7 +8,7 @@ from django.conf import settings
 #https://realpython.com/blog/python/api-integration-in-python/
 #http://www.slideshare.net/Byungwook/rest-api-60505484
 
-url = "ca8dfed70a82:8989"
+url = "4eb7e3fad83c:8989"
 
 
 ####################################################################################
@@ -98,7 +98,8 @@ def dataframe_table_post():
     print("evaluation result : {0}".format(data))
 
 def dataframe_table_get():
-    resp = requests.get('http://' + url + '/api/v1/type/dataframe/base/csvtest/table/')
+    #resp = requests.get('http://' + url + '/api/v1/type/dataframe/base/csvtest/table/')
+    resp = requests.get('http://' + url + '/api/v1/type/dataframe/base/scm/table/')
     data = json.loads(resp.json())
     print("evaluation result : {0}".format(data))
 
@@ -583,14 +584,21 @@ Wdnn Test Sequence !!
 10. wdnn - train - post
 11. wdnn - predict- post
 """
-#common, dataframe, cnn, wdnn
-category1 = "wdnn"
-# checker, predict, stat, evaluation, train, conf, nnfino, base, data, format, table, pre
-category2 = "train"
 
+"""
+data setup  screen
+
+4. dataframe - table - post
+
+"""
+#common, dataframe, cnn, wdnn
+category1 = "dataframe"
+# checker, predict, stat, evaluation, train, conf, nnfino, base, data, format, table, pre
+category2 = "table"
+#dataframe_table_get
 # post, get, put, delete
 
-request = "post"
+request = "get"
 
 
 locals()["{0}_{1}_{2}".format(category1, category2, request)]()
