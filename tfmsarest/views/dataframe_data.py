@@ -47,7 +47,7 @@ class DataFrameData(APIView):
             if(args == "JSON"):
                 jd = jc.load_obj_json(request.body)
                 conf_data = json.dumps(jd.data, cls=CusJsonEncoder)
-                data.DataMaster().post_josn_data(baseid, tb, conf_data)
+                data.HbaseManager().post_josn_data(baseid, tb, conf_data)
 
             elif(args == "CSV"):
                 logger.tfmsa_logger("start uploading csv on file system")
@@ -66,7 +66,7 @@ class DataFrameData(APIView):
                     logger.tfmsa_logger("Before calling save csv_to df")
                     #update on hdfs
                     #lastRowKey,  insertedRows, lastRowKey
-                    results_data = data.DataMaster().save_csv_to_df(baseid, tb, filename)
+                    results_data = data.HbaseManager().save_csv_to_df(baseid, tb, filename)
 
                     #return HttpResponse(json.dumps(results_data))
             else :
@@ -84,9 +84,9 @@ class DataFrameData(APIView):
         """
         try:
             if(args == None):
-                result = data.DataMaster().query_data(baseid, tb, "select * from " + str(tb), 30000)
+                result = data.HbaseManager().query_data(baseid, tb, "select * from " + str(tb), 30000)
             else:
-                result = data.DataMaster().query_data(baseid, tb, args, 30000)
+                result = data.HbaseManager().query_data(baseid, tb, args, 30000)
 
             return_data = {"status": "ok", "result": result}
             return Response(json.dumps(return_data))
@@ -115,7 +115,7 @@ class DataFrameData(APIView):
             if (args == "JSON"):
                 jd = jc.load_obj_json(request.body)
                 conf_data = json.dumps(jd.data, cls=CusJsonEncoder)
-                data.DataMaster().put_josn_data(baseid, tb, conf_data)
+                data.HbaseManager().put_josn_data(baseid, tb, conf_data)
 
             elif (args == "CSV"):
                 logger.tfmsa_logger("start uploading csv on file system")
@@ -133,7 +133,7 @@ class DataFrameData(APIView):
                     fp.close()
 
                     #upload data to hdfs
-                    cols = data.DataMaster().save_csv_to_df(baseid, tb, filename)
+                    cols = data.HbaseManager().save_csv_to_df(baseid, tb, filename)
                     #return Response(json.dumps(cols))
                     #delete file after upload
                     #if os.path.isfile("{0}/{1}/{2}/{3}".format(settings.FILE_ROOT, baseid, tb, filename)):

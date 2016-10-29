@@ -64,64 +64,86 @@ urlpatterns = [
         csrf_exempt(rest_view.DataFrameSchema.as_view())),
 
     # CNN config data manage
-     url(r'^api/v1/type/cnn/conf/(?P<nnid>.*)/',
-         csrf_exempt(rest_view.ConvNeuralNetConfig.as_view())),
+    url(r'^api/v1/type/cnn/conf/(?P<nnid>.*)/',
+        csrf_exempt(rest_view.ConvNeuralNetConfig.as_view())),
 
 
     # WDNN config data manage
-     url(r'^api/v1/type/wdnn/conf/(?P<nnid>.*)/',
-         csrf_exempt(rest_view.WideDeepNetConfig.as_view())),
+    url(r'^api/v1/type/wdnn/conf/(?P<nnid>.*)/',
+        csrf_exempt(rest_view.WideDeepNetConfig.as_view())),
 
     # WDNN predict
-     url(r'^api/v1/type/wdnn/predict/(?P<nnid>.*)/',
-         csrf_exempt(rest_view.WideDeepNetPredict.as_view())),
+    url(r'^api/v1/type/wdnn/predict/(?P<nnid>.*)/',
+        csrf_exempt(rest_view.WideDeepNetPredict.as_view())),
 
     # WDNN Train
-     url(r'^api/v1/type/wdnn/train/(?P<nnid>.*)/',
-         csrf_exempt(rest_view.WideDeepNetTrain.as_view())),
+    url(r'^api/v1/type/wdnn/train/(?P<nnid>.*)/',
+        csrf_exempt(rest_view.WideDeepNetTrain.as_view())),
 
     # CNN training
-     url(r'^api/v1/type/cnn/train/(?P<nnid>.*)/',
-         csrf_exempt(rest_view.ConvNeuralNetTrain.as_view())),
+    url(r'^api/v1/type/cnn/train/(?P<nnid>.*)/',
+        csrf_exempt(rest_view.ConvNeuralNetTrain.as_view())),
 
     # CNN predict
-     url(r'^api/v1/type/cnn/predict/(?P<nnid>.*)/',
-         csrf_exempt(rest_view.ConvNeuralNetPredict.as_view())),
+    url(r'^api/v1/type/cnn/predict/(?P<nnid>.*)/',
+        csrf_exempt(rest_view.ConvNeuralNetPredict.as_view())),
 
     # Common Server status (spark, livy, train task, s3)
-     url(r'^api/v1/type/common/env/',
-         csrf_exempt(rest_view.CommonEnvInfo.as_view())),
+    url(r'^api/v1/type/common/env/',
+        csrf_exempt(rest_view.CommonEnvInfo.as_view())),
 
     # Job Tracker Information
-     url(r'^api/v1/type/common/job/(?P<nnid>.*)/',
-         csrf_exempt(rest_view.CommonJobInfo.as_view())),
-     url(r'^api/v1/type/common/job/',
-         csrf_exempt(rest_view.CommonJobInfo.as_view())),
+    url(r'^api/v1/type/common/job/(?P<nnid>.*)/',
+        csrf_exempt(rest_view.CommonJobInfo.as_view())),
+    url(r'^api/v1/type/common/job/',
+        csrf_exempt(rest_view.CommonJobInfo.as_view())),
 
     # Server configuration information
-     url(r'^api/v1/type/common/env/',
-         csrf_exempt(rest_view.CommonEnvInfo.as_view())),
+    url(r'^api/v1/type/common/env/',
+        csrf_exempt(rest_view.CommonEnvInfo.as_view())),
 
     # Livy Session Control API
-     url(r'^api/v1/type/common/livy/',
-         csrf_exempt(rest_view.CommonLivySession.as_view())),
+    url(r'^api/v1/type/common/livy/',
+        csrf_exempt(rest_view.CommonLivySession.as_view())),
 
     # Check Cnn configuration validation
-     url(r'^api/v1/type/cnn/checker/(?P<nnid>.*)/',
-          csrf_exempt(rest_view.ConvNeuralNetChecker.as_view())),
+    url(r'^api/v1/type/cnn/checker/(?P<nnid>.*)/',
+         csrf_exempt(rest_view.ConvNeuralNetChecker.as_view())),
 
     # # Evaluate accuracy of CNN model
     #  url(r'^api/v1/type/cnn/eval/(?P<nnid>.*)/',
     #       csrf_exempt(rest_view.ConvNeuralNetEval.as_view())),
 
-    # UI / View index
-     url(r'^$',
-             csrf_exempt(ui_view.UI_Service.as_view())),
-     url(r'^view/index/$',
-             csrf_exempt(ui_view.UI_Service.as_view())),
-     url(r'^view/ftptest/$',
-             csrf_exempt(ui_view.FtpTest.as_view())),
-     url(r'^view/ftpcsvpredict/$',
-             csrf_exempt(ui_view.FtpCsvPredict.as_view())),
+    # imagedata - data upload, search
+    url(r'^api/v1/type/imagefile/base/(?P<baseid>.*)/table/(?P<tb>.*)/label/(?P<label>.*)/data/',
+      csrf_exempt(rest_view.ImageFileData.as_view())),
 
-              ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    # imagedata - manage label
+    url(r'^api/v1/type/imagefile/base/(?P<baseid>.*)/table/(?P<tb>.*)/label/(?P<label>.*)/',
+      csrf_exempt(rest_view.ImageFileLabel.as_view())),
+    url(r'^api/v1/type/imagefile/base/(?P<baseid>.*)/table/(?P<tb>.*)/label/',
+      csrf_exempt(rest_view.ImageFileLabel.as_view())),
+
+    # imagedata - manage column data types
+    url(r'^api/v1/type/imagefile/base/(?P<baseid>.*)/table/(?P<tb>.*)/format/(?P<nnid>.*)/',
+      csrf_exempt(rest_view.ImageFileFormat.as_view())),
+
+    # imagedata - manage table
+    url(r'^api/v1/type/imagefile/base/(?P<baseid>.*)/table/(?P<tb>.*)/',
+      csrf_exempt(rest_view.ImageFileTable.as_view())),
+    url(r'^api/v1/type/imagefile/base/(?P<baseid>.*)/table/',
+      csrf_exempt(rest_view.ImageFileTable.as_view())),
+
+    # imagedata - manage data frame
+    url(r'^api/v1/type/imagefile/base/(?P<baseid>\w+:?(?=/))/',
+      csrf_exempt(rest_view.ImageFileSchema.as_view())),
+    url(r'^api/v1/type/imagefile/base/',
+      csrf_exempt(rest_view.ImageFileSchema.as_view())),
+
+    # UI / View index
+    url(r'^$', csrf_exempt(ui_view.UI_Service.as_view())),
+    url(r'^view/index/$', csrf_exempt(ui_view.UI_Service.as_view())),
+    url(r'^view/ftptest/$', csrf_exempt(ui_view.FtpTest.as_view())),
+    url(r'^view/ftpcsvpredict/$', csrf_exempt(ui_view.FtpCsvPredict.as_view())),
+
+    ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

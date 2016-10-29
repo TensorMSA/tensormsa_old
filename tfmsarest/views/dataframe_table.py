@@ -27,7 +27,7 @@ class DataFrameTable(APIView):
         - desc :create table with given name
         """
         try:
-            result = data.DataMaster().create_table(baseid, tb)
+            result = data.HbaseManager().create_table(baseid, tb)
             return_data = {"status": "200", "result": result}
             return Response(json.dumps(return_data))
         except Exception as e:
@@ -39,7 +39,7 @@ class DataFrameTable(APIView):
         - desc : return all table
         """
         try:
-            result = data.DataMaster().search_database(baseid)
+            result = data.HbaseManager().search_database(baseid)
             return_data = {"status": "200", "result": result}
             return Response(json.dumps(return_data))
         except Exception as e:
@@ -65,7 +65,7 @@ class DataFrameTable(APIView):
         """
         try:
             json_data = json.loads(request.body)
-            result = data.DataMaster().rename_table(baseid, json_data['origin'], json_data['modify'])
+            result = data.HbaseManager().rename_table(baseid, json_data['origin'], json_data['modify'])
             return_data = {"status": "200", "result": result}
             return Response(json.dumps(return_data))
         except Exception as e:
@@ -77,7 +77,7 @@ class DataFrameTable(APIView):
         -desc : delete table
         """
         try:
-            result = data.DataMaster().delete_table(baseid, tb)
+            result = data.HbaseManager().delete_table(baseid, tb)
             return_data = {"status": "200", "result": result}
             return Response(json.dumps(return_data))
         except Exception as e:

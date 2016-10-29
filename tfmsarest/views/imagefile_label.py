@@ -2,61 +2,63 @@ import json
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from tfmsacore import data
+from TensorMSA import const
 
 
-
-class DataFrameSchema(APIView):
+class ImageFileLabel(APIView):
     """
-    1. Name : DataFrameSchema (step 3)
-    2. Steps - WDNN essential steps
+    1. Name : ImageFileLabel (step 5)
+    2. Steps - CNN essential steps
         - post /api/v1/type/common/env/
-        - post /api/v1/type/common/job/{nnid}/
-        - post /api/v1/type/dataframe/base/{baseid}/table/{tb}/
-        - post /api/v1/type/dataframe/base/{baseid}/table/{tb}/data/
-        - post /api/v1/type/dataframe/base/{baseid}/table/{tb}/data/{args}/
-        - post /api/v1/type/dataframe/base/{baseid}/table/{tb}/format/{nnid}/
-        - post /api/v1/type/wdnn/conf/{nnid}/
-        - post /api/v1/type/wdnn/train/{nnid}/
-        - post /api/v1/type/wdnn/eval/{nnid}/
-        - post /api/v1/type/wdnn/predict/{nnid}/
+        - post /api/v1/type/common/nninfo/{nnid}/
+        - post /api/v1/type/imagedata/base/{baseid}/
+        - post /api/v1/type/imagedata/base/{baseid}/table/{tb}/
+        - post /api/v1/type/imagedata/base/{baseid}/table/{tb}/label/{label}/
+        - post /api/v1/type/imagedata/base/{baseid}/table/{tb}/label/{label}/data/{args}/
+        - post /api/v1/type/imagedata/base/{baseid}/table/{tb}/label/{label}/format/{nnid}/
+        - post /api/v1/type/imagedata/base/{baseid}/table/{tb}/label/{label}/format/{nnid}/
+        - post /api/v1/type/cnn/conf/{nnid}/
+        - post /api/v1/type/cnn/train/{nnid}/
+        - post /api/v1/type/cnn/eval/{nnid}/
+        - post /api/v1/type/cnn/predict/{nnid}/
     3. Description \n
-        Manage data store schema (strucutre : schema - table - data)
+        Imagedata label management
     """
-    def post(self, request, baseid):
+    def post(self, request, baseid, tb, label):
         """
-        - desc : create data base with given name
+        - desc :create table with given name
         """
         try:
-            result = data.HbaseManager().create_database(baseid)
+            result = data.ImageManager().create_label(baseid, tb, label)
             return_data = {"status": "200", "result": result}
             return Response(json.dumps(return_data))
         except Exception as e:
             return_data = {"status": "400", "result": str(e)}
             return Response(json.dumps(return_data))
 
-    def get(self, request):
+    def get(self, request, baseid, tb, label):
         """
-        - desc : return all database names
+        - desc : return all table
         """
         try:
-            result = data.HbaseManager().search_all_database()
+            result = data.ImageManager().search_table(baseid, tb)
             return_data = {"status": "200", "result": result}
             return Response(json.dumps(return_data))
         except Exception as e:
             return_data = {"status": "400", "result": str(e)}
             return Response(json.dumps(return_data))
 
-    def put(self, request):
+    def put(self, request, baseid, tb):
         """
-        - desc : change database names
+        - desc : rename table
         - Request json data example \n
-            <texfied>
+        <texfield>
             <font size = 1>
 
                 {"origin" : "A" ,
                  "modify" : "B"}
             </font>
-            </textfield>
+        </textfield>
             ---
             parameters:
             - name: body
@@ -65,19 +67,20 @@ class DataFrameSchema(APIView):
         """
         try:
             json_data = json.loads(request.body)
-            result = data.HbaseManager().rename_database(json_data['origin'], json_data['modify'])
+            result = data.ImageManager().\
+                rename_label(baseid, tb, json_data['origin'], json_data['modify'])
             return_data = {"status": "200", "result": result}
             return Response(json.dumps(return_data))
         except Exception as e:
             return_data = {"status": "400", "result": str(e)}
             return Response(json.dumps(return_data))
 
-    def delete(self, request, baseid):
+    def delete(self, request, baseid, tb, label):
         """
-        - desc : delete database
+        -desc : delete table
         """
         try:
-            result = data.HbaseManager().delete_database(baseid)
+            result = data.ImageManager().delete_label(baseid, tb, label)
             return_data = {"status": "200", "result": result}
             return Response(json.dumps(return_data))
         except Exception as e:
