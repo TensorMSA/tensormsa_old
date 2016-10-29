@@ -16,7 +16,7 @@ class TestImageManager(unittest.TestCase):
         :return:
         """
         self.assertIsInstance(ImageManager().search_all_database(), (list))
-        tfmsa_logger("PASS")
+        tfmsa_logger("==========PASS==========")
 
     def test_create_database(self):
         """
@@ -38,7 +38,7 @@ class TestImageManager(unittest.TestCase):
         if "test" in load_base:
             raise Exception ("deletion fail ")
 
-        tfmsa_logger("PASS")
+            tfmsa_logger("==========PASS==========")
 
     def test_create_table(self):
         """
@@ -67,7 +67,7 @@ class TestImageManager(unittest.TestCase):
 
         ImageManager().delete_database("test")
 
-        tfmsa_logger("PASS")
+        tfmsa_logger("==========PASS==========")
 
     def test_create_label(self):
         """
@@ -91,7 +91,7 @@ class TestImageManager(unittest.TestCase):
 
         ImageManager().delete_database("test")
 
-        tfmsa_logger("PASS")
+        tfmsa_logger("==========PASS==========")
 
 
     def test_put_data(self):
@@ -111,7 +111,8 @@ class TestImageManager(unittest.TestCase):
         if "1" not in label_list:
             ImageManager().create_label("test", "test_table", "1")
 
+        temp_file = TemporaryUploadedFile("img_test_data", "UTF-8", 66666, "xxxxxxxxxxxxxxxxxx")
+        self.assertEqual(ImageManager().put_data("test", "test_table", "1", temp_file, "img_test_data"),"img_test_data")
 
-        self.assertEqual(ImageManager().put_data("test", "test_table", "1", \
-                                       TemporaryUploadedFile("img_test_data", "UTF-8", 66666, "xxxxxxxxxxxxxxxxxx" ) ,\
-                                                            "img_test_data"), "img_test_data")
+        ImageManager().load_data("test", "test_table", "1")
+        tfmsa_logger("==========PASS==========")
