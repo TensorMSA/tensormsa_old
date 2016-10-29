@@ -29,24 +29,6 @@ echo "==========================================="
 runuser -l postgres -c 'pg_ctl start'
 
 echo "==========================================="
-echo "step2 : start spark apps"
-echo "==========================================="
-
-sudo /home/dev/spark/sbin/start-master.sh &
-sudo /home/dev/spark/sbin/start-slave.sh spark://${LOC}:7077 -m 6G -c 2
-#sudo /home/dev/spark/bin/spark-class org.apache.spark.deploy.worker.Worker spark://${loc}:7077 -m 6G -c 2 &
-#sudo /home/dev/spark/bin/spark-class org.apache.spark.deploy.worker.Worker spark://${loc}:7077 -m 3G -c 1 &
-
-echo "==========================================="
-echo "step3 : Skip Livy (Not use any more)       "
-echo "==========================================="
- 
-#cp /home/dev/spark/conf/spark-defaults.conf.template /home/dev/spark/conf/spark-defaults.conf
-#echo "spark.master       spark://$loc:7077 " >> /home/dev/spark/conf/spark-defaults.conf
-#echo /home/dev/livy/bin/livy-server &
-#/home/dev/livy/bin/livy-server &
-
-echo "==========================================="
 echo "step4 : Set HDFS Server Info      "
 echo "==========================================="
 
@@ -73,8 +55,8 @@ python manage.py migrate &
 #echo python manage.py collectstatic --noinput -i admin -i node_modules
 #python manage.py collectstatic --noinput -i admin -i node_modules  &
 
-echo webpack
-cd /home/dev/TensorMSA/tfmsaview/stataic
+#echo webpack
+#cd /home/dev/TensorMSA/tfmsaview/static
 #npm install
 webpack
 
@@ -82,11 +64,8 @@ echo "==========================================="
 echo "step6 : Start TensorMSA Webserver      "
 echo "==========================================="
 
-echo ./python manage.py runserver $HOSTNAME:8989 &
-cd /home/dev/TensorMSA/
-python manage.py runserver $HOSTNAME:8989 &
-
-
+#/usr/local/apache2/bin/apachectl start
+/usr/sbin/httpd
 
 
  
