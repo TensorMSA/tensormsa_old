@@ -16,7 +16,7 @@ class HbaseManager:
         print("Hive file manager")
 
 
-    def spark_session_create(self):
+    def spark_session_create(self, db_name=None):
         try:
             """
             Hbase Loader Class
@@ -24,7 +24,10 @@ class HbaseManager:
             """
 
             tfmsa_logger("Hbase Session Created")
-            conn = happybase.Connection(host=settings.HBASE_HOST, port=settings.HBASE_HOST_PORT)
+            if db_name is None:
+                conn = happybase.Connection(host=settings.HBASE_HOST, port=settings.HBASE_HOST_PORT)
+            if db_name is not None:
+                conn = happybase.Connection(host=settings.HBASE_HOST, port=settings.HBASE_HOST_PORT, table_prefix=db_name, table_prefix_separator=':')
             #print(conn.__class__)
             return conn
         except Exception as e:
@@ -39,13 +42,16 @@ class HbaseManager:
         try:
             conn = self.spark_session_create()
             db_names = []
-            tables = conn.tables()
+            t_tables = conn.tables()
+            tables = list(map(lambda x : str(x,'utf-8'),t_tables))
             for tb in tables:
                 print(tb)
                 if (tb.find(":") > 0):
                     db_names.append(tb.split(":")[0])
+            #Distict Dbname
             distict_db = set(db_names)
-            return json.dumps(distict_db)
+            print(list(distict_db))
+            return list(distict_db)#list(map(lambda x: str(x, 'utf-8').split(':')[0],tables))
         except Exception as e:
             tfmsa_logger("Error : {0}".format(e))
             raise Exception(e)
@@ -78,9 +84,13 @@ class HbaseManager:
         :return: table list
         """
         try:
-            conn = self.spark_session_create()
+            conn = self.spark_session_create(db_name)
+            #conn.table_prefix
+            #conn.table_prefix_separator = ":"
             table = conn.tables()
-            return list(map(lambda x:str(x,'utf-8').split(':')[1] ,table))
+            print(map(lambda x:str(x,'utf-8'), table))
+            #results = list(map(lambda x:))
+            return list(map(lambda x:str(x,'utf-8') ,table))
         except Exception as e:
             tfmsa_logger("Error : {0}".format(e))
             raise Exception(e)
@@ -101,26 +111,38 @@ class HbaseManager:
             conn.table_prefix_separator = ":"
             # DBNAME probably needs
             make_prefix = data_frame + ":"  # python 3.5 change
-            table = conn.table(make_prefix + table_name) # python 3.5 change
+            table = conn.table(make_prefix + table_name, use_prefix=False) # python 3.5 change
 
-            key = 'networkid'  # shoud be chaned when producing.
-
-            column_dtype_key = key + 'columns'
+            key = 'columns'  # fix
+            print("get columns info")
+            column_dtype_key ='columns' #fix
             cf = 'data'
+            print("get columns info before get table")
             column_dtype = table.row(column_dtype_key, columns=[cf])
-            columns = {col.split(':')[1]: value for col, value in column_dtype.items()}
-
+            print(type(column_dtype))
+            print(column_dtype)
+            print("get columns info after get table")
+            #column_dtype35 = dict(map(lambda x : str(x,'utf-8'),column_dtype.items()))#3.5 change
+            #print(column_dtype35)
+            #columns = {col.split(':')[1]: value for col, value in column_dtype.items()}
+            columns = {str(col,'utf-8').split(':')[1]: str(value,'utf-8') for col, value in column_dtype.items()}
+            print(columns)
             column_order_key = key + 'column_order'
+
+            print("get columns_order_dict info before get table")
             column_order_dict = table.row(column_order_key, columns=[cf])
+            print("get columns_order_dict info after get table")
             column_order = list()
             for i in range(len(column_order_dict)):
                 column_order.append(column_order_dict[':'.join((cf, struct.pack('>q', i)))])
-
+            print("column_ordder_dict")
+            print(column_order)
             #row_start = key + 'rows' + struct.pack('>q', 0)
             #row_end = key + 'rows' + struct.pack('>q', sys.maxint)
             row_start = "1"
             row_end = str(sys.maxsize)
             #limit check
+            #limit_cnt = 0
             rows = dict()
             if limit_cnt == 0:
                 rows = table.scan(row_start=row_start, row_stop=row_end)
@@ -131,7 +153,7 @@ class HbaseManager:
 
             rowcnt = 0 #read row count variable
             for row in rows:
-                df_row = {key.split(':')[1]: value for key, value in row[1].items()}
+                df_row = {str(key,'utf-8').split(':')[1]: str(value,'utf-8') for key, value in row[1].items()}
                 df = df.append(df_row, ignore_index=True)
                 rowcnt += 1
                 #Print when 1000 rows count
@@ -150,7 +172,9 @@ class HbaseManager:
                     df[with_label].apply(lambda x: label_first_value in x)).astype(int) #16.10.25 auto check label values for 2 type values
             tfmsa_logger("End query data!")
             #print(df)
-            return df
+            print(df.to_string(index=False))
+            return json.dumps(df.to_string(index=False))
+            #return json.dumps(df)
 
         except Exception as e:
             tfmsa_logger(e)
@@ -227,9 +251,14 @@ class HbaseManager:
 
             table = conn.table(make_prefix + table_name,use_prefix=False) #python 3.5 chagne
             print("((To_base )) ###start batch   1-1###")
-            column_dtype_key = key + 'columns'
+            column_dtype_key = 'columns'
+            first_col_check_flag = table.scan(row_prefix=b'columns')
+            print(len(list(first_col_check_flag)))
+            #print(key, data)
+
+            #column_dtype_key = key + 'columns'
             column_dtype_value = dict()
-            print("((To_base )) ###start batch###2###")
+            #print("((To_base )) ###start batch###2###")
             for column in df.columns:
                 column_dtype_value[':'.join((cf, column))] = df.dtypes[column].name
 
@@ -243,11 +272,14 @@ class HbaseManager:
             rownum = 1
             #with table.batch(transaction=True,) as b:
             b = table.batch(transaction=True)
-            b.put(column_dtype_key, column_dtype_value)
+            #check fist row for exception dupulication of column type
+            if 0 == len(list(first_col_check_flag)):
+                b.put(column_dtype_key, column_dtype_value)
             print("((To_base )) ###start batch###")
-
+            row_key = '1'
             to_hbase_results = dict()
 
+            #commnet should  be delete
             for row in df.iterrows():
                 # row_key = row_key_template + struct.pack('>q', row[0])
                 #row_key = row_key_template + str(rownum)

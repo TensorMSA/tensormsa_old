@@ -49,7 +49,7 @@ class CommonNetInfo(APIView):
           pytype: json
         """
         try:
-            result = netconf.create_new_network(json.loads(str(request.body, 'utf-8')))
+            result = netconf.create_new_network(json.loads(request.body))
             return_data = {"status": "200", "result": result}
             return Response(json.dumps(return_data))
         except Exception as e:

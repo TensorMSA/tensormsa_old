@@ -69,8 +69,8 @@ class DataFrameFormat(APIView):
             jd.dir = baseid
             jd.table = tb
             jd.nn_id = nnid
-            jd.datadesc = 'Y'
-            netconf.save_format(nnid, request.body)
+            jd.datadesc = str(request.body,'utf-8')
+            netconf.save_format(nnid, str(request.body,'utf-8'))
             result = netconf.update_network(jd)
             return_data = {"status": "200", "result": result}
             return Response(json.dumps(return_data))

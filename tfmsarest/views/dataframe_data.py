@@ -89,6 +89,7 @@ class DataFrameData(APIView):
                 result = data.HbaseManager().query_data(baseid, tb, args, 30000)
 
             return_data = {"status": "ok", "result": result}
+
             return Response(json.dumps(return_data))
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}
