@@ -45,7 +45,7 @@ class DataFrameData(APIView):
         """
         try:
             if(args == "JSON"):
-                jd = jc.load_obj_json(request.body)
+                jd = jc.load_obj_json(str(request.body, 'utf-8'))
                 conf_data = json.dumps(jd.data, cls=CusJsonEncoder)
                 data.HbaseManager().post_josn_data(baseid, tb, conf_data)
 
@@ -113,7 +113,7 @@ class DataFrameData(APIView):
         """
         try:
             if (args == "JSON"):
-                jd = jc.load_obj_json(request.body)
+                jd = jc.load_obj_json(str(request.body, 'utf-8'))
                 conf_data = json.dumps(jd.data, cls=CusJsonEncoder)
                 data.HbaseManager().put_josn_data(baseid, tb, conf_data)
 

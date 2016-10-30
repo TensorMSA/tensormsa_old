@@ -69,7 +69,8 @@ class DataFrameFormat(APIView):
             jd.dir = baseid
             jd.table = tb
             jd.nn_id = nnid
-            jd.datadesc = request.body
+            jd.datadesc = 'Y'
+            netconf.save_format(nnid, request.body)
             result = netconf.update_network(jd)
             return_data = {"status": "200", "result": result}
             return Response(json.dumps(return_data))
@@ -82,8 +83,8 @@ class DataFrameFormat(APIView):
         - desc : return network data format information
         """
         try:
-            result = netconf.get_network_config(nnid)
-            return_data = {"status": "200", "result": result['datadesc']}
+            result = netconf.load_ori_format()(nnid, request.body)
+            return_data = {"status": "200", "result": result}
             return Response(json.dumps(return_data))
         except Exception as e:
             return_data = {"status": "400", "result": str(e)}
@@ -98,7 +99,9 @@ class DataFrameFormat(APIView):
             jd.dir = baseid
             jd.table = tb
             jd.nn_id = nnid
-            jd.datadesc = request.body
+            jd.datadesc = 'Y'
+            netconf.remove_format(nnid)
+            netconf.save_format(nnid, request.body)
             result = netconf.update_network(jd)
             return_data = {"status": "200", "result": result}
             return Response(json.dumps(return_data))
@@ -116,6 +119,7 @@ class DataFrameFormat(APIView):
             jd.table = ""
             jd.nn_id = nnid
             jd.datadesc = ""
+            netconf.remove_format(nnid)
             result = netconf.update_network(jd)
             return_data = {"status": "200", "result": result}
             return Response(json.dumps(return_data))

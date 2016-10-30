@@ -66,7 +66,7 @@ class ImageFileLabel(APIView):
               pytype: json
         """
         try:
-            json_data = json.loads(request.body)
+            json_data = json.loads(str(request.body, 'utf-8'))
             result = data.ImageManager().\
                 rename_label(baseid, tb, json_data['origin'], json_data['modify'])
             return_data = {"status": "200", "result": result}

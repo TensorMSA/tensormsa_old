@@ -47,7 +47,7 @@ class WideDeepNetConfig(APIView):
             jd.nn_id = nnid
             #jd.datasize = request.body
             netconf.update_network(jd)
-            netconf.save_conf(nnid, request.body)
+            netconf.save_conf(nnid, str(request.body, 'utf-8'))
             return_data = {"status": "200", "result": nnid}
             return Response(json.dumps(return_data))
         except Exception as e:
@@ -72,7 +72,7 @@ class WideDeepNetConfig(APIView):
         - desc : insert new neural network information
         """
         try:
-            netconf.save_conf(nnid, json.dumps(request.body))
+            netconf.save_conf(nnid, json.dumps(str(request.body, 'utf-8')))
             return_data = {"status": "200", "result": nnid}
             return Response(json.dumps(return_data))
         except Exception as e:

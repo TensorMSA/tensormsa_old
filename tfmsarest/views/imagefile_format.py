@@ -32,31 +32,8 @@ class ImageFileFormat(APIView):
             <textfield>
             <font size = 1>
 
-                { "cross_cell":
-                    {
-                      "col12": {"column2_0": "native_country", "column2_1": "occupation"},
-                      "col1": {"column_1": "occupation", "column_0": "education"}
-                    },
-                  "cell_feature":
-                    {
-                      "hours_per_week": "CONTINUOUS_COLUMNS",
-                      "native_country": "CATEGORICAL",
-                      "relationship": "CATEGORICAL",
-                      "gender": "CATEGORICAL",
-                      "age": "CONTINUOUS_COLUMNS",
-                      "marital_status": "CATEGORICAL",
-                      "race": "CATEGORICAL",
-                      "capital_gain": "CONTINUOUS_COLUMNS",
-                      "workclass": "CATEGORICAL",
-                      "capital_loss": "CONTINUOUS_COLUMNS",
-                      "education": "CATEGORICAL",
-                      "education_num": "CONTINUOUS_COLUMNS",
-                      "occupation": "CATEGORICAL"
-                    },
-                  "label":
-                    {
-                       "income_bracket" : "LABEL"
-                    }
+                { "x_size": 100 ,
+                  "y_size": 100
                 }
             </font>
             </textfield>
@@ -71,7 +48,8 @@ class ImageFileFormat(APIView):
             jd.dir = baseid
             jd.table = tb
             jd.nn_id = nnid
-            jd.datadesc = request.body
+            jd.datadesc = 'Y'
+            netconf.save_format(nnid, str(request.body, 'utf-8'))
             result = netconf.update_network(jd)
             return_data = {"status": "200", "result": result}
             return Response(json.dumps(return_data))
@@ -84,8 +62,8 @@ class ImageFileFormat(APIView):
         - desc : return network data format information
         """
         try:
-            result = netconf.get_network_config(nnid)
-            return_data = {"status": "200", "result": result['datadesc']}
+            result = netconf.load_ori_format(nnid)
+            return_data = {"status": "200", "result": result}
             return Response(json.dumps(return_data))
         except Exception as e:
             return_data = {"status": "400", "result": str(e)}
@@ -100,7 +78,9 @@ class ImageFileFormat(APIView):
             jd.dir = baseid
             jd.table = tb
             jd.nn_id = nnid
-            jd.datadesc = request.body
+            jd.datadesc = 'Y'
+            netconf.remove_format(nnid)
+            netconf.save_format(nnid, str(request.body, 'utf-8'))
             result = netconf.update_network(jd)
             return_data = {"status": "200", "result": result}
             return Response(json.dumps(return_data))
@@ -118,10 +98,10 @@ class ImageFileFormat(APIView):
             jd.table = ""
             jd.nn_id = nnid
             jd.datadesc = ""
+            netconf.remove_format(nnid)
             result = netconf.update_network(jd)
             return_data = {"status": "200", "result": result}
             return Response(json.dumps(return_data))
         except Exception as e:
             return_data = {"status": "400", "result": str(e)}
             return Response(json.dumps(return_data))
-
