@@ -65,12 +65,18 @@ class DataFrameFormat(APIView):
               pytype: json
         """
         try:
-            jd = jc.load_obj_json("{}")
-            jd.dir = baseid
-            jd.table = tb
-            jd.nn_id = nnid
-            jd.datadesc = request.body
-            result = netconf.update_network(jd)
+            parameters = dict()
+            parameters["dir"] = baseid
+            parameters["table"] = tb
+            parameters["nn_id"] = nnid
+            body = str(request.body,'utf-8')
+            parameters["datadesc"] = json.loads(body)
+            jd = json.dumps(parameters)
+            jdd = Map(parameters)
+            
+            print(jdd.nn_id)
+            result = netconf.update_network(jdd)
+            #result = ""
             return_data = {"status": "200", "result": result}
             return Response(json.dumps(return_data))
         except Exception as e:
@@ -123,3 +129,36 @@ class DataFrameFormat(APIView):
             return_data = {"status": "400", "result": str(e)}
             return Response(json.dumps(return_data))
 
+
+class Map(dict):
+    """
+    Example:
+    m = Map({'first_name': 'Eduardo'}, last_name='Pool', age=24, sports=['Soccer'])
+    """
+    def __init__(self, *args, **kwargs):
+        super(Map, self).__init__(*args, **kwargs)
+        for arg in args:
+            if isinstance(arg, dict):
+                for k, v in arg.items():
+                    self[k] = v
+
+        if kwargs:
+            for k, v in kwargs.items():
+                self[k] = v
+
+    def __getattr__(self, attr):
+        return self.get(attr)
+
+    def __setattr__(self, key, value):
+        self.__setitem__(key, value)
+
+    def __setitem__(self, key, value):
+        super(Map, self).__setitem__(key, value)
+        self.__dict__.update({key: value})
+
+    def __delattr__(self, item):
+        self.__delitem__(item)
+
+    def __delitem__(self, key):
+        super(Map, self).__delitem__(key)
+        del self.__dict__[key]

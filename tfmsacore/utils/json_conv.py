@@ -62,12 +62,12 @@ class JsonDataConverter:
 
             if(isinstance(data, (str))):
                 json_data = json.loads(comma_converter(data), object_hook=JsonObject)
-            elif(isinstance(data, (file))):
-                json_data = json.loads(data.read(), object_hook=JsonObject)
+            #elif(isinstance(data, (file))):
+            #    json_data = json.loads(data.read(), object_hook=JsonObject)
             elif(isinstance(data, (dict))):
                 json_data = json.loads(data, object_hook=JsonObject)
-            elif(isinstance(data, (unicode))):
-                json_data = json.loads(comma_converter(data), object_hook=JsonObject)
+            #elif(isinstance(data, (unicode))):
+            #    json_data = json.loads(comma_converter(data), object_hook=JsonObject)
             elif (isinstance(data, (JsonObject))):
                 return data
             else:
