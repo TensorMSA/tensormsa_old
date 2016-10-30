@@ -15,3 +15,8 @@ from .cnn_checker import ConvNeuralNetChecker
 from .wdnn_config import WideDeepNetConfig
 from .wdnn_train import WideDeepNetTrain
 from .wdnn_predict import WideDeepNetPredict
+from .imagefile_data import ImageFileData
+from .imagefile_base import ImageFileSchema
+from .imagefile_format import ImageFileFormat
+from .imagefile_label import ImageFileLabel
+from .imagefile_table import ImageFileTable

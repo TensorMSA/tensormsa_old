@@ -43,7 +43,6 @@ INSTALLED_APPS = [
     'django_jenkins',
     'rest_framework',
     'rest_framework_swagger',
-
 ]
 
 
@@ -57,6 +56,7 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
 
 ROOT_URLCONF = 'TensorMSA.urls'
 
@@ -129,10 +129,10 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
-STATIC_ROOT = os.path.join(BASE_DIR , 'tfmsaview/static/dist')
+STATIC_ROOT = os.path.join(BASE_DIR , 'tfmsaview/dist')
 STATIC_URL = '/dist/'
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "tfmsaview/static"),
+    os.path.join(BASE_DIR, "tfmsaview/static/dist"),
 ]
 
 # custom setting need for tensormsa

@@ -119,10 +119,6 @@ class ImageManager:
         :return:
         """
         try:
-            if (self.client.content("{0}{1}".format(self.root, db_name), strict=False) == None):
-                tfmsa_logger("Warning DataBase not exist, auto create : {0}".format(db_name))
-                self.create_database(db_name)
-
             self.client.makedirs("{0}{1}/{2}".format(self.root, db_name, table_name) , permission=777)
             return table_name
         except Exception as e:
@@ -137,9 +133,6 @@ class ImageManager:
         :return:
         """
         try:
-            if (self.client.content("{0}{1}/{2}".format(self.root, db_name, table_name), strict=False) == None):
-                raise Exception("request table : {0} not exist".format(table_name))
-
             self.client.delete("{0}{1}/{2}".format(self.root, db_name, table_name), recursive=True)
             return table_name
         except Exception as e:
@@ -222,6 +215,38 @@ class ImageManager:
             tfmsa_logger("Error : {0}".format(e))
             raise Exception(e)
 
+    def search_label(self, db_name, table_name, label):
+        """
+        delete label folder under table
+        :param db_name:
+        :param table_name:
+        :return:
+        """
+        try:
+            label_path = "{0}{1}/{2}/{3}".format(self.root, db_name, table_name, label)
+            return self.client.list(label_path)
+        except Exception as e:
+            tfmsa_logger("Error : {0}".format(e))
+            raise Exception(e)
+
+
+
+    def rename_label(self, db_name, table, label, rename_label):
+        """
+        rename table
+        :param db_name:target database path
+        :param table : target table path
+        :param label:target label name
+        :param rename_label:rename label name
+        :return:
+        """
+        try:
+            self.client.rename("{0}{1}/{2}/{3}".format(self.root, db_name, table, label), \
+                               "{0}{1}/{2}/{3}".format(self.root, db_name, table, rename_label))
+            return rename_label
+        except Exception as e:
+            tfmsa_logger("Error : {0}".format(e))
+            raise Exception(e)
 
     def put_data(self, db_name, table_name, label, file, file_name):
         """
@@ -244,9 +269,7 @@ class ImageManager:
                 fp.write(chunk)
             fp.close()
 
-            #self.client.upload(upload_path, local_path, overwrite=False, n_threads=1, temp_dir=None, chunk_size=65536, progress=None)
-            #self.client.upload(upload_path, local_path)
-            self.client.write(upload_path, data=open(file_path,"r").read(), encoding='utf-8')
+            self.client.write(upload_path, data=open(file_path, "rb").read())
 
             # delete uploaded file
             if os.path.isfile(file_path):
@@ -260,7 +283,7 @@ class ImageManager:
             raise Exception(e)
 
 
-    def load_data(self, db_name, table_name, label):
+    def load_data(self, db_name, table_name, label, file_set):
         """
         delete label folder under table
         :param db_name:
@@ -268,7 +291,24 @@ class ImageManager:
         :return:
         """
         try:
-            self.client.delete("{0}{1}/{2}/{3}".format(self.root, db_name, table_name, label), recursive=True)
+            return_list = []
+            for file_name in file_set:
+                file_path = "{0}{1}/{2}/{3}/{4}".format(self.root, db_name, table_name, label, file_name)
+                return_list.append(self.client.read(file_path))
+            return return_list
+        except Exception as e:
+            tfmsa_logger("Error : {0}".format(e))
+            raise Exception(e)
+
+    def delete_data(self, db_name, table_name, label, file_name):
+        """
+        delete label folder under table
+        :param db_name:
+        :param table_name:
+        :return:
+        """
+        try:
+            self.client.delete("{0}{1}/{2}/{3}".format(self.root, db_name, table_name, label, file_name), recursive=True)
             return table_name
         except Exception as e:
             tfmsa_logger("Error : {0}".format(e))

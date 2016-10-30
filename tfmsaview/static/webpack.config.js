@@ -15,7 +15,7 @@ module.exports = {
     debug: true,
     output: {
         path: __dirname,
-        filename: './../static/dist/[name].js' // Output for the multiple entry
+        filename: './dist/[name].js' // Output for the multiple entry
     },
     resolve: {
         // Add `.ts` and `.tsx` as a resolvable extension. 
