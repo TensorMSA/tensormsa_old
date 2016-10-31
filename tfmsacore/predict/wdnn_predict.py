@@ -180,7 +180,7 @@ def wdnn_build(nnid, model_dir = "No", train=True):
         if(train):
             model_dir = settings.HDFS_MODEL_ROOT + "/"+nnid + "/"+tempfile.mkdtemp().split("/")[2]
         else:
-            if(model_dir <> "No"):
+            if(model_dir != "No"):
                 model_dir = model_dir
         print("((1.Make WDN Network Build)) set up WDNN directory("+nnid +") ---> " + model_dir)
 
@@ -241,7 +241,7 @@ def wdnn_build(nnid, model_dir = "No", train=True):
             print(type(featureColumnContinuous[trans_col_name]))
             rvc = featureColumnContinuous[trans_col_name]
 
-            print("((1-1 transform cell parameters )) key : " + jc +" --->  "+ unicode(trans_col_name) + ":" + unicode(trans_boundaries))
+            #print("((1-1 transform cell parameters )) key : " + jc +" --->  "+ unicode(trans_col_name) + ":" + unicode(trans_boundaries))
             transfomation_col[jc] = tf.contrib.layers.bucketized_column(featureColumnContinuous[trans_col_name],trans_boundaries)
             wide_columns.append(tf.contrib.layers.bucketized_column(featureColumnContinuous[trans_col_name],trans_boundaries))
             print("((1-1 transform tensor insert))")

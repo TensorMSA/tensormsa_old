@@ -1,5 +1,5 @@
 import requests
-import json
+import json, os
 import tensorflow as tf
 import logging
 from django.conf import settings
@@ -8,7 +8,7 @@ from django.conf import settings
 #https://realpython.com/blog/python/api-integration-in-python/
 #http://www.slideshare.net/Byungwook/rest-api-60505484
 
-url = "4eb7e3fad83c:8989"
+url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8989")
 
 
 ####################################################################################
@@ -26,7 +26,7 @@ def common_nninfo_post():
     #                      })
     resp = requests.post('http://' + url + '/api/v1/type/common/nninfo/',
                          json={
-                             "nn_id": "nn0000021",
+                             "nn_id": "nn0000090",
                              "category": "SCM",
                              "subcate" : "csv",
                              "name": "MesCokesDI150",
@@ -120,7 +120,7 @@ def dataframe_table_delete():
 
 def dataframe_format_post():
 
-    resp = requests.post('http://' + url + '/api/v1/type/dataframe/base/scm/table/tb_data_cokes/format/nn0000021/',
+    resp = requests.post('http://' + url + '/api/v1/type/dataframe/base/scm/table/tb_data_cokes/format/nn0000020/',
                          json={"label":
                                     {"COKE_Q_DI150_Class": "LABEL"}
                                 , "cell_feature":
@@ -235,8 +235,7 @@ def dataframe_data_get():
     col type (cate) : categorical data needs to be modified
     :return:
     """
-    resp = requests.get('http://' + url + '/api/v1/type/dataframe/base/scm/table/tb_data_cokes/data/a')
-    #resp = requests.get('http://' + url + '/api/v1/type/dataframe/base/scm/table/tb_test_incomedata_wdnn3/data/a')
+    resp = requests.get('http://' + url + '/api/v1/type/dataframe/base/scm/table/tb_test_incomedata_wdnn3/data/a')
     #resp = requests.get('http://' + url + '/api/v1/type/dataframe/scm/table/tb_test_imcomedata_wdnn/data/a')
     data = json.loads(resp.json())
     print("evaluation result : {0}".format(data))
@@ -291,7 +290,7 @@ def dataframe_pre_delete():
 # WDNN - Config
 ####################################################################################
 def wdnn_conf_post():
-    resp = requests.post('http://' + url + '/api/v1/type/wdnn/conf/nn0000021/',
+    resp = requests.post('http://' + url + '/api/v1/type/wdnn/conf/nn0000020/',
                          json={
                                  "layer":[100,100,100,50]
                              })
@@ -300,7 +299,7 @@ def wdnn_conf_post():
 
 def wdnn_train_post():
     #resp = requests.post('http://' + url + '/api/v1/type/wdnn/train/nn0000011/')
-    resp = requests.post('http://' + url + '/api/v1/type/wdnn/train/nn0000021/')
+    resp = requests.post('http://' + url + '/api/v1/type/wdnn/train/nn0000020/')
     data = json.loads(resp.json())
     print("evaluation result : {0}".format(data))
 
@@ -315,7 +314,7 @@ def wdnn_predict_post():
 # CNN - Config
 ####################################################################################
 def cnn_conf_post():
-    resp = requests.post('http://' + url + '/api/v1/type/cnn/conf/nn0000010/',
+    resp = requests.post('http://' + url + '/api/v1/type/cnn/conf/nn0000090/',
                          json={
                                  "data":
                                      {
@@ -414,7 +413,7 @@ def cnn_conf_delete():
 ####################################################################################
 
 def cnn_train_post():
-    resp = requests.post('http://' + url + '/api/v1/type/cnn/train/nn0000010/',
+    resp = requests.post('http://' + url + '/api/v1/type/cnn/train/nn0000090/',
                          json= {
                              "epoch" : "10",
                              "testset" : "10"
@@ -543,6 +542,40 @@ def cnn_eval_get():
     data = json.loads(resp.json())
     print("evaluation result : {0}".format(data))
 
+####################################################################################
+# image - format
+####################################################################################
+def image_format_post():
+    resp = requests.post('http://' + url + '/api/v1/type/imagefile/base/mes/table/testtable/label/1/format/nn0000090/',
+                         json={"x_size": 100,
+                               "y_size": 100
+                               })
+    data = json.loads(resp.json())
+    print("evaluation result : {0}".format(data))
+
+def image_format_get():
+    resp = requests.get('http://' + url + '/api/v1/type/imagefile/base/mes/table/testtable/label/1/format/nn0000090/')
+    data = json.loads(resp.json())
+    print("evaluation result : {0}".format(data))
+
+def image_table_post():
+    resp = requests.post('http://' + url + '/api/v1/type/imagefile/base/mes/table/testtable/')
+    data = json.loads(resp.json())
+    print("evaluation result : {0}".format(data))
+
+def image_data_get():
+    resp = requests.get('http://' + url + '/api/v1/type/imagefile/base/mes/table/testtable/label/1/data/')
+    data = json.loads(resp.json())
+    print("evaluation result : {0}".format(data))
+
+def image_data_put():
+    resp = requests.put('http://' + url + '/api/v1/type/imagefile/base/mes/table/testtable/label/1/data/',
+                        json=["1","10"])
+    print(resp)
+
+def image_table_delete():
+    resp = requests.delete('http://' + url + '/api/v1/type/imagefile/base/mes/table/testtable/')
+    print(resp)
 
 ####################################################################################
 # TEST - TEST - TEST
@@ -588,16 +621,14 @@ Wdnn Test Sequence !!
 
 """
 data setup  screen
-3. dataframe - base - get
+
 4. dataframe - table - post
-5. dataframe - table - get
-5. dataframe - format - post
-8.wdnn - conf - conf
+
 """
 #common, dataframe, cnn, wdnn
-category1 = "dataframe"
+category1 = "cnn"
 # checker, predict, stat, evaluation, train, conf, nnfino, base, data, format, table, pre
-category2 = "format"
+category2 = "train"
 #dataframe_table_get
 # post, get, put, delete
 request = "post"

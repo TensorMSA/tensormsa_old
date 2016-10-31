@@ -12,11 +12,8 @@ import time
 
 
 class HbaseManager:
-    def __init__(self):
-        print("Hive file manager")
 
-
-    def spark_session_create(self, db_name=None):
+    def session_create(self, db_name=None):
         try:
             """
             Hbase Loader Class
@@ -40,7 +37,7 @@ class HbaseManager:
         :return: database list
         """
         try:
-            conn = self.spark_session_create()
+            conn = self.session_create()
             db_names = []
             t_tables = conn.tables()
             tables = list(map(lambda x : str(x,'utf-8'),t_tables))
@@ -84,7 +81,7 @@ class HbaseManager:
         :return: table list
         """
         try:
-            conn = self.spark_session_create(db_name)
+            conn = self.session_create(db_name)
             #conn.table_prefix
             #conn.table_prefix_separator = ":"
             table = conn.tables()
@@ -106,7 +103,7 @@ class HbaseManager:
         """
         try:
             tfmsa_logger("start query data !")
-            conn = self.spark_session_create()
+            conn = self.session_create()
             conn.table_prefix = data_frame
             conn.table_prefix_separator = ":"
             # DBNAME probably needs
@@ -192,7 +189,7 @@ class HbaseManager:
         """
         try:
             tfmsa_logger("start query data !")
-            conn = self.spark_session_create()
+            conn = self.session_create()
             nameSpace_tableName = db_name + ":" + table_name
             cf = {'data': dict(),}
 
@@ -214,7 +211,7 @@ class HbaseManager:
         """
         try:
             tfmsa_logger("delete table !")
-            conn = self.spark_session_create()
+            conn = self.session_create()
             nameSpace_tableName = db_name + ":" + table_name
             print("Delete table" + nameSpace_tableName)
 
@@ -244,7 +241,7 @@ class HbaseManager:
         """
         try:
             print("((To_base )) ###start connection###")
-            conn = self.spark_session_create()
+            conn = self.session_create()
             conn.table_prefix = data_frame
             conn.table_prefix_separator = ":"
             make_prefix = data_frame+":" # python 3.5 change

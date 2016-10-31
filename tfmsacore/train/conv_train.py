@@ -1,44 +1,179 @@
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-
+from sklearn import metrics
 import tensorflow as tf
+from tensorflow.contrib import learn
 import numpy as np
+from tfmsacore.data.image_manager import ImageManager
+from tfmsacore import netconf
+from tfmsacore import utils
+from tfmsacore.utils import JsonDataConverter,CusJsonEncoder
+import json, math
+from tfmsacore import preprocess
 
-# Data sets
-IRIS_TRAINING = "iris_training.csv"
-IRIS_TEST = "iris_test.csv"
+def train_conv_network(nn_id, epoch = 100, testset = 100):
+    try:
+        # check network is ready to train
+        utils.tfmsa_logger("[1]check pre steps ready")
+        utils.check_requested_nn(nn_id)
 
-# Load datasets.
-training_set = tf.contrib.learn.datasets.base.load_csv(filename=IRIS_TRAINING,
-                                                       target_dtype=np.int)
-test_set = tf.contrib.learn.datasets.base.load_csv(filename=IRIS_TEST,
-                                                   target_dtype=np.int)
+        # get network base info
+        utils.tfmsa_logger("[2]get network base info")
+        net_info = netconf.get_network_config(nn_id)
 
-# Specify that all features have real-value data
-feature_columns = [tf.contrib.layers.real_valued_column("", dimension=4)]
+        # get data format info
+        utils.tfmsa_logger("[3]get network format info")
+        format_info = netconf.load_ori_format(nn_id)
 
-# Build 3 layer DNN with 10, 20, 10 units respectively.
-classifier = tf.contrib.learn.DNNClassifier(feature_columns=feature_columns,
-                                            hidden_units=[10, 20, 10],
-                                            n_classes=3,
-                                            model_dir="/tmp/iris_model")
+        # check current data pointer
+        """
+        TO-DO : case when data size is big
+        """
 
-# Fit model.
-classifier.fit(x=training_set.data,
-               y=training_set.target,
-               steps=2000)
+        # get train data from HDFS
+        utils.tfmsa_logger("[4]load data from hdfs")
+        row_data_arr = ImageManager().load_data(net_info['dir'], net_info['table'], "0", "10")
 
-# Evaluate accuracy.
-accuracy_score = classifier.evaluate(x=test_set.data,
-                                     y=test_set.target)["accuracy"]
-print('Accuracy: {0:f}'.format(accuracy_score))
+        utils.tfmsa_logger("[5]convert image to array")
+        train_data_set = []
+        for row_data in row_data_arr:
+            arr = preprocess.ImagePreprocess().resize_bytes_image(row_data['bt'], format_info['x_size'], format_info['y_size'])
+            train_data_set.append(arr)
 
-# Classify two new flower samples.
-new_samples = np.array(
-    [[6.4, 3.2, 4.5, 1.5], [5.8, 3.1, 5.0, 1.7]], dtype=float)
-y = classifier.predict(new_samples)
-print('Predictions: {}'.format(str(y)))
+        print(train_data_set)
+
+    except Exception as e:
+        print("Error Message : {0}".format(e))
+        raise Exception(e)
+
+#
+#         # change conf info
+#         utils.tfmsa_logger("[3]save recalculated data info")
+#         save_changed_data_info(nn_id, sp_loader)
+#
+#         # load NN conf form db
+#         utils.tfmsa_logger("[4]load net conf form db")
+#         conf = netconf.load_format(nn_id)
+#
+#         # set train and evaluation data
+#         utils.tfmsa_logger("[5]set tensor variables")
+#         train_x = np.array(sp_loader.m_train, np.float32)
+#         train_y = np.array(sp_loader.m_tag, np.float32)
+#         test_x = np.array(sp_loader.m_train, np.float32)
+#         test_y = np.array(sp_loader.m_tag, np.float32)
+#
+#         # set data parmas
+#         datalen = conf.data.datalen
+#         taglen = conf.data.taglen
+#         matrix = conf.data.matrix
+#         learnrate = conf.data.learnrate
+#         train_x = np.reshape(train_x, (-1, matrix[0], matrix[1], 1))
+#         test_x = np.reshape(test_x, (-1, matrix[0], matrix[1], 1))
+#
+#         # create network conifg
+#         utils.tfmsa_logger("[6]set networks on tflearn")
+#         num_layers = len(conf.layer)
+#
+#         for i in range(0, int(num_layers)):
+#
+#             data = conf.layer[i]
+#
+#             if (data.type == "input"):
+#                 network = input_data(shape=[None, matrix[0], matrix[1], 1], name='input')
+#                 network = conv_2d(network, data.node_in_out[1], data.cnnfilter, activation=str(data.active),
+#                                   regularizer=data.regualizer)
+#                 network = max_pool_2d(network, data.maxpoolmatrix)
+#                 network = local_response_normalization(network)
+#
+#             elif (data.type == "cnn"):
+#                 network = conv_2d(network, data.node_in_out[1], data.cnnfilter, activation=str(data.active),
+#                                   regularizer=data.regualizer)
+#                 network = max_pool_2d(network, data.maxpoolmatrix)
+#                 network = local_response_normalization(network)
+#
+#             elif (data.type == "drop"):
+#                 network = fully_connected(network, data.node_in_out[0], activation=str(data.active))
+#                 network = dropout(network, int(data.droprate))
+#                 network = fully_connected(network, data.node_in_out[1], activation=str(data.active))
+#                 network = dropout(network, int(data.droprate))
+#
+#             elif (data.type == "out"):
+#                 network = fully_connected(network, data.node_in_out[1], activation=str(data.active))
+#                 network = regression(network, optimizer='adam', learning_rate=learnrate,
+#                                      loss='categorical_crossentropy', name='target')
+#
+#             elif (data.type == "fully"):
+#                 network = fully_connected(network, data.node_in_out[1], activation=str(data.active))
+#
+#             else:
+#                 raise SyntaxError("there is no such kind of nn type : " + str(data.active))
+#
+#         # set to real tensorflow
+#         utils.tfmsa_logger("[7]set net conf on real tensorflow")
+#         model = tflearn.DNN(network, tensorboard_verbose=0)
+#
+#         # load network
+#         utils.tfmsa_logger("[8]load pretrained model")
+#         model = netconf.nn_data_manager.load_trained_data(nn_id, model)
+#
+#         # train network
+#         utils.tfmsa_logger("[9]Start Train")
+#         model.fit({'input': train_x}, {'target': train_y}, n_epoch=int(epoch),
+#                   validation_set=({'input': test_x}, {'target': test_y}),
+#                   snapshot_step=100, show_metric=True, run_id='convnet_mnist')
+#
+#         # save trained network
+#         utils.tfmsa_logger("[10]save trained model")
+#         netconf.nn_data_manager.save_trained_data(nn_id, model)
+#
+#         # save train statistics result
+#         utils.tfmsa_logger("[11]evaluation accuracy and save")
+#         acc = model.evaluate(test_x, test_y)
+#         netconf.nn_common_manager.set_train_result(nn_id, round(acc, 3))
+#
+#         return acc
+#
+
+
+
+#
+#
+# def max_pool_2x2(tensor_in):
+#     return tf.nn.max_pool(
+#         tensor_in, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
+#
+#
+# def conv_model(X, y):
+#     # pylint: disable=invalid-name,missing-docstring
+#     # reshape X to 4d tensor with 2nd and 3rd dimensions being image width and
+#     # height final dimension being the number of color channels.
+#     X = tf.reshape(X, [-1, 28, 28, 1])
+#     # first conv layer will compute 32 features for each 5x5 patch
+#     with tf.variable_scope('conv_layer1'):
+#         h_conv1 = learn.ops.conv2d(X, n_filters=32, filter_shape=[5, 5],
+#                                    bias=True, activation=tf.nn.relu)
+#         h_pool1 = max_pool_2x2(h_conv1)
+#     # second conv layer will compute 64 features for each 5x5 patch.
+#     with tf.variable_scope('conv_layer2'):
+#         h_conv2 = learn.ops.conv2d(h_pool1, n_filters=64, filter_shape=[5, 5],
+#                                    bias=True, activation=tf.nn.relu)
+#         h_pool2 = max_pool_2x2(h_conv2)
+#         # reshape tensor into a batch of vectors
+#         h_pool2_flat = tf.reshape(h_pool2, [-1, 7 * 7 * 64])
+#   # densely connected layer with 1024 neurons.
+#     h_fc1 = tf.contrib.layers.dropout(
+#         tf.contrib.layers.legacy_fully_connected(
+#             h_pool2_flat, 1024, weight_init=None, activation_fn=tf.nn.relu))
+#     return learn.models.logistic_regression(h_fc1, y)
+#
+# # Training and predicting.
+# classifier = learn.TensorFlowEstimator(
+#     model_fn=conv_model, n_classes=10, batch_size=100, steps=20000,
+#     learning_rate=0.001)
+# classifier.fit(mnist.train.images, mnist.train.labels)
+# score = metrics.accuracy_score(
+#     mnist.test.labels, classifier.predict(mnist.test.images))
+# print('Accuracy: {0:f}'.format(score))
+
+
 
 
 

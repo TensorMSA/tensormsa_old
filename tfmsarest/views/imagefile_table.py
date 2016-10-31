@@ -24,12 +24,12 @@ class ImageFileTable(APIView):
     3. Description \n
         Imagedata table management
     """
-    def post(self, request, baseid, tb):
+    def post(self, request, baseid, table):
         """
         - desc :create table with given name
         """
         try:
-            result = data.ImageManager().create_table(baseid, tb)
+            result = data.ImageManager().create_table(baseid, table)
             return_data = {"status": "200", "result": result}
             return Response(json.dumps(return_data))
         except Exception as e:
@@ -67,20 +67,19 @@ class ImageFileTable(APIView):
         """
         try:
             json_data = json.loads(request.body)
-            result = data.DataMaster(const.DATA_STORE_TYPE_IMAGE).\
-                rename_table(baseid, json_data['origin'], json_data['modify'])
+            result = data.ImageManager().rename_table(baseid, json_data['origin'], json_data['modify'])
             return_data = {"status": "200", "result": result}
             return Response(json.dumps(return_data))
         except Exception as e:
             return_data = {"status": "400", "result": str(e)}
             return Response(json.dumps(return_data))
 
-    def delete(self, request, baseid, tb):
+    def delete(self, request, baseid, table):
         """
         -desc : delete table
         """
         try:
-            result = data.DataMaster(const.DATA_STORE_TYPE_IMAGE).delete_table(baseid, tb)
+            result = data.ImageManager().delete_table(baseid, table)
             return_data = {"status": "200", "result": result}
             return Response(json.dumps(return_data))
         except Exception as e:

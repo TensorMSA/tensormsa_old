@@ -18,5 +18,4 @@ from .wdnn_predict import WideDeepNetPredict
 from .imagefile_data import ImageFileData
 from .imagefile_base import ImageFileSchema
 from .imagefile_format import ImageFileFormat
-from .imagefile_label import ImageFileLabel
 from .imagefile_table import ImageFileTable

@@ -49,7 +49,7 @@ class CommonNetInfo(APIView):
           pytype: json
         """
         try:
-            result = netconf.create_new_network(json.loads(request.body))
+            result = netconf.create_new_network(json.loads(str(request.body, 'utf-8')))
             return_data = {"status": "200", "result": result}
             return Response(json.dumps(return_data))
         except Exception as e:
@@ -103,7 +103,7 @@ class CommonNetInfo(APIView):
         - desc: delete selected nn_info data
         """
         try:
-            result = netconf.delete_net_info(json.loads(request.body))
+            result = netconf.delete_net_info(json.loads(str(request.body, 'utf-8')))
             return_data = {"status": "200", "result": result}
             return Response(json.dumps(return_data))
         except Exception as e:

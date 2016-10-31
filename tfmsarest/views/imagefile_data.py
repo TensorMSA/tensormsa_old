@@ -29,7 +29,7 @@ class ImageFileData(APIView):
     3. Description \n
         Manage data store data CRUD (strucutre : schema - table - data)
     """
-    def post(self, request, baseid, tb, label):
+    def post(self, request, baseid, table, label):
         """
         - desc : insert data into table
         - Request json data example \n
@@ -50,36 +50,32 @@ class ImageFileData(APIView):
         try:
             logger.tfmsa_logger("start uploading image on hdfs")
             if 'file' in request.FILES:
-                file_set = request.FILES.getlist('file')
-
-                for file in file_set:
-                    filename = "{0}-{1}".format(str(random.randrange(1,9999)) , file._name)
-                    data.ImageManager().put_data(baseid, tb, label, file, filename)
-            return_data = {"status": "ok", "result": tb}
+                data_count = data.ImageManager().put_data(baseid, table , label, request.FILES.getlist('file'))
+            return_data = {"status": "200", "result": data_count}
             return Response(json.dumps(return_data))
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}
             return Response(json.dumps(return_data))
 
-    def get(self, request, baseid, tb, label):
+    def get(self, request, baseid, table, label):
         """
         - desc : get image file list \n
         """
         try:
-            result = data.ImageManager().search_label(baseid, tb, label)
-            return_data = {"status": "ok", "result": result}
+            result = data.ImageManager().search_database(baseid)
+            return_data = {"status": "200", "result": result}
             return Response(json.dumps(return_data))
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}
             return Response(json.dumps(return_data))
 
-    def put(self, request, baseid, tb, label):
+    def put(self, request, baseid, table, label):
         """
         - load image byte array \n
         <textfield>
         <font size = 1>
 
-            [<file1>, <file2>]
+            [<from>, <to>]
         </font>
         </textfield>
         ---
@@ -89,23 +85,10 @@ class ImageFileData(APIView):
           pytype: json
         """
         try:
-            file_set = json.loads(request.body)
-            result = data.ImageManager().load_data(baseid, tb, label, file_set)
-            return_data = {"status": "ok", "result": result}
-            return Response(json.dumps(return_data))
-        except Exception as e:
-            return_data = {"status": "404", "result": str(e)}
-            return Response(json.dumps(return_data))
-
-
-    def delete(self, request, baseid, tb, label, file):
-        """
-        - desc : delete request file
-        """
-        try:
-            data.ImageManager().delete_data(baseid, tb, label, file)
-            return_data = {"status": "ok", "result": file}
-            return Response(json.dumps(return_data))
+            pointer = json.loads(str(request.body, 'utf-8'))
+            result = data.ImageManager().load_data(baseid, table, pointer[0], pointer[1])
+            return_data = {"status": "200", "result": result}
+            return Response(result)
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}
             return Response(json.dumps(return_data))

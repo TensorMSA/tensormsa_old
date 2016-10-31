@@ -19,15 +19,6 @@ def check_requested_nn(nn_id):
     if(check_nn_conf_exist(conf, nn_id) == False):
         raise SyntaxError("network configuration not exist")
 
-    if (check_nn_datadesc_exist(conf) == False):
-        raise SyntaxError("network column types are not defined")
-
-    if (check_nn_datasets_exist(conf) == False):
-        raise SyntaxError("network categorical type list not exists")
-
-    # if(check_nn_data_exist(conf, nn_id) == False):
-    #     raise Exception("training data not exist")
-
 
 
 def check_nn_exist(conf, nn_id):
