@@ -3,7 +3,7 @@ from tfmsacore import predict
 from tfmsacore import data
 from tfmsacore import utils
 from tfmsacore import netconf
-from tfmsarest import livy
+from tfmsacore.batch.livy_client_manager import LivyDfClientManager
 import json, unicodedata
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -23,7 +23,7 @@ class CommonLivySession(APIView):
         :return:
         """
         try:
-            livy_client = livy.LivyDfClientManager()
+            livy_client = LivyDfClientManager()
             livy_client.create_session()
             return_data = {"status": "200", "result": str(livy_client.alive_sess_cnt)}
             return Response(json.dumps(return_data))
@@ -38,7 +38,7 @@ class CommonLivySession(APIView):
         :return:
         """
         try:
-            livy_client = livy.LivyDfClientManager()
+            livy_client = LivyDfClientManager()
             livy_client.check_alive_sessions()
             return_data = {"status": "200", "result": str(livy_client.alive_sess_list)}
             return Response(json.dumps(return_data))
@@ -53,7 +53,7 @@ class CommonLivySession(APIView):
         :return:
         """
         try:
-            livy_client = livy.LivyDfClientManager()
+            livy_client = LivyDfClientManager()
             livy_client.delete_all_session()
             return_data = {"status": "200", "result": "0"}
             return Response(json.dumps(return_data))

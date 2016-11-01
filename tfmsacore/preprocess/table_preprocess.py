@@ -1,7 +1,7 @@
 from tfmsacore import netconf
 from tfmsacore.utils import JsonDataConverter, tfmsa_logger
 from pyspark.sql import types
-from tfmsacore.data.data_master import DataMaster
+from tfmsacore.data.hbase_manager import HbaseManager
 
 class DFPreProcessor:
     def __init__(self):
@@ -30,7 +30,7 @@ class DFPreProcessor:
 
             # (2) get user seleceted data from spark
             sql_stmt = self.get_sql_state(datadesc , net_conf['table'])
-            origin_data = DataMaster().query_random_sample(net_conf['dir'], net_conf['table'], sql_stmt, net_conf['samplepercent'])
+            origin_data = HbaseManager().query_random_sample(net_conf['dir'], net_conf['table'], sql_stmt, net_conf['samplepercent'])
 
             # (3) modify train data for 'categorical data'
             self.m_train[:] = []
@@ -66,7 +66,7 @@ class DFPreProcessor:
 
             # (2) get user seleceted data from spark
             sql_stmt = self.get_sql_state(datadesc , net_conf['table'])
-            origin_data = DataMaster().query_data(net_conf['dir'], net_conf['table'], sql_stmt)
+            origin_data = HbaseManager().query_data(net_conf['dir'], net_conf['table'], sql_stmt)
 
             # (3) modify train data for 'categorical data'
             self.m_train[:] = []

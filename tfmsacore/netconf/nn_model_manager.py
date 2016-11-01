@@ -37,7 +37,7 @@ def load_trained_data(nn_id, model):
         os.makedirs(directory)
 
     if os.path.isfile(directory + "/" + nn_id + "_model.ckpt"):
-        model.load(directory + "/" +  nn_id + "_model.ckpt")
+        model.restore(directory + "/" +  nn_id + "_model.ckpt")
 
     return model
 

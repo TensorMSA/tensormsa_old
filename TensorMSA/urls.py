@@ -119,6 +119,8 @@ urlpatterns = [
       csrf_exempt(rest_view.ImageFileFormat.as_view())),
 
     # imagedata - data upload, search
+    url(r'^api/v1/type/imagefile/base/(?P<baseid>.*)/table/(?P<table>.*)/label/(?P<label>.*)/data/(?P<nnid>.*)/',
+      csrf_exempt(rest_view.ImageFileData.as_view())),
     url(r'^api/v1/type/imagefile/base/(?P<baseid>.*)/table/(?P<table>.*)/label/(?P<label>.*)/data/',
       csrf_exempt(rest_view.ImageFileData.as_view())),
 

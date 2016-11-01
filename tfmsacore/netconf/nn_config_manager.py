@@ -43,13 +43,14 @@ def load_conf(net_id):
     try:
         model_conf = open(directory + net_id, 'r')
         json_data = JsonDataConverter().load_obj_json(model_conf)
+        return json_data
     except Exception as e:
         print(e)
         raise Exception(e)
     finally :
         model_conf.close()
 
-    return json_data
+
 
 def load_ori_conf(net_id):
     """
@@ -93,7 +94,7 @@ def save_conf(net_id, conf_data):
 
     try:
         f = open(directory + net_id, 'w')
-        f.write(str(conf_data))
+        f.write(str(conf_data, 'utf-8'))
 
     except:
         raise SystemError("json conf save error")

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import json
+from _io import TextIOWrapper
 
 # json utils
 class JsonObject:
@@ -59,7 +60,7 @@ class JsonDataConverter:
         try :
             if(isinstance(data, (str))):
                 json_data = json.loads(comma_converter(data), object_hook=JsonObject)
-            elif(isinstance(data, (open))):
+            elif(isinstance(data, (TextIOWrapper))):
                 json_data = json.loads(data.read(), object_hook=JsonObject)
             elif(isinstance(data, (dict))):
                 json_data = json.loads(data, object_hook=JsonObject)

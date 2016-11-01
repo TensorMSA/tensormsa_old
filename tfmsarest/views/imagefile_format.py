@@ -49,6 +49,7 @@ class ImageFileFormat(APIView):
             jd.table = table
             jd.nn_id = nnid
             jd.datadesc = 'Y'
+            jd.preprocess = '2'
             netconf.save_format(nnid, str(request.body, 'utf-8'))
             result = netconf.update_network(jd)
             return_data = {"status": "200", "result": result}
@@ -79,6 +80,7 @@ class ImageFileFormat(APIView):
             jd.table = table
             jd.nn_id = nnid
             jd.datadesc = 'Y'
+            jd.preprocess = '2'
             netconf.remove_format(nnid)
             netconf.save_format(nnid, str(request.body, 'utf-8'))
             result = netconf.update_network(jd)
@@ -98,6 +100,7 @@ class ImageFileFormat(APIView):
             jd.table = ""
             jd.nn_id = nnid
             jd.datadesc = ""
+            jd.preprocess = ""
             netconf.remove_format(nnid)
             result = netconf.update_network(jd)
             return_data = {"status": "200", "result": result}

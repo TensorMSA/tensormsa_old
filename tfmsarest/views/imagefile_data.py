@@ -4,11 +4,6 @@ from django.http import HttpResponse
 from rest_framework.views import APIView
 from tfmsacore.utils import CusJsonEncoder,logger
 from tfmsacore import data
-from tfmsacore.utils.json_conv import JsonDataConverter as jc
-from tfmsarest import livy
-from django.conf import settings
-from TensorMSA import const
-import random
 
 class ImageFileData(APIView):
     """
@@ -29,7 +24,7 @@ class ImageFileData(APIView):
     3. Description \n
         Manage data store data CRUD (strucutre : schema - table - data)
     """
-    def post(self, request, baseid, table, label):
+    def post(self, request, baseid, table, label, nnid):
         """
         - desc : insert data into table
         - Request json data example \n
@@ -50,7 +45,7 @@ class ImageFileData(APIView):
         try:
             logger.tfmsa_logger("start uploading image on hdfs")
             if 'file' in request.FILES:
-                data_count = data.ImageManager().put_data(baseid, table , label, request.FILES.getlist('file'))
+                data_count = data.ImageManager().put_data(baseid, table , label, request.FILES.getlist('file'), nnid)
             return_data = {"status": "200", "result": data_count}
             return Response(json.dumps(return_data))
         except Exception as e:

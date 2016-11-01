@@ -318,9 +318,9 @@ def cnn_conf_post():
                          json={
                                  "data":
                                      {
-                                         "datalen": 96,
+                                         "datalen": 10000,
                                          "taglen": 2,
-                                         "matrix": [12, 8],
+                                         "matrix": [100, 100],
                                          "learnrate": 0.01,
                                          "epoch": 10
                                      },
@@ -337,6 +337,9 @@ def cnn_conf_post():
                                              "regualizer": "",
                                              "padding": "SAME",
                                              "droprate": ""
+                                         },
+                                         {
+                                             "type": "reshape",
                                          },
                                          {
                                              "type": "out",
@@ -546,7 +549,7 @@ def cnn_eval_get():
 # image - format
 ####################################################################################
 def image_format_post():
-    resp = requests.post('http://' + url + '/api/v1/type/imagefile/base/mes/table/testtable/label/1/format/nn0000090/',
+    resp = requests.post('http://' + url + '/api/v1/type/imagefile/base/mes/table/testtable/format/nn0000090/',
                          json={"x_size": 100,
                                "y_size": 100
                                })
@@ -554,7 +557,7 @@ def image_format_post():
     print("evaluation result : {0}".format(data))
 
 def image_format_get():
-    resp = requests.get('http://' + url + '/api/v1/type/imagefile/base/mes/table/testtable/label/1/format/nn0000090/')
+    resp = requests.get('http://' + url + '/api/v1/type/imagefile/base/mes/table/testtable/format/nn0000090/')
     data = json.loads(resp.json())
     print("evaluation result : {0}".format(data))
 
@@ -626,9 +629,9 @@ data setup  screen
 
 """
 #common, dataframe, cnn, wdnn
-category1 = "cnn"
+category1 = "image"
 # checker, predict, stat, evaluation, train, conf, nnfino, base, data, format, table, pre
-category2 = "train"
+category2 = "table"
 #dataframe_table_get
 # post, get, put, delete
 request = "post"

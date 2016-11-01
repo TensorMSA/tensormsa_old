@@ -5,7 +5,6 @@ from rest_framework.views import APIView
 from tfmsacore.utils import CusJsonEncoder,logger
 from tfmsacore import data
 from tfmsacore.utils.json_conv import JsonDataConverter as jc
-from tfmsarest import livy
 from django.conf import settings
 
 class DataFrameData(APIView):
