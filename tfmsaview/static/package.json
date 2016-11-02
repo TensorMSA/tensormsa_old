@@ -10,7 +10,7 @@
   "scripts": {
     "start": "webpack && node server.js",
     "test": "mocha --compilers js:babel-core/register",
-    "build": "webpack --config webpack.config.js"
+    "build": "webpack --watch --config webpack.config.js"
   },
   "dependencies": {
     "@types/react": "^0.14.41",

@@ -29,7 +29,7 @@ def train_conv_network(nn_id, epoch = 100, testset = 100):
         train_label_set = []
 
         if(const.TYPE_IMAGE == net_info['preprocess']):
-            train_data_set, train_label_set = ConvCommonManager().prepare_image_data(nn_id, net_info, conf_info)
+            train_data_set, train_label_set = ConvCommonManager(conf_info).prepare_image_data(nn_id, net_info)
         elif(const.TYPE_DATA_FRAME == net_info['preprocess']):
             raise Exception("function not ready")
         elif(const.TYPE_TEXT == net_info['preprocess']):
@@ -41,41 +41,29 @@ def train_conv_network(nn_id, epoch = 100, testset = 100):
         n_class = len(json.loads(net_info['datasets']))
         train_x = np.array(train_data_set, np.float32)
         train_y = np.array(train_label_set, np.float32)
-        test_x = np.array(train_data_set, np.float32)
-        test_y = np.array(train_label_set, np.float32)
-
-        # strucut layer
-        utils.tfmsa_logger("[5]struct cnn layer")
-        network = ConvCommonManager().struct_cnn_layer(conf_info, train_data_set, train_label_set)
 
         # define classifier
-        utils.tfmsa_logger("[6]define classifier")
+        utils.tfmsa_logger("[5]define classifier")
         classifier = learn.TensorFlowEstimator(
-            model_fn=network,
+            model_fn=ConvCommonManager(conf_info).struct_cnn_layer,
             n_classes=n_class,
             batch_size=100,
             steps=int(epoch),
             learning_rate=learnrate)
 
         # load model
-        utils.tfmsa_logger("[7]load trained model")
+        utils.tfmsa_logger("[6]load trained model")
         netconf.nn_model_manager.load_trained_data(nn_id, classifier)
 
         # start train
-        utils.tfmsa_logger("[8]start train")
+        utils.tfmsa_logger("[7]start train")
         classifier.fit(train_x, train_y)
 
         # save model
-        utils.tfmsa_logger("[9]save trained model")
+        utils.tfmsa_logger("[8]save trained model")
         netconf.nn_model_manager.save_trained_data(nn_id, classifier)
 
-        # accuracy test
-        utils.tfmsa_logger("[10]accuracy test")
-        score = metrics.accuracy_score(
-            test_y, classifier.predict(test_x))
-        print('Accuracy: {0:f}'.format(score))
-
-        return format(score)
+        return len(train_y)
 
     except Exception as e:
         print("Error Message : {0}".format(e))

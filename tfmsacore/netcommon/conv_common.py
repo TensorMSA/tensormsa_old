@@ -11,7 +11,10 @@ class ConvCommonManager:
     """
 
     """
-    def prepare_image_data(self, nn_id, net_info, conf_info):
+    def __init__(self, conf_info):
+        self.conf = conf_info
+
+    def prepare_image_data(self, nn_id, net_info):
         """
         prepare image type data
         convert image to analizerble array
@@ -34,20 +37,18 @@ class ConvCommonManager:
         train_data_set = []
         train_label_set = []
         for row_data in row_data_arr:
-            train_data_set.append(row_data['bt'])
-            train_label_set.append(netcommon.make_output_matrix(out_index, str(row_data['label'], 'utf-8')))
-
+            train_data_set.append(json.loads(str(row_data['bt'],'utf-8')))
+            train_label_set.append(netcommon.return_index_position(out_index, str(row_data['label'], 'utf-8')))
         return train_data_set, train_label_set
 
-
-
-    def struct_cnn_layer(self, conf_info, train_data_set, train_label_set):
+    def struct_cnn_layer(self, train_data_set, train_label_set):
         """
         dynamically struct cnn
         :param num_layers:
         :param conf_info:
         :return:
         """
+        conf_info = self.conf
         num_layers = len(conf_info.layer)
         matrix = conf_info.data.matrix
         train_data_set = tf.reshape(train_data_set, [-1, matrix[0], matrix[1], 1])
@@ -56,19 +57,24 @@ class ConvCommonManager:
 
         for i in range(0, int(num_layers)):
             data = conf_info.layer[i]
+            utils.tfmsa_logger("[{0}]define layers : {1}".format(i, data.type))
             if (data.type == "input"):
                 train_data_set = tf.reshape(train_data_set, [-1, matrix[0], matrix[1], 1])
-                network = learn.ops.conv2d(train_data_set, n_filters=data.node_in_out[1], filter_shape=data.cnnfilter,
-                                           bias=True, activation=self.get_activation(str(data.active)))
-                network = tf.nn.max_pool(network, ksize=[1, data.maxpoolmatrix[0], data.maxpoolmatrix[1], 1],
+                network = tf.contrib.layers.conv2d(train_data_set,
+                                                   num_outputs=data.node_in_out[1],
+                                                   kernel_size=data.cnnfilter,
+                                                   activation_fn=self.get_activation(str(data.active)))
+                network = tf.nn.max_pool(network,
+                                         ksize=[1, data.maxpoolmatrix[0], data.maxpoolmatrix[1], 1],
                                          strides=[1, data.maxpoolstride[0], data.maxpoolstride[1], 1],
                                          padding=data.padding)
                 curren_matrix = self.mat_size_cal(curren_matrix, data.padding, data.maxpoolmatrix, data.maxpoolstride)
                 curren_matrix_num = data.node_in_out[1]
             elif (data.type == "cnn"):
-                train_data_set = tf.reshape(network, [-1, matrix[0], matrix[1], 1])
-                network = learn.ops.conv2d(train_data_set, n_filters=data.node_in_out[1], filter_shape=data.cnnfilter,
-                                           bias=True, activation=self.get_activation(str(data.active)))
+                network = tf.contrib.layers.conv2d(network,
+                                                   num_outputs=data.node_in_out[1],
+                                                   kernel_size=data.cnnfilter,
+                                                   activation_fn=self.get_activation(str(data.active)))
                 network = tf.nn.max_pool(network, ksize=[1, data.maxpoolmatrix[0], data.maxpoolmatrix[1], 1],
                                          strides=[1, data.maxpoolstride[0], data.maxpoolstride[1], 1],
                                          padding=data.padding)
@@ -80,12 +86,14 @@ class ConvCommonManager:
                 data_num = curren_matrix[0] * curren_matrix[1] * curren_matrix_num
                 network = tf.contrib.layers.dropout(
                     tf.contrib.layers.legacy_fully_connected(
-                    network, data_num/int(data.droprate), weight_init=None,
-                        activation_fn=self.get_activation(str(data.active))))
+                    network, data_num, weight_init=None,
+                        activation_fn=self.get_activation(str(data.active))),
+                    keep_prob = float(data.droprate)
+                )
             elif (data.type == "out"):
                 network = learn.models.logistic_regression(network, train_label_set)
             else:
-                raise SyntaxError("there is no such kind of nn type : " + str(data.active))
+                raise SyntaxError("there is no such kind of layer type : " + str(data.type))
 
         return network
 
@@ -97,11 +105,11 @@ class ConvCommonManager:
         :return:
         """
         if activitaion == 'relu':
-            return tf.nn.relu()
+            return tf.nn.relu
         elif activitaion == 'softmax':
             return tf.nn.softmax('float32')
         else :
-            return tf.nn.relu()
+            return tf.nn.relu
 
     def mat_size_cal(self, curren_matrix, padding, max_pool_matrix, max_pool_stride):
         """
@@ -112,12 +120,11 @@ class ConvCommonManager:
         :return:
         """
         if(padding == 'SAME'):
-            curren_matrix[0] = (curren_matrix[0]/max_pool_matrix[0]) * (curren_matrix[0]/max_pool_stride[0]) - 1
-            curren_matrix[1] = (curren_matrix[1]/max_pool_matrix[1]) * (curren_matrix[1]/max_pool_stride[1]) - 1
+            curren_matrix[0] = int(curren_matrix[0]/max_pool_stride[0])
+            curren_matrix[1] = int(curren_matrix[1]/max_pool_stride[1])
         else:
-            curren_matrix[0] = (curren_matrix[0]/max_pool_matrix[0]) * (curren_matrix[0]/max_pool_stride[0])
-            curren_matrix[1] = (curren_matrix[1]/max_pool_matrix[1]) * (curren_matrix[1]/max_pool_stride[1])
-
+            curren_matrix[0] = int(curren_matrix[0]/max_pool_stride[0] - 1)
+            curren_matrix[1] = int(curren_matrix[1]/max_pool_stride[1] - 1)
         return curren_matrix
 
     def save_changed_data_info(self, nn_id, train_data_set, train_label_set):

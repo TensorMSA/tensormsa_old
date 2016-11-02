@@ -318,9 +318,9 @@ def cnn_conf_post():
                          json={
                                  "data":
                                      {
-                                         "datalen": 10000,
+                                         "datalen": 1024,
                                          "taglen": 2,
-                                         "matrix": [100, 100],
+                                         "matrix": [32, 32],
                                          "learnrate": 0.01,
                                          "epoch": 10
                                      },
@@ -330,10 +330,22 @@ def cnn_conf_post():
                                              "type": "input",
                                              "active": "relu",
                                              "cnnfilter": [2, 2],
-                                             "cnnstride": [1, 1],
+                                             "cnnstride": [2, 2],
                                              "maxpoolmatrix": [2, 2],
-                                             "maxpoolstride": [1, 1],
+                                             "maxpoolstride": [2, 2],
                                              "node_in_out": [1, 16],
+                                             "regualizer": "",
+                                             "padding": "SAME",
+                                             "droprate": ""
+                                         },
+                                         {
+                                             "type": "cnn",
+                                             "active": "relu",
+                                             "cnnfilter": [2, 2],
+                                             "cnnstride": [2, 2],
+                                             "maxpoolmatrix": [2, 2],
+                                             "maxpoolstride": [2, 2],
+                                             "node_in_out": [16, 32],
                                              "regualizer": "",
                                              "padding": "SAME",
                                              "droprate": ""
@@ -342,13 +354,19 @@ def cnn_conf_post():
                                              "type": "reshape",
                                          },
                                          {
+                                             "type": "drop",
+                                             "active": "relu",
+                                             "regualizer": "",
+                                             "droprate": "0.5"
+                                         },
+                                         {
                                              "type": "out",
                                              "active": "softmax",
                                              "cnnfilter": "",
                                              "cnnstride": "",
                                              "maxpoolmatrix": "",
                                              "maxpoolstride": "",
-                                             "node_in_out": [64, 2],
+                                             "node_in_out": [32, 2],
                                              "regualizer": "",
                                              "padding": "SAME",
                                              "droprate": ""
@@ -365,48 +383,69 @@ def cnn_conf_get():
 
 def cnn_conf_put():
     resp = requests.put('http://' + url + '/api/v1/type/cnn/conf/nn0000010/',
-                         json={
-                                 "data":
-                                     {
-                                         "datalen": 96,
-                                         "taglen": 2,
-                                         "matrix": [12, 8],
-                                         "learnrate": 0.01,
-                                         "epoch": 10
-                                     },
-                                 "layer":
-                                     [
-                                         {
-                                             "type": "input",
-                                             "active": "relu",
-                                             "cnnfilter": [2, 2],
-                                             "cnnstride": [1, 1],
-                                             "maxpoolmatrix": [2, 2],
-                                             "maxpoolstride": [1, 1],
-                                             "node_in_out": [1, 16],
-                                             "regualizer": "",
-                                             "padding": "SAME",
-                                             "droprate": ""
-                                         },
-                                         {
-                                             "type": "out",
-                                             "active": "softmax",
-                                             "cnnfilter": "",
-                                             "cnnstride": "",
-                                             "maxpoolmatrix": "",
-                                             "maxpoolstride": "",
-                                             "node_in_out": [64, 2],
-                                             "regualizer": "",
-                                             "padding": "SAME",
-                                             "droprate": ""
-                                         }
-                                     ]
-                             })
+                        json={
+                            "data":
+                                {
+                                    "datalen": 10000,
+                                    "taglen": 2,
+                                    "matrix": [100, 100],
+                                    "learnrate": 0.01,
+                                    "epoch": 10
+                                },
+                            "layer":
+                                [
+                                    {
+                                        "type": "input",
+                                        "active": "relu",
+                                        "cnnfilter": [4, 4],
+                                        "cnnstride": [4, 4],
+                                        "maxpoolmatrix": [2, 2],
+                                        "maxpoolstride": [2, 2],
+                                        "node_in_out": [1, 16],
+                                        "regualizer": "",
+                                        "padding": "SAME",
+                                        "droprate": ""
+                                    },
+                                    {
+                                        "type": "cnn",
+                                        "active": "relu",
+                                        "cnnfilter": [4, 4],
+                                        "cnnstride": [4, 4],
+                                        "maxpoolmatrix": [2, 2],
+                                        "maxpoolstride": [2, 2],
+                                        "node_in_out": [16, 32],
+                                        "regualizer": "",
+                                        "padding": "SAME",
+                                        "droprate": ""
+                                    },
+                                    {
+                                        "type": "reshape",
+                                    },
+                                    {
+                                        "type": "drop",
+                                        "active": "relu",
+                                        "regualizer": "",
+                                        "droprate": "0.5"
+                                    },
+                                    {
+                                        "type": "out",
+                                        "active": "softmax",
+                                        "cnnfilter": "",
+                                        "cnnstride": "",
+                                        "maxpoolmatrix": "",
+                                        "maxpoolstride": "",
+                                        "node_in_out": [32, 2],
+                                        "regualizer": "",
+                                        "padding": "SAME",
+                                        "droprate": ""
+                                    }
+                                ]
+                        })
     data = json.loads(resp.json())
     print("evaluation result : {0}".format(data))
 
 def cnn_conf_delete():
-    resp = requests.delete('http://' + url + '/api/v1/type/cnn/conf/nn0000010/')
+    resp = requests.delete('http://' + url + '/api/v1/type/cnn/conf/nn0000090/')
     data = json.loads(resp.json())
     print("evaluation result : {0}".format(data))
 
@@ -550,8 +589,8 @@ def cnn_eval_get():
 ####################################################################################
 def image_format_post():
     resp = requests.post('http://' + url + '/api/v1/type/imagefile/base/mes/table/testtable/format/nn0000090/',
-                         json={"x_size": 100,
-                               "y_size": 100
+                         json={"x_size": 32,
+                               "y_size": 32
                                })
     data = json.loads(resp.json())
     print("evaluation result : {0}".format(data))
@@ -608,30 +647,22 @@ Test Sequence !!
 
 """
 Wdnn Test Sequence !!
-
 2. common - nninfo - post
-
 4. dataframe - table - post
-
 5. CSV(use ui http://localhost:8989/view/ftptest)
-
 6. dataframe - format - post
-
 8.wdnn - conf - post
 10. wdnn - train - post
 11. wdnn - predict- post
 """
-
 """
 data setup  screen
-
 4. dataframe - table - post
-
 """
 #common, dataframe, cnn, wdnn
-category1 = "image"
+category1 = "cnn"
 # checker, predict, stat, evaluation, train, conf, nnfino, base, data, format, table, pre
-category2 = "table"
+category2 = "train"
 #dataframe_table_get
 # post, get, put, delete
 request = "post"
