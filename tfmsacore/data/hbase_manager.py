@@ -169,7 +169,7 @@ class HbaseManager:
                     df[with_label].apply(lambda x: label_first_value in x)).astype(int) #16.10.25 auto check label values for 2 type values
             tfmsa_logger("End query data!")
             #print(df)
-            print(df.to_string(index=False))
+            #print(df.to_string(index=False))
             return json.dumps(df.to_string(index=False))
             #return json.dumps(df)
 

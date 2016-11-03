@@ -29,15 +29,18 @@ def wdd_train(nnid):
 
         #get json from postgres by nnid
         json_string = get_json_by_nnid(nnid)
+        print("############# get json string")
+        #print(json_string)
         #parse database, table_name for select data from hbase
-        database = str(json_string['dir'])
-        table_name = str(json_string['table'])
+        database = str(json_string["dir"],"utf-8")
+        print("############# get database from json string")
+        table_name = str(json_string["table"],'utf-8')
 
         #Make NetworkConfiguration Json Objct
-        json_ob = json.loads(json_string['datadesc'])
+        json_ob = json.loads(json_string["datadesc"],'utf-8')
 
         #get label column from hbase nn config json
-        t_label = json_ob['label']
+        t_label = json_ob["label"]
         #for key, value in t_label.iteritems():
         #    print("label key   " , key)
         label_key =   t_label.keys()
@@ -47,7 +50,7 @@ def wdd_train(nnid):
 
         limit_no = 30000 #limit number for hbase cnt
         df = data.DataMaster().query_data(database, table_name, "a", limit_no,with_label=label_column)
-        print("((2.Get Dataframe from Hbase)) ##End## (" + database +" , " + table_name + " , " + label_column + " , "+  str(limit_no) + ")")
+        print("((2.Get Dataframe from Hbase)) ##End## (" + database +" , " + table_name + " , " + label_column + " , "+  str(limit_no,'utf-8') + ")")
 
         print("((3.Wide & Deep Network Train )) ##Start##  (" + nnid + ")")
         wdnn_model.fit(input_fn=lambda: input_fn(df, nnid), steps=FLAGS.train_steps)
@@ -72,10 +75,10 @@ def wdd_predict(nnid):
     """
     try:
         json_string = get_json_by_nnid(nnid)
-        database = str(json_string['dir'])
-        table_name = str(json_string['table'])
+        database = str(json_string['dir'],'utf-8')
+        table_name = str(json_string['table'],'utf-8')
         json_object = json_string['datadesc']
-        model_dir = str(json_string['datasets'])
+        model_dir = str(json_string['datasets'],'utf-8')
         json_ob = json.loads(json_object)
 
         tt = json_ob['cell_feature']
@@ -92,7 +95,7 @@ def wdd_predict(nnid):
         limit_no = 100
         print("((2.Get Dataframe from Hbase)) ##Start## (" + database + " , " + table_name + " , " + label_column + ")")
         df = data.DataMaster().query_data(database, table_name, "a", limit_no ,with_label=label_column)
-        print("((2.Get Dataframe from Hbase)) ##End## (" + database + " , " + table_name + " , " + label_column + " , " + str(limit_no) + ")")
+        print("((2.Get Dataframe from Hbase)) ##End## (" + database + " , " + table_name + " , " + label_column + " , " + str(limit_no,'utf-8') + ")")
 
         print("((3.Wide & Deep Network Predict )) ##Start## ")
         results = wdnn_model.evaluate(input_fn=lambda: input_fn(df, nnid), steps=1)
@@ -190,8 +193,9 @@ def get_json_by_nnid(nnid):
     """get network config json
     :param nnid
     :return: json string """
-
+    print("get_json_networkid########")
     result = netconf.get_network_config(nnid)
+    print(result)
     return result
 
 def wdnn_build(nnid, model_dir = "No", train=True):
@@ -204,14 +208,17 @@ def wdnn_build(nnid, model_dir = "No", train=True):
         # need json, model_dir
         print("((1.Make WDN Network Build)) start wddd build (" + nnid + ")")
         json_string = get_json_by_nnid(nnid)
-        json_object = json.loads(json_string['datadesc'])
+        print("get json string in wdnn builder ####")
+        print(json_string)
+        json_object = json.loads(json.dumps(json_string["datadesc"])) #3.5 fixed 16.11.02
+        print("get json string in wdnn builder ####")
         # load NN conf form db
         utils.tfmsa_logger("[4]load net conf form db")
         conf = netconf.load_conf(nnid)
         hidden_layers_value = conf.layer
         #hidden_layers_value2 = conf["layer"]
         #print("((1.Make WDN Network Build)) config load " + str(hidden_layers_value2))
-        print("((1.Make WDN Network Build)) set up Hidden Layers ("+ str(hidden_layers_value) + ")")
+        print("((1.Make WDN Network Build)) set up Hidden Layers ("+ str(hidden_layers_value),'utf-8' + ")")
 
         if(train):
             model_dir = settings.HDFS_MODEL_ROOT + "/"+nnid + "/"+tempfile.mkdtemp().split("/")[2]
@@ -229,14 +236,14 @@ def wdnn_build(nnid, model_dir = "No", train=True):
         j_feature = json_object["cell_feature"]
 
         for cn, c_value in j_feature.iteritems():
-            print("((1.Make WDN Network Build)) first get feature columns " + str(c_value["column_type"]))
+            print("((1.Make WDN Network Build)) first get feature columns " + str(c_value["column_type"]),'utf-8')
 
             if c_value["column_type"] == "CATEGORICAL":
                 featureColumnCategorical[cn] = tf.contrib.layers.sparse_column_with_hash_bucket(
                     cn, hash_bucket_size=1000)
             elif c_value["column_type"] == "CATEGORICAL_KEY":
                 print("((1.Make WDN Network Build)) categorical_key add ")
-                print(str(c_value["keys"]))
+                print(str(c_value["keys"],'utf-8'))
                 featureColumnCategorical[cn] = tf.contrib.layers.sparse_column_with_keys(column_name=cn,keys=c_value["keys"])
                 print("((1.Make WDN Network Build)) categorical_key add end ")
             elif c_value["column_type"] == "CONTINUOUS": #CONTINUOUS
@@ -256,7 +263,7 @@ def wdnn_build(nnid, model_dir = "No", train=True):
         if json_object.has_key('cross_cell'):
             j_cross = json_object["cross_cell"]
             for jc, values in j_cross.iteritems():
-                print("((1.Make WDN Network Build)) Cross rows " + str(values))
+                print("((1.Make WDN Network Build)) Cross rows " + str(values,'utf-8'))
                 for c_key, c_value in values.iteritems():
                     cross_col1.append(featureColumnCategorical[c_value])
                 wide_columns.append(tf.contrib.layers.crossed_column(cross_col1,hash_bucket_size=int(1e4)))
@@ -266,14 +273,14 @@ def wdnn_build(nnid, model_dir = "No", train=True):
         if json_object.has_key('Transformations'):
             j_boundaries = json_object["Transformations"]
             for jc, values in j_boundaries.iteritems():
-                print("((1-1.Make WDN Network Build)) TransForm Columns " + str(values))
+                print("((1-1.Make WDN Network Build)) TransForm Columns " + str(values,'utf-8'))
                 trans_col_name = values["column_name"]
                 trans_boundaries = values["boundaries"]
                 print("((1-1 get age columns  )) ")
                 print(type(featureColumnContinuous[trans_col_name]))
                 rvc = featureColumnContinuous[trans_col_name]
 
-                print("((1-1 transform cell parameters )) key : " + jc +" --->  "+ unicode(trans_col_name) + ":" + unicode(trans_boundaries))
+                print("((1-1 transform cell parameters )) key : " + jc +" --->  "+ str(trans_col_name,'utf-8') + ":" + str(trans_boundaries,'utf-8'))
                 transfomation_col[jc] = tf.contrib.layers.bucketized_column(featureColumnContinuous[trans_col_name],trans_boundaries)
                 wide_columns.append(tf.contrib.layers.bucketized_column(featureColumnContinuous[trans_col_name],trans_boundaries))
                 print("((1-1 transform tensor insert))")
