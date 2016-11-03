@@ -55,7 +55,7 @@ class CommonEnvInfo(APIView):
           pytype: json
         """
         try:
-            service.ServerConfLoader().post(json.loads(request.body))
+            service.ServerConfLoader().post(json.loads(str(request.body, 'utf-8')))
             return_data = {"status": "200", "result": str("")}
             return Response(json.dumps(return_data))
         except Exception as e:

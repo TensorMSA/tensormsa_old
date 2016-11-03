@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import json
+from _io import TextIOWrapper
 
 # json utils
 class JsonObject:
@@ -49,30 +50,24 @@ class JsonDataConverter:
 
             if ("'" in data and "\"" in data):
                 if (data.index("'") < data.index("\"")):
-                    data = data.encode("utf-8")
                     data = data.replace("'", "\"")
             elif ("'" in data and "\"" not in data):
-                data = data.encode("utf-8")
                 data = data.replace("'", "\"")
             else:
-                data = data.encode("utf-8")
+                data = data
             return data
 
         try :
-
             if(isinstance(data, (str))):
                 json_data = json.loads(comma_converter(data), object_hook=JsonObject)
-            #elif(isinstance(data, (file))):
-            #    json_data = json.loads(data.read(), object_hook=JsonObject)
+            elif(isinstance(data, (TextIOWrapper))):
+                json_data = json.loads(data.read(), object_hook=JsonObject)
             elif(isinstance(data, (dict))):
                 json_data = json.loads(data, object_hook=JsonObject)
-            #elif(isinstance(data, (unicode))):
-            #    json_data = json.loads(comma_converter(data), object_hook=JsonObject)
             elif (isinstance(data, (JsonObject))):
                 return data
             else:
                 raise SyntaxError ("not a right json type")
-
             return json_data
         except Exception as e:
             raise Exception(e)

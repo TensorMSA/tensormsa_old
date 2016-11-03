@@ -64,7 +64,7 @@ class DataFrameSchema(APIView):
               pytype: json
         """
         try:
-            json_data = json.loads(request.body)
+            json_data = json.loads(str(request.body, 'utf-8'))
             result = data.HbaseManager().rename_database(json_data['origin'], json_data['modify'])
             return_data = {"status": "200", "result": result}
             return Response(json.dumps(return_data))

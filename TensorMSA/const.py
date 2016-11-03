@@ -10,3 +10,11 @@ DATA_STORE_TYPE_HBASE = '1'
 DATA_STORE_TYPE_IMAGE = '2'
 DATA_STORE_TYPE_S3 = '3'
 DATA_STORE_TYPE_LOCAL = '4'
+
+#log_mode
+LOG_MODE = True
+
+#data & preprocess type
+TYPE_DATA_FRAME = '1'
+TYPE_IMAGE = '2'
+TYPE_TEXT = '3'

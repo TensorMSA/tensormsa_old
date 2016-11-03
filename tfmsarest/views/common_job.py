@@ -21,7 +21,7 @@ class CommonJobInfo(APIView):
         :return:
         """
         try:
-            result = service.JobStateLoader().set_request_time(nnid, json.loads(request.body))
+            result = service.JobStateLoader().set_request_time(nnid, json.loads(str(request.body, 'utf-8')))
             return_data = {"status": "200", "result": str(result)}
             return Response(json.dumps(return_data))
         except Exception as e:
@@ -50,7 +50,7 @@ class CommonJobInfo(APIView):
         :return:
         """
         try:
-            result = service.JobStateLoader().set_request_time(nnid, json.loads(request.body))
+            result = service.JobStateLoader().set_request_time(nnid, json.loads(str(request.body, 'utf-8')))
             return_data = {"status": "200", "result": str(result)}
             return Response(json.dumps(return_data))
         except Exception as e:

@@ -69,32 +69,8 @@ class TestImageManager(unittest.TestCase):
 
         tfmsa_logger("==========PASS==========")
 
-    def test_create_label(self):
-        """
-        test test_create_label works correctly
-        :return:
-        """
-        ImageManager().create_database("test")
-        ImageManager().create_table("test", "test_table")
-        ImageManager().create_label("test", "test_table", "1")
-        label_list = ImageManager().search_table("test", "test_table")
 
-        if "1" not in label_list:
-            raise Exception ("Label creation failed")
-        else :
-            ImageManager().delete_label("test", "test_table", "1")
-
-        label_list = ImageManager().search_table("test", "test_table")
-
-        if "1" in label_list:
-            raise Exception ("Label deletion failed")
-
-        ImageManager().delete_database("test")
-
-        tfmsa_logger("==========PASS==========")
-
-
-    def test_put_data(self):
+    def test_get_train_data(self):
         """
 
         :return:
@@ -111,8 +87,16 @@ class TestImageManager(unittest.TestCase):
         if "1" not in label_list:
             ImageManager().create_label("test", "test_table", "1")
 
-        temp_file = TemporaryUploadedFile("img_test_data", "UTF-8", 66666, "xxxxxxxxxxxxxxxxxx")
-        self.assertEqual(ImageManager().put_data("test", "test_table", "1", temp_file, "img_test_data"),"img_test_data")
+        temp_file = TemporaryUploadedFile("img_test_data", "byte", 66666, "xxxxxxxxxxxxxxxxxx")
+        self.assertEqual(ImageManager().put_data("test", "1", [temp_file]), 1)
 
-        ImageManager().load_data("test", "test_table", "1")
+        #ImageManager().load_data("test", "test_table", "1")
         tfmsa_logger("==========PASS==========")
+
+
+    def test_put_data(self):
+        """
+
+        :return:
+        """
+        self.assertEqual(ImageManager().load_train_data("nn0000090"), "nn0000090")

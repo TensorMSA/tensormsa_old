@@ -114,24 +114,18 @@ urlpatterns = [
     #  url(r'^api/v1/type/cnn/eval/(?P<nnid>.*)/',
     #       csrf_exempt(rest_view.ConvNeuralNetEval.as_view())),
 
-    # imagedata - data upload, search
-    url(r'^api/v1/type/imagefile/base/(?P<baseid>.*)/table/(?P<tb>.*)/label/(?P<label>.*)/data/',
-      csrf_exempt(rest_view.ImageFileData.as_view())),
-
-    # imagedata - manage label
-    url(r'^api/v1/type/imagefile/base/(?P<baseid>.*)/table/(?P<tb>.*)/label/(?P<label>.*)/',
-      csrf_exempt(rest_view.ImageFileLabel.as_view())),
-    url(r'^api/v1/type/imagefile/base/(?P<baseid>.*)/table/(?P<tb>.*)/label/',
-      csrf_exempt(rest_view.ImageFileLabel.as_view())),
-
     # imagedata - manage column data types
-    url(r'^api/v1/type/imagefile/base/(?P<baseid>.*)/table/(?P<tb>.*)/format/(?P<nnid>.*)/',
+    url(r'^api/v1/type/imagefile/base/(?P<baseid>.*)/table/(?P<table>.*)/format/(?P<nnid>.*)/',
       csrf_exempt(rest_view.ImageFileFormat.as_view())),
 
+    # imagedata - data upload, search
+    url(r'^api/v1/type/imagefile/base/(?P<baseid>.*)/table/(?P<table>.*)/label/(?P<label>.*)/data/(?P<nnid>.*)/',
+      csrf_exempt(rest_view.ImageFileData.as_view())),
+    url(r'^api/v1/type/imagefile/base/(?P<baseid>.*)/table/(?P<table>.*)/label/(?P<label>.*)/data/',
+      csrf_exempt(rest_view.ImageFileData.as_view())),
+
     # imagedata - manage table
-    url(r'^api/v1/type/imagefile/base/(?P<baseid>.*)/table/(?P<tb>.*)/',
-      csrf_exempt(rest_view.ImageFileTable.as_view())),
-    url(r'^api/v1/type/imagefile/base/(?P<baseid>.*)/table/',
+    url(r'^api/v1/type/imagefile/base/(?P<baseid>.*)/table/(?P<table>.*)/',
       csrf_exempt(rest_view.ImageFileTable.as_view())),
 
     # imagedata - manage data frame

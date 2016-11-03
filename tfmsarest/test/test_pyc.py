@@ -83,7 +83,7 @@ class CNNConfCheck:
 
             if matrix[0] * matrix[1] < x_shape[1]:
                 errMsg = "Error[000004]: Matrix is not Valid(Small)"
-            elif (x_shape[0]*x_shape[1])%(matrix[0] * matrix[1]) <> 0:
+            elif (x_shape[0]*x_shape[1])%(matrix[0] * matrix[1]) != 0:
                 errMsg = "Error[000004]: Matrix is not Valid"
 
             gValue = gVal()

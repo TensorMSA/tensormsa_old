@@ -3,7 +3,7 @@ import json
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.conf import settings
-#from tfmsacore.utils.json_conv import JsonDataConverter as jc
+from tfmsacore.utils.json_conv import JsonDataConverter as jc
 from tfmsacore import netconf
 
 class WideDeepNetConfig(APIView):
@@ -42,22 +42,12 @@ class WideDeepNetConfig(APIView):
               pytype: json
         """
         try:
-            print("wdnn post0")
-            tempJson = dict()
-            tempJson["config"] = "Y"
-            tempJson["nn_id"] = nnid
-
-            jd = json.dumps(tempJson)
-            print(jd)
-            print(type(jd))
-            #jd = jc.load_obj_json("{}")
-            #jd.config = "Y"
-            #jd.nn_id = str(nnid,'utf-8')
-            print("wdnn post1")
+            jd = jc.load_obj_json("{}")
+            jd.config = "Y"
+            jd.nn_id = nnid
             #jd.datasize = request.body
             netconf.update_network(jd)
-            netconf.save_conf(nnid, str(request.body,'utf-8'))
-            print("wdnn post2")
+            netconf.save_conf(nnid, str(request.body, 'utf-8'))
             return_data = {"status": "200", "result": nnid}
             return Response(json.dumps(return_data))
         except Exception as e:
@@ -82,7 +72,7 @@ class WideDeepNetConfig(APIView):
         - desc : insert new neural network information
         """
         try:
-            netconf.save_conf(nnid, json.dumps(str(request.body,'utf-8')))
+            netconf.save_conf(nnid, json.dumps(str(request.body, 'utf-8')))
             return_data = {"status": "200", "result": nnid}
             return Response(json.dumps(return_data))
         except Exception as e:
@@ -94,10 +84,10 @@ class WideDeepNetConfig(APIView):
         -desc : delete selected net work conf
         """
         try:
-            #jd = jc.load_obj_json("{}")
-            #jd.config = ""
-            #jd.nn_id = nnid
-            #netconf.update_network(jd)
+            jd = jc.load_obj_json("{}")
+            jd.config = ""
+            jd.nn_id = nnid
+            netconf.update_network(jd)
             netconf.remove_conf(nnid)
             netconf.remove_trained_data(nnid)
             return_data = {"status": "404", "result": str(nnid)}

@@ -1,9 +1,4 @@
-from tfmsacore import train
-from tfmsacore import predict
-from tfmsacore import data
-from tfmsacore import utils
 from tfmsacore import netconf
-from tfmsarest import livy
 import json, unicodedata
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -49,7 +44,7 @@ class CommonNetInfo(APIView):
           pytype: json
         """
         try:
-            result = netconf.create_new_network(json.loads(str(request.body,'utf-8')))
+            result = netconf.create_new_network(json.loads(str(request.body, 'utf-8')))
             return_data = {"status": "200", "result": result}
             return Response(json.dumps(return_data))
         except Exception as e:
@@ -103,7 +98,7 @@ class CommonNetInfo(APIView):
         - desc: delete selected nn_info data
         """
         try:
-            result = netconf.delete_net_info(json.loads(request.body))
+            result = netconf.delete_net_info(json.loads(str(request.body, 'utf-8')))
             return_data = {"status": "200", "result": result}
             return Response(json.dumps(return_data))
         except Exception as e:

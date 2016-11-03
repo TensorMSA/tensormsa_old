@@ -1,100 +1,70 @@
-# # -*- coding: utf-8 -*-
-# from __future__ import division, print_function, absolute_import
-#
-# import numpy as np
-# import tflearn as tflearn
-# from tflearn.layers.conv import conv_2d, max_pool_2d
-# from tflearn.layers.core import input_data, dropout, fully_connected
-# from tflearn.layers.estimator import regression
-# from tflearn.layers.normalization import local_response_normalization
-# from tfmsacore import data as td
-# from tfmsacore import netconf
-# from tfmsacore import utils
-# from tfmsacore.utils import tfmsa_logger
-#
-#
-# def predict_conv_network(nn_id , req_data):
-#     """
-#         Predict Convolutional Neural Network and save all result on data base
-#         :param nn_id : neural network id
-#         :param req_data : evaluation request data
-#         :return: predict result in array
-#         """
-#
-#     try :
-#         tfmsa_logger("start prediction....")
-#
-#         # check network is ready to predict
-#         utils.check_requested_nn(nn_id)
-#
-#         # load NN conf form db
-#         conf = netconf.load_conf(nn_id)
-#
-#         # modify predict fit to tarin
-#         sp_loader = td.DFPreProcessor().get_predict_data(nn_id, req_data)
-#
-#         # set spaces for input data
-#         datalen = conf.data.datalen
-#         matrix = conf.data.matrix
-#         learnrate = conf.data.learnrate
-#         request_x = np.reshape(sp_loader.m_train, (-1, matrix[0], matrix[1],1))
-#
-#         # create network conifg
-#         num_layers = len(conf.layer)
-#         for i in range(0, num_layers):
-#
-#             data = conf.layer[i]
-#             if(data.type == "input"):
-#                 network = input_data(shape=[None, matrix[0], matrix[1],1], name='input')
-#                 network = conv_2d(network, data.node_in_out[1], data.cnnfilter, activation=str(data.active), regularizer=data.regualizer)
-#                 network = max_pool_2d(network, data.maxpoolmatrix)
-#                 network = local_response_normalization(network)
-#
-#             elif (data.type == "cnn"):
-#                 network = conv_2d(network, data.node_in_out[1], data.cnnfilter, activation=str(data.active), regularizer=data.regualizer)
-#                 network = max_pool_2d(network, data.maxpoolmatrix)
-#                 network = local_response_normalization(network)
-#
-#             elif(data.type == "drop"):
-#                 network = fully_connected(network, data.node_in_out[0], activation=str(data.active))
-#                 network = dropout(network, int(data.droprate))
-#                 network = fully_connected(network, data.node_in_out[1], activation=str(data.active))
-#                 network = dropout(network, int(data.droprate))
-#
-#             elif (data.type == "out"):
-#                 network = fully_connected(network, data.node_in_out[1], activation=str(data.active))
-#                 network = regression(network, optimizer='adam', learning_rate=learnrate,
-#                                      loss='categorical_crossentropy', name='target')
-#
-#             elif (data.type == "fully"):
-#                 network = fully_connected(network, data.node_in_out[1], activation=str(data.active))
-#
-#             else :
-#                 raise SyntaxError("there is no such kind of nn type : " + str(data.active))
-#
-#         # set net conf to real tensorflow
-#         model = tflearn.DNN(network, tensorboard_verbose=0)
-#
-#         # restore model and start predict with given data
-#         model = netconf.nn_data_manager.load_trained_data(nn_id, model)
-#         result = model.predict(request_x)
-#
-#         tfmsa_logger("End prediction with result : {0}".format(result))
-#         return result
-#
-#     except SyntaxError as e :
-#         tfmsa_logger("Error while prediction  : {0}".format(e))
-#         return e
-#
-#
-#
-# # req_data ="""[ 0 , 1 , 0, 1 , 0 , 1 , 0 , 1 , 0 , 1 , 0 , 1 ,
-# #                0 , 1 , 0, 1 , 0 , 1 , 0 , 1 , 0 , 1 , 0 , 1 ,
-# #                0 , 1 , 0, 1 , 0 , 1 , 0 , 1 , 0 , 1 , 0 , 1 ,
-# #                0 , 1 , 0, 1 , 0 , 1 , 0 , 1 , 0 , 1 , 0 , 1 ,
-# #                0 , 1 , 0, 1 , 0 , 1 , 0 , 1 , 0 , 1 , 0 , 1 ,
-# #                0 , 1 , 0, 1 , 0 , 1 , 0 , 1 , 0 , 1 , 0 , 1 ,
-# #                0 , 1 , 0, 1 , 0 , 1 , 0 , 1 , 0 , 1 , 0 , 1 ,
-# #                0 , 1 , 0, 1 , 0 , 1 , 0 , 1 , 0 , 1 , 0 , 1 ]"""
-# #
-# # predict_conv_network("sample" , req_data)
+from sklearn import metrics
+import tensorflow as tf
+from tensorflow.contrib import learn
+import numpy as np
+from tfmsacore import netconf
+from tfmsacore import utils
+from TensorMSA import const
+import json, math
+from tfmsacore.netcommon.conv_common import ConvCommonManager
+
+
+def predict_conv_network(nn_id, epoch = 100, testset = 100):
+    try:
+        # check network is ready to train
+        utils.tfmsa_logger("[1]check pre steps ready")
+        utils.check_requested_nn(nn_id)
+
+        # get network base info
+        utils.tfmsa_logger("[2]get network base info")
+        net_info = netconf.get_network_config(nn_id)
+
+        # get network format info
+        utils.tfmsa_logger("[3]get network format info")
+        conf_info = netconf.load_conf(nn_id)
+
+        # load train data
+        utils.tfmsa_logger("[4]load train data")
+        train_data_set = []
+        train_label_set = []
+
+        if(const.TYPE_IMAGE == net_info['preprocess']):
+            train_data_set, train_label_set = ConvCommonManager(conf_info).prepare_image_data(nn_id, net_info)
+        elif(const.TYPE_DATA_FRAME == net_info['preprocess']):
+            raise Exception("function not ready")
+        elif(const.TYPE_TEXT == net_info['preprocess']):
+            raise Exception("function not ready")
+        else:
+            raise Exception("unknown data type")
+
+        learnrate = conf_info.data.learnrate
+        n_class = len(json.loads(net_info['datasets']))
+        train_x = np.array(train_data_set, np.float32)
+        train_y = np.array(train_label_set, np.float32)
+
+        # define classifier
+        utils.tfmsa_logger("[5]define classifier")
+        classifier = learn.TensorFlowEstimator(
+            model_fn=ConvCommonManager(conf_info).struct_cnn_layer,
+            n_classes=n_class,
+            batch_size=100,
+            steps=int(epoch),
+            learning_rate=learnrate)
+
+        # load model
+        utils.tfmsa_logger("[6]load trained model")
+        netconf.nn_model_manager.load_trained_data(nn_id, classifier)
+
+        # start train
+        utils.tfmsa_logger("[7]start train")
+        classifier.fit(train_x, train_y)
+
+        # save model
+        utils.tfmsa_logger("[8]save trained model")
+        netconf.nn_model_manager.save_trained_data(nn_id, classifier)
+
+        return len(train_y)
+
+    except Exception as e:
+        print("Error Message : {0}".format(e))
+        raise Exception(e)
