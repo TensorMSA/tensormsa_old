@@ -93,7 +93,7 @@ def dataframe_base_delete():
 ####################################################################################
 def dataframe_table_post():
     #resp = requests.post('http://' + url + '/api/v1/type/dataframe/base/csvtest/table/titanic/')
-    resp = requests.post('http://' + url + '/api/v1/type/dataframe/base/scm/table/tb_data_cokes/')
+    resp = requests.post('http://' + url + '/api/v1/type/dataframe/base/scm/table/tb_data_cokes10/')
     data = json.loads(resp.json())
     print("evaluation result : {0}".format(data))
 
@@ -235,7 +235,12 @@ def dataframe_data_get():
     col type (cate) : categorical data needs to be modified
     :return:
     """
-    resp = requests.get('http://' + url + '/api/v1/type/dataframe/base/scm/table/tb_data_cokes/data/a')
+    #resp = requests.get('http://' + url + '/api/v1/type/dataframe/base/scm/table/tb_data_cokes/data/')
+    resp = requests.get('http://' + url + '/api/v1/type/dataframe/base/scm/table/tb_data_cokes/data/'
+                        , json= {
+                             "limits" : "0"
+                                }
+                        )
     #resp = requests.get('http://' + url + '/api/v1/type/dataframe/base/scm/table/tb_test_incomedata_wdnn3/data/a')
     #resp = requests.get('http://' + url + '/api/v1/type/dataframe/scm/table/tb_test_imcomedata_wdnn/data/a')
     data = json.loads(resp.json())
@@ -591,13 +596,14 @@ data setup  screen
 3. dataframe - base - get
 4. dataframe - table - post
 5. dataframe - table - get
+5. dataframe - data - get
 5. dataframe - format - post
 8.wdnn - conf - conf
 """
 #common, dataframe, cnn, wdnn
-category1 = "dataframe"
+category1 = "wdnn"
 # checker, predict, stat, evaluation, train, conf, nnfino, base, data, format, table, pre
-category2 = "format"
+category2 = "train"
 #dataframe_table_get
 # post, get, put, delete
 request = "post"
