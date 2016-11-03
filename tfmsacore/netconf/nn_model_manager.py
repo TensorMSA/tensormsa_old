@@ -11,7 +11,7 @@ def chk_trained_data(net_id):
     :return:
     """
     directory = settings.HDFS_MODEL_ROOT + "/" + net_id + "/"
-    net_id = net_id + "_model.ckpt"
+    net_id = net_id + "_model"
 
     try:
         if os.path.isfile(directory +  "/"  + net_id):
@@ -36,8 +36,8 @@ def load_trained_data(nn_id, model):
     if not os.path.exists(directory):
         os.makedirs(directory)
 
-    if os.path.isfile(directory + "/" + nn_id + "_model.ckpt"):
-        model.restore(directory + "/" +  nn_id + "_model.ckpt")
+    if os.path.isfile(directory + "/" + nn_id + "_model"):
+        model.restore(directory + "/" +  nn_id + "_model")
 
     return model
 
@@ -54,7 +54,7 @@ def save_trained_data(nn_id, model):
     if not os.path.exists(directory):
         os.makedirs(directory)
 
-    model.save(directory + "/"  + nn_id + "_model.ckpt")
+    model.save(directory + "/"  + nn_id + "_model")
     tfmsa_logger("save model completed for ")
 
     return model
@@ -73,9 +73,16 @@ def remove_trained_data(nn_id):
         if not os.path.exists(directory):
             os.makedirs(directory)
 
-        if os.path.isfile(directory + "/" + nn_id + "_model.ckpt"):
-            os.remove(directory + "/" + nn_id + "_model.ckpt")
-            os.remove(directory + "/" + nn_id + "_model.ckpt.meta")
+        if os.path.isfile(directory + "/" + nn_id + "_model"):
+            os.remove(directory + "/" + nn_id + "_model")
             tfmsa_logger("remove model completed for [ " + nn_id + "]")
     except Exception as e:
         tfmsa_logger("remove trained error : {0}".format(e))
+
+def get_model_save_path(nn_id):
+    """
+    return model save path
+    :param nn_id:
+    :return:
+    """
+    return settings.HDFS_MODEL_ROOT + "/" + nn_id + "/" + nn_id + "_model"

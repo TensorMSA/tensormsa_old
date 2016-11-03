@@ -38,31 +38,23 @@ def train_conv_network(nn_id, epoch = 100, testset = 100):
             raise Exception("unknown data type")
 
         learnrate = conf_info.data.learnrate
-        n_class = len(json.loads(net_info['datasets']))
+        conf_info.n_class = len(json.loads(net_info['datasets']))
         train_x = np.array(train_data_set, np.float32)
-        train_y = np.array(train_label_set, np.float32)
+        train_y = np.array(train_label_set, np.int32)
 
         # define classifier
         utils.tfmsa_logger("[5]define classifier")
-        classifier = learn.TensorFlowEstimator(
-            model_fn=ConvCommonManager(conf_info).struct_cnn_layer,
-            n_classes=n_class,
-            batch_size=100,
-            steps=int(epoch),
-            learning_rate=learnrate)
-
-        # load model
-        utils.tfmsa_logger("[6]load trained model")
-        netconf.nn_model_manager.load_trained_data(nn_id, classifier)
+        classifier = learn.Estimator(model_fn=ConvCommonManager(conf_info).struct_cnn_layer,
+                                     model_dir=netconf.nn_model_manager.get_model_save_path(nn_id))
 
         # start train
-        utils.tfmsa_logger("[7]start train")
-        classifier.fit(train_x, train_y)
+        utils.tfmsa_logger("[6]fit CNN")
+        classifier.fit(train_x, train_y, steps=int(epoch))
 
-        # save model
-        utils.tfmsa_logger("[8]save trained model")
-        netconf.nn_model_manager.save_trained_data(nn_id, classifier)
-
+        # utils.tfmsa_logger("[7]predict CNN")
+        # y_predicted = [
+        #     p['class'] for p in classifier.predict(train_x, as_iterable=True)]
+        #
         return len(train_y)
 
     except Exception as e:

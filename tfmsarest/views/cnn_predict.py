@@ -43,8 +43,7 @@ class ConvNeuralNetPredict(APIView):
               pytype: json
         """
         try:
-            jd = jc.load_obj_json(request.body)
-            result = predict.predict_conv_network(nnid, jd)
+            result = predict.predict_conv_network(nnid, json.loads(str(request.body, 'utf-8')))
             return_data = {"status": "ok", "result": result}
             return Response(json.dumps(return_data))
         except Exception as e:

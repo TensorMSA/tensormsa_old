@@ -1,1 +1,1 @@
-# from .conv_predict import predict_conv_network
+from .conv_predict import predict_conv_network

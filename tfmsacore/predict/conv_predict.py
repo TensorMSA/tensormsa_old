@@ -9,7 +9,7 @@ import json, math
 from tfmsacore.netcommon.conv_common import ConvCommonManager
 
 
-def predict_conv_network(nn_id, epoch = 100, testset = 100):
+def predict_conv_network(nn_id, predict_data):
     try:
         # check network is ready to train
         utils.tfmsa_logger("[1]check pre steps ready")
@@ -23,48 +23,24 @@ def predict_conv_network(nn_id, epoch = 100, testset = 100):
         utils.tfmsa_logger("[3]get network format info")
         conf_info = netconf.load_conf(nn_id)
 
-        # load train data
-        utils.tfmsa_logger("[4]load train data")
-        train_data_set = []
-        train_label_set = []
-
-        if(const.TYPE_IMAGE == net_info['preprocess']):
-            train_data_set, train_label_set = ConvCommonManager(conf_info).prepare_image_data(nn_id, net_info)
-        elif(const.TYPE_DATA_FRAME == net_info['preprocess']):
-            raise Exception("function not ready")
-        elif(const.TYPE_TEXT == net_info['preprocess']):
-            raise Exception("function not ready")
-        else:
-            raise Exception("unknown data type")
-
         learnrate = conf_info.data.learnrate
-        n_class = len(json.loads(net_info['datasets']))
-        train_x = np.array(train_data_set, np.float32)
-        train_y = np.array(train_label_set, np.float32)
+        conf_info.n_class = len(json.loads(net_info['datasets']))
 
         # define classifier
-        utils.tfmsa_logger("[5]define classifier")
-        classifier = learn.TensorFlowEstimator(
-            model_fn=ConvCommonManager(conf_info).struct_cnn_layer,
-            n_classes=n_class,
-            batch_size=100,
-            steps=int(epoch),
-            learning_rate=learnrate)
+        utils.tfmsa_logger("[4]define classifier")
+        classifier = learn.Estimator(model_fn=ConvCommonManager(conf_info).struct_cnn_layer,
+                                     model_dir=netconf.nn_model_manager.get_model_save_path(nn_id),
+                                     config = learn.RunConfig(save_checkpoints_secs=1))
 
-        # load model
-        utils.tfmsa_logger("[6]load trained model")
-        netconf.nn_model_manager.load_trained_data(nn_id, classifier)
-
-        # start train
-        utils.tfmsa_logger("[7]start train")
-        classifier.fit(train_x, train_y)
-
-        # save model
-        utils.tfmsa_logger("[8]save trained model")
-        netconf.nn_model_manager.save_trained_data(nn_id, classifier)
-
-        return len(train_y)
-
+        utils.tfmsa_logger("[5]predict result")
+        y_predicted = [
+            p['class'] for p in classifier.predict(
+                x=np.array(predict_data, np.float32),
+                input_fn=None,
+                batch_size=100,
+                as_iterable=True)
+            ]
+        return y_predicted
     except Exception as e:
         print("Error Message : {0}".format(e))
         raise Exception(e)

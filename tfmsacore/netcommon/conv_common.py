@@ -50,11 +50,11 @@ class ConvCommonManager:
         """
         conf_info = self.conf
         num_layers = len(conf_info.layer)
-        matrix = conf_info.data.matrix
+        matrix = conf_info.data.matrix.copy()
         train_data_set = tf.reshape(train_data_set, [-1, matrix[0], matrix[1], 1])
         curren_matrix = matrix
         curren_matrix_num = 0
-
+        train_label_set = tf.one_hot(train_label_set, int(conf_info.n_class), 1, 0)
         for i in range(0, int(num_layers)):
             data = conf_info.layer[i]
             utils.tfmsa_logger("[{0}]define layers : {1}".format(i, data.type))
@@ -86,16 +86,20 @@ class ConvCommonManager:
                 data_num = curren_matrix[0] * curren_matrix[1] * curren_matrix_num
                 network = tf.contrib.layers.dropout(
                     tf.contrib.layers.legacy_fully_connected(
-                    network, data_num, weight_init=None,
+                        network, data_num, weight_init=None,
                         activation_fn=self.get_activation(str(data.active))),
-                    keep_prob = float(data.droprate)
+                    keep_prob=float(data.droprate)
                 )
             elif (data.type == "out"):
-                network = learn.models.logistic_regression(network, train_label_set)
+                network = learn.models.logistic_regression(x=network, y=train_label_set)
             else:
                 raise SyntaxError("there is no such kind of layer type : " + str(data.type))
 
-        return network
+        prediction, loss = (network)
+        train_op = tf.contrib.layers.optimize_loss(
+            loss, tf.contrib.framework.get_global_step(), optimizer='Adagrad',
+            learning_rate=0.1)
+        return {'class': tf.argmax(prediction, 1), 'prob': prediction}, loss, train_op
 
 
     def get_activation(self, activitaion):

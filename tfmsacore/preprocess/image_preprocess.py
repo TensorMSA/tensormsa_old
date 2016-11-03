@@ -39,7 +39,7 @@ class ImagePreprocess:
 
     def resize_file_image(self, path, net_info, format_info, file_name):
         """
-
+        load uploaded image and resize
         :param path:
         :return:
         """
@@ -78,3 +78,31 @@ class ImagePreprocess:
             newImage.save(preview_img_file)
         width, height = newImage.size
         return newImage.getdata(), width, height
+
+    def simple_resize(self, path, x_size, y_size):
+        """
+        simply resize image and return array
+        :param path:
+        :return:
+        """
+
+        im = Image.open(path).convert('L')
+        width = float(im.size[0])
+        height = float(im.size[1])
+        newImage = Image.new('L', (x_size, y_size), (255))
+
+        if width > height:
+            nheight = int(round((x_size / width * height), 0))
+            img = im.resize((x_size, nheight), Image.ANTIALIAS).filter(ImageFilter.SHARPEN)
+            wtop = int(round(((y_size - nheight) / 2), 0))
+            newImage.paste(img, (4, wtop))
+        else:
+            nwidth = int(round((x_size / height * width), 0))
+            if (nwidth == 0):
+                nwidth = 1
+
+            img = im.resize((nwidth, y_size), Image.ANTIALIAS).filter(ImageFilter.SHARPEN)
+            wleft = int(round(((y_size - nwidth) / 2), 0))
+            newImage.paste(img, (wleft, 4))
+
+        return newImage.getdata()

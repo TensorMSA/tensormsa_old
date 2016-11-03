@@ -3,6 +3,7 @@ import json, os
 import tensorflow as tf
 import logging
 from django.conf import settings
+from PIL import Image, ImageFilter
 
 # Reference
 #https://realpython.com/blog/python/api-integration-in-python/
@@ -14,6 +15,33 @@ url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8989")
 ####################################################################################
 # Common - nninfo
 ####################################################################################
+def simple_resize(path, x_size, y_size):
+    """
+    simply resize image and return array
+    :param path:
+    :return:
+    """
+
+    im = Image.open(path).convert('L')
+    width = float(im.size[0])
+    height = float(im.size[1])
+    newImage = Image.new('L', (x_size, y_size), (255))
+
+    if width > height:
+        nheight = int(round((x_size / width * height), 0))
+        img = im.resize((x_size, nheight), Image.ANTIALIAS).filter(ImageFilter.SHARPEN)
+        wtop = int(round(((y_size - nheight) / 2), 0))
+        newImage.paste(img, (4, wtop))
+    else:
+        nwidth = int(round((x_size / height * width), 0))
+        if (nwidth == 0):
+            nwidth = 1
+
+        img = im.resize((nwidth, y_size), Image.ANTIALIAS).filter(ImageFilter.SHARPEN)
+        wleft = int(round(((y_size - nwidth) / 2), 0))
+        newImage.paste(img, (wleft, 4))
+
+    return list(newImage.getdata())
 
 def common_nninfo_post():
     # resp = requests.post('http://' + url + '/api/v1/type/common/nninfo/',
@@ -306,7 +334,7 @@ def wdnn_train_post():
 
 def wdnn_predict_post():
     #resp = requests.post('http://' + url + '/api/v1/type/wdnn/predict/nn0000011/')
-    resp = requests.post('http://' + url + '/api/v1/type/wdnn/predict/nn0000012/')
+    resp = requests.post('http://' + url + '/api/v1/type/wdnn/predict/nn0000090/')
     data = json.loads(resp.json())
     print("evaluation result : {0}".format(data))
 
@@ -469,15 +497,9 @@ def cnn_train_post():
 ####################################################################################
 
 def cnn_predict_post():
-    resp = requests.post('http://' + url + '/api/v1/type/cnn/predict/nn0000010/',
-                         json= [
-                             {"pclass": "1st",
-                              "survived": "tag",
-                              "sex": "female",
-                              "age": "30",
-                              "embarked": "Southampton",
-                              "boat": "2"
-                              }]
+    img = simple_resize("/home/dev/TensorMSA/tfmsacore/resources/test.png", 32, 32 )
+    resp = requests.post('http://' + url + '/api/v1/type/cnn/predict/nn0000090/',
+                         json= [img]
                          )
     data = json.loads(resp.json())
     print("evaluation result : {0}".format(data))
