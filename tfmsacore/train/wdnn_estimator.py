@@ -32,9 +32,9 @@ def wdd_train(nnid):
         print("############# get json string")
         #print(json_string)
         #parse database, table_name for select data from hbase
-        database = str(json_string["dir"],"utf-8")
+        database = json_string["dir"]
         print("############# get database from json string")
-        table_name = str(json_string["table"],'utf-8')
+        table_name = json_string["table"]
 
         #Make NetworkConfiguration Json Objct
         json_ob = json.loads(json_string["datadesc"],'utf-8')
@@ -43,14 +43,16 @@ def wdd_train(nnid):
         t_label = json_ob["label"]
         #for key, value in t_label.iteritems():
         #    print("label key   " , key)
-        label_key =   t_label.keys()
+        label_key =   list(t_label.keys()) #3.5
         label_column = label_key[0]
 
         print("((2.Get Dataframe from Hbase)) ##Start## (" + database+ " , "+ table_name + " , " + label_column + ")")
 
-        limit_no = 30000 #limit number for hbase cnt
-        df = data.DataMaster().query_data(database, table_name, "a", limit_no,with_label=label_column)
-        print("((2.Get Dataframe from Hbase)) ##End## (" + database +" , " + table_name + " , " + label_column + " , "+  str(limit_no,'utf-8') + ")")
+        limit_no = 2000 #limit number for hbase cnt
+        df = data.DataMaster().query_data(database, table_name, "a", use_df=True,limit_cnt=limit_no,with_label=label_column)
+        print("what is df type")
+        print(type(df))
+        print("((2.Get Dataframe from Hbase)) ##End## (" + database +" , " + table_name + " , " + label_column + " , "+  str(limit_no) + ")")
 
         print("((3.Wide & Deep Network Train )) ##Start##  (" + nnid + ")")
         wdnn_model.fit(input_fn=lambda: input_fn(df, nnid), steps=FLAGS.train_steps)
@@ -87,7 +89,7 @@ def wdd_predict(nnid):
 
         t_label = json_ob['label']
 
-        for key, value in t_label.iteritems():
+        for key, value in t_label.items():
             print("label key   " , key)
 
         label_key =   t_label.keys()
@@ -127,7 +129,7 @@ def input_fn(df, nnid):
         # get all feature colums from json
         j_feature = json_object['cell_feature']
 
-        for cn, c_value in j_feature.iteritems():
+        for cn, c_value in j_feature.items():
           #print(c_value)
 
           # if c_value["column_type"] == "CATEGORICAL":
@@ -156,12 +158,26 @@ def input_fn(df, nnid):
         print("((3.1 Wide & Deep Network Make Tensor)) ## REAL VALUE TENSOR ##", CONTINUOUS_COLUMNS)
         # Check Continuous Column from json is exsist?
         if len(CONTINUOUS_COLUMNS)>0 :
+            print(CONTINUOUS_COLUMNS)
             print("((3.1 Wide & Deep Network Make Tensor)) ## IF CONTINUES")
+            for k in CONTINUOUS_COLUMNS:
+                print(k)
+                print(type(df))
+                print(df[k].values)
+
+            print("df should ne wrong?")
+
             continuous_cols = {k: tf.constant(df[k].values) for k in CONTINUOUS_COLUMNS}
 
         # Check Categorical Column from json is exsist?
         if len(CATEGORICAL_COLUMNS) > 0 :
             print("((3.1 Wide & Deep Network Make Tensor)) ## IF CATEGORICAL")
+            print()
+            for k in CATEGORICAL_COLUMNS:
+                print(k)
+                print("df should ne wrong?")
+                print(df[k].size)
+
             categorical_cols = {k: tf.SparseTensor(
               indices=[[i, 0] for i in range(df[k].size)],
               values=df[k].values,
@@ -210,7 +226,9 @@ def wdnn_build(nnid, model_dir = "No", train=True):
         json_string = get_json_by_nnid(nnid)
         print("get json string in wdnn builder ####")
         print(json_string)
-        json_object = json.loads(json.dumps(json_string["datadesc"])) #3.5 fixed 16.11.02
+
+        #json_object = json.loads(json.dumps(json_string["datadesc"])) #3.5 fixed 16.11.02
+        json_object = json.loads(json_string["datadesc"])
         print("get json string in wdnn builder ####")
         # load NN conf form db
         utils.tfmsa_logger("[4]load net conf form db")
@@ -233,9 +251,12 @@ def wdnn_build(nnid, model_dir = "No", train=True):
         featureDeepEmbedding={}
         #print("before json convert")
         #print(json_object) #cross_cell
+        print("before Cell feature")
         j_feature = json_object["cell_feature"]
-
-        for cn, c_value in j_feature.iteritems():
+        print(j_feature)
+        print("after Cell feature")
+        print("((1.Make WDN Network Build)) set up Hidden Layers (" + str(hidden_layers_value), 'utf-8' + ")")
+        for cn, c_value in j_feature.items(): #change 3.5python
             print("((1.Make WDN Network Build)) first get feature columns " + str(c_value["column_type"]),'utf-8')
 
             if c_value["column_type"] == "CATEGORICAL":
@@ -243,14 +264,14 @@ def wdnn_build(nnid, model_dir = "No", train=True):
                     cn, hash_bucket_size=1000)
             elif c_value["column_type"] == "CATEGORICAL_KEY":
                 print("((1.Make WDN Network Build)) categorical_key add ")
-                print(str(c_value["keys"],'utf-8'))
+                print(c_value["keys"])
                 featureColumnCategorical[cn] = tf.contrib.layers.sparse_column_with_keys(column_name=cn,keys=c_value["keys"])
                 print("((1.Make WDN Network Build)) categorical_key add end ")
             elif c_value["column_type"] == "CONTINUOUS": #CONTINUOUS
                 print("((1.Make WDN Network Build)) CONTINUOUS add ")
                 featureColumnContinuous[cn] = tf.contrib.layers.real_valued_column(cn)
         # embedding column add
-        for key, value in featureColumnCategorical.iteritems():
+        for key, value in featureColumnCategorical.items(): #3.5python
             print("((1.Make WDN Network Build)) Categorical Embedding add ")
             featureDeepEmbedding[key] = tf.contrib.layers.embedding_column(value, dimension=8)
 
@@ -260,27 +281,27 @@ def wdnn_build(nnid, model_dir = "No", train=True):
 
         # cross_cell checks null
         cross_col1 = []
-        if json_object.has_key('cross_cell'):
+        if 'cross_cell' in json_object: #json_object.has_key('cross_cell'):
             j_cross = json_object["cross_cell"]
-            for jc, values in j_cross.iteritems():
-                print("((1.Make WDN Network Build)) Cross rows " + str(values,'utf-8'))
-                for c_key, c_value in values.iteritems():
+            for jc, values in j_cross.items():
+                print("((1.Make WDN Network Build)) Cross rows " + str(values) )
+                for c_key, c_value in values.items(): #3.5python
                     cross_col1.append(featureColumnCategorical[c_value])
                 wide_columns.append(tf.contrib.layers.crossed_column(cross_col1,hash_bucket_size=int(1e4)))
 
         ##Transformations column for wide
         transfomation_col= {}
-        if json_object.has_key('Transformations'):
+        if 'Transformations' in json_object: #json_object.has_key('Transformations'):
             j_boundaries = json_object["Transformations"]
-            for jc, values in j_boundaries.iteritems():
-                print("((1-1.Make WDN Network Build)) TransForm Columns " + str(values,'utf-8'))
+            for jc, values in j_boundaries.items(): #3.5python
+                print("((1-1.Make WDN Network Build)) TransForm Columns " + str(values))
                 trans_col_name = values["column_name"]
                 trans_boundaries = values["boundaries"]
                 print("((1-1 get age columns  )) ")
                 print(type(featureColumnContinuous[trans_col_name]))
                 rvc = featureColumnContinuous[trans_col_name]
 
-                print("((1-1 transform cell parameters )) key : " + jc +" --->  "+ str(trans_col_name,'utf-8') + ":" + str(trans_boundaries,'utf-8'))
+                #print("((1-1 transform cell parameters )) key : " + str(jc) +" --->  "+ trans_col_name + ":" + trans_boundaries)
                 transfomation_col[jc] = tf.contrib.layers.bucketized_column(featureColumnContinuous[trans_col_name],trans_boundaries)
                 wide_columns.append(tf.contrib.layers.bucketized_column(featureColumnContinuous[trans_col_name],trans_boundaries))
                 print("((1-1 transform tensor insert))")

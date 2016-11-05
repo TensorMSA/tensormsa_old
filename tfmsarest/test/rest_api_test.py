@@ -54,11 +54,11 @@ def common_nninfo_post():
     #                      })
     resp = requests.post('http://' + url + '/api/v1/type/common/nninfo/',
                          json={
-                             "nn_id": "nn0000090",
+                             "nn_id": "nn0000100",
                              "category": "SCM",
                              "subcate" : "csv",
-                             "name": "MesCokesDI150",
-                             "desc" : "Cokes"
+                             "name": "CENSUS_INCOME",
+                             "desc" : "INCOME PREDICT"
                          })
 
 
@@ -121,7 +121,7 @@ def dataframe_base_delete():
 ####################################################################################
 def dataframe_table_post():
     #resp = requests.post('http://' + url + '/api/v1/type/dataframe/base/csvtest/table/titanic/')
-    resp = requests.post('http://' + url + '/api/v1/type/dataframe/base/scm/table/tb_data_cokes10/')
+    resp = requests.post('http://' + url + '/api/v1/type/dataframe/base/scm/table/tb_census_data01/')
     data = json.loads(resp.json())
     print("evaluation result : {0}".format(data))
 
@@ -147,52 +147,52 @@ def dataframe_table_delete():
 ##########################################################5e5b6cb099aa##########################
 
 def dataframe_format_post():
-
-    resp = requests.post('http://' + url + '/api/v1/type/dataframe/base/scm/table/tb_data_cokes/format/nn0000020/',
-                         json={"label":
-                                    {"COKE_Q_DI150_Class": "LABEL"}
-                                , "cell_feature":
-                                    {"ASH": {"column_type": "CONTINUOUS"} # u'ASH': <tf.Tensor 'Const_1:0' shape=(1000,) dtype=float64>
-                                    , "VM": {"column_type": "CONTINUOUS"} #u'VM': <tf.Tensor 'Const_3:0' shape=(1000,) dtype=float64>
-                                    , "TS": {"column_type": "CONTINUOUS"} # u'TS': <tf.Tensor 'Const_4:0' shape=(1000,) dtype=float64>
-                                    , "TD": {"column_type": "CONTINUOUS"} # u'TD': <tf.Tensor 'Const_10:0' shape=(1000,) dtype=int64>
-                                    , "L_MF": {"column_type": "CONTINUOUS"} # u'L_MF': <tf.Tensor 'Const_7:0' shape=(1000,) dtype=float64>
-                                    , "SI": {"column_type": "CONTINUOUS"} #u'SI': <tf.Tensor 'Const_6:0' shape=(1000,) dtype=float64>
-                                    , "ERD": {"column_type": "CONTINUOUS"} # u'ERD': <tf.Tensor 'Const_5:0' shape=(1000,) dtype=float64>
-                                    , "CBI": {"column_type": "CONTINUOUS"} #u'CBI': <tf.Tensor 'Const_2:0' shape=(1000,) dtype=float64>
-                                    , "A_O": {"column_type": "CONTINUOUS"}#u'A_O': <tf.Tensor 'Const_9:0' shape=(1000,) dtype=float64>
-                                    , "G_F": {"column_type": "CONTINUOUS"} #u'G_F': <tf.Tensor 'Const_11:0' shape=(1000,) dtype=float64>
-                                    , "HGI": {"column_type": "CONTINUOUS"} #u'HGI': <tf.Tensor 'Const_8:0' shape=(1000,) dtype=float64>
-                                    , "CMCP_OUT_MON": {"column_type": "CONTINUOUS"} # u'CMCP_OUT_MON': <tf.Tensor 'Const:0' shape=(1000,) dtype=float64>
-                                    }
-                                })
-
-
-    # resp = requests.post('http://' + url + '/api/v1/type/dataframe/base/scm/table/tb_test_incomedata_wdnn3/format/nn0000020/',
+    #
+    # resp = requests.post('http://' + url + '/api/v1/type/dataframe/base/scm/table/tb_data_cokes/format/nn0000020/',
     #                      json={"label":
-    #                                 {"income_bracket": "LABEL"}
-    #                             , "Transformations":
-    #                                 {"col1": {"boundaries": [18, 25, 30, 35, 40, 45, 50, 55, 60, 65], "column_name": "age"}}
-    #                             , "cross_cell": {"col12": {"column2_0": "native_country", "column2_1": "occupation"}
-    #                                     , "col1": {"column_1": "occupation", "column_0": "education"}}
+    #                                 {"COKE_Q_DI150_Class": "LABEL"}
     #                             , "cell_feature":
-    #                                 {"hours_per_week": {"column_type": "CONTINUOUS"}
-    #                                 , "capital_loss": {"column_type": "CONTINUOUS"}
-    #                                 , "age": {"column_type": "CONTINUOUS"}
-    #                                 , "capital_gain": {"column_type": "CONTINUOUS"}
-    #                                 ,"education_num": {"column_type": "CONTINUOUS"}
-    #                                 , "education": {"column_type": "CATEGORICAL"}
-    #                                 , "occupation": {"column_type": "CATEGORICAL"}
-    #                                 , "workclass": {"column_type": "CATEGORICAL"}
-    #                                 , "gender": {"keys": ["female", "male"]
-    #                                 , "column_type": "CATEGORICAL_KEY"}
-    #                                 , "native_country": {"column_type": "CATEGORICAL"}
-    #                                 ,"relationship": {"column_type": "CATEGORICAL"}
-    #                                 , "marital_status": {"column_type": "CATEGORICAL"}
-    #                                 , "race": {"column_type": "CATEGORICAL"}
-
+    #                                 {"ASH": {"column_type": "CONTINUOUS"} # u'ASH': <tf.Tensor 'Const_1:0' shape=(1000,) dtype=float64>
+    #                                 , "VM": {"column_type": "CONTINUOUS"} #u'VM': <tf.Tensor 'Const_3:0' shape=(1000,) dtype=float64>
+    #                                 , "TS": {"column_type": "CONTINUOUS"} # u'TS': <tf.Tensor 'Const_4:0' shape=(1000,) dtype=float64>
+    #                                 , "TD": {"column_type": "CONTINUOUS"} # u'TD': <tf.Tensor 'Const_10:0' shape=(1000,) dtype=int64>
+    #                                 , "L_MF": {"column_type": "CONTINUOUS"} # u'L_MF': <tf.Tensor 'Const_7:0' shape=(1000,) dtype=float64>
+    #                                 , "SI": {"column_type": "CONTINUOUS"} #u'SI': <tf.Tensor 'Const_6:0' shape=(1000,) dtype=float64>
+    #                                 , "ERD": {"column_type": "CONTINUOUS"} # u'ERD': <tf.Tensor 'Const_5:0' shape=(1000,) dtype=float64>
+    #                                 , "CBI": {"column_type": "CONTINUOUS"} #u'CBI': <tf.Tensor 'Const_2:0' shape=(1000,) dtype=float64>
+    #                                 , "A_O": {"column_type": "CONTINUOUS"}#u'A_O': <tf.Tensor 'Const_9:0' shape=(1000,) dtype=float64>
+    #                                 , "G_F": {"column_type": "CONTINUOUS"} #u'G_F': <tf.Tensor 'Const_11:0' shape=(1000,) dtype=float64>
+    #                                 , "HGI": {"column_type": "CONTINUOUS"} #u'HGI': <tf.Tensor 'Const_8:0' shape=(1000,) dtype=float64>
+    #                                 , "CMCP_OUT_MON": {"column_type": "CONTINUOUS"} # u'CMCP_OUT_MON': <tf.Tensor 'Const:0' shape=(1000,) dtype=float64>
     #                                 }
     #                             })
+
+
+    resp = requests.post('http://' + url + '/api/v1/type/dataframe/base/scm/table/tb_census_data01/format/nn0000100/',
+                         json={"label":
+                                    {"income_bracket": "LABEL"}
+                                , "Transformations":
+                                    {"col1": {"boundaries": [18, 25, 30, 35, 40, 45, 50, 55, 60, 65], "column_name": "age"}}
+                                , "cross_cell": {"col12": {"column2_0": "native_country", "column2_1": "occupation"}
+                                        , "col1": {"column_1": "occupation", "column_0": "education"}}
+                                , "cell_feature":
+                                    {"hours_per_week": {"column_type": "CONTINUOUS"}
+                                    , "capital_loss": {"column_type": "CONTINUOUS"}
+                                    , "age": {"column_type": "CONTINUOUS"}
+                                    , "capital_gain": {"column_type": "CONTINUOUS"}
+                                    ,"education_num": {"column_type": "CONTINUOUS"}
+                                    , "education": {"column_type": "CATEGORICAL"}
+                                    , "occupation": {"column_type": "CATEGORICAL"}
+                                    , "workclass": {"column_type": "CATEGORICAL"}
+                                    , "gender": {"keys": ["female", "male"]
+                                    , "column_type": "CATEGORICAL_KEY"}
+                                    , "native_country": {"column_type": "CATEGORICAL"}
+                                    ,"relationship": {"column_type": "CATEGORICAL"}
+                                    , "marital_status": {"column_type": "CATEGORICAL"}
+                                    , "race": {"column_type": "CATEGORICAL"}
+
+                                    }
+                                })
     #eep_columns = [
   # tf.contrib.layers.embedding_column(workclass, dimension=8),
   # tf.contrib.layers.embedding_column(education, dimension=8),
@@ -325,7 +325,7 @@ def dataframe_pre_delete():
 # WDNN - Config
 ####################################################################################
 def wdnn_conf_post():
-    resp = requests.post('http://' + url + '/api/v1/type/wdnn/conf/nn0000020/',
+    resp = requests.post('http://' + url + '/api/v1/type/wdnn/conf/nn0000100/',
                          json={
                                  "layer":[100,100,100,50]
                              })
@@ -334,7 +334,7 @@ def wdnn_conf_post():
 
 def wdnn_train_post():
     #resp = requests.post('http://' + url + '/api/v1/type/wdnn/train/nn0000011/')
-    resp = requests.post('http://' + url + '/api/v1/type/wdnn/train/nn0000020/')
+    resp = requests.post('http://' + url + '/api/v1/type/wdnn/train/nn0000100/')
     data = json.loads(resp.json())
     print("evaluation result : {0}".format(data))
 
@@ -695,7 +695,7 @@ data setup  screen
 
 """
 #common, dataframe, cnn, wdnn
-category1 = "cnn"
+category1 = "wdnn"
 # checker, predict, stat, evaluation, train, conf, nnfino, base, data, format, table, pre
 category2 = "train"
 #dataframe_table_get

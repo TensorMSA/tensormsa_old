@@ -93,7 +93,7 @@ class HbaseManager:
             raise Exception(e)
 
 
-    def query_data(self, data_frame, table_name, query_str, limit_cnt=0, with_label = "None"):
+    def query_data(self, data_frame, table_name, query_str, use_df= None, limit_cnt=0, with_label = "None"):
         """
         get query data from spark
         :param data_fream(database), table_name,
@@ -168,9 +168,13 @@ class HbaseManager:
                 df['label'] = (
                     df[with_label].apply(lambda x: label_first_value in x)).astype(int) #16.10.25 auto check label values for 2 type values
             tfmsa_logger("End query data!")
-            #print(df)
+            if use_df == None:
+                result = json.dumps(df.to_string(index=False))
+            else:
+                result = df
+                #print(df)
             #print(df.to_string(index=False))
-            return json.dumps(df.to_string(index=False))
+            return result#json.dumps(df.to_string(index=False))
             #return json.dumps(df)
 
         except Exception as e:

@@ -88,13 +88,15 @@ def save_conf(net_id, conf_data):
 
     directory = settings.HDFS_CONF_ROOT + "/" + net_id + "/" #Bug fix by jh100 16.10.22
     net_id = net_id + "_conf.json"
+    print(conf_data)
+    print(directory)
 
     if not os.path.exists(directory):
         os.makedirs(directory)
 
     try:
         f = open(directory + net_id, 'w')
-        f.write(str(conf_data, 'utf-8'))
+        f.write(conf_data)
 
     except:
         raise SystemError("json conf save error")
