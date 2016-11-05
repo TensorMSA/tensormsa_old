@@ -617,7 +617,7 @@ def cnn_eval_get():
 # image - format
 ####################################################################################
 def image_format_post():
-    resp = requests.post('http://' + url + '/api/v1/type/imagefile/base/mes/table/testtable/format/nn0000090/',
+    resp = requests.post('http://' + url + '/api/v1/type/imagefile/base/mes/table/testtable2/format/nn0000090/',
                          json={"x_size": 32,
                                "y_size": 32
                                })
@@ -625,27 +625,27 @@ def image_format_post():
     print("evaluation result : {0}".format(data))
 
 def image_format_get():
-    resp = requests.get('http://' + url + '/api/v1/type/imagefile/base/mes/table/testtable/format/nn0000090/')
+    resp = requests.get('http://' + url + '/api/v1/type/imagefile/base/mes/table/testtable2/format/nn0000090/')
     data = json.loads(resp.json())
     print("evaluation result : {0}".format(data))
 
 def image_table_post():
-    resp = requests.post('http://' + url + '/api/v1/type/imagefile/base/mes/table/testtable/')
+    resp = requests.post('http://' + url + '/api/v1/type/imagefile/base/mes/table/testtable2/')
     data = json.loads(resp.json())
     print("evaluation result : {0}".format(data))
 
 def image_data_get():
-    resp = requests.get('http://' + url + '/api/v1/type/imagefile/base/mes/table/testtable/label/1/data/')
+    resp = requests.get('http://' + url + '/api/v1/type/imagefile/base/mes/table/testtable2/label/1/data/')
     data = json.loads(resp.json())
     print("evaluation result : {0}".format(data))
 
 def image_data_put():
-    resp = requests.put('http://' + url + '/api/v1/type/imagefile/base/mes/table/testtable/label/1/data/',
+    resp = requests.put('http://' + url + '/api/v1/type/imagefile/base/mes/table/testtable2/label/1/data/',
                         json=["1","10"])
     print(resp)
 
 def image_table_delete():
-    resp = requests.delete('http://' + url + '/api/v1/type/imagefile/base/mes/table/testtable/')
+    resp = requests.delete('http://' + url + '/api/v1/type/imagefile/base/mes/table/testtable2/')
     print(resp)
 
 ####################################################################################
@@ -653,27 +653,17 @@ def image_table_delete():
 ####################################################################################
 
 """
-Test Sequence !!
+CNN TEST Sequence
 1. common - env - post
 2. common - nninfo - post
-3. dataframe - base - post
-    3.1 Hbase does not need it
-4. dataframe - table - post
-
-5. JSON(dataframe - data - post)
-    5.1 Json devolop for next time
-5. CSV(use ui http://localhost:8989/view/ftptest)
-
-6. dataframe - format - post
-7. dataframe - pre - post
-   7.1 doesn't need it for wdnnb
-8. cnn - conf - post
-9. cnn - checker - post
-10. cnn - train - post
-11. cnn - predict- post
+3. dataframe - table - post
+4. Image Upload (use ui http://localhost:8989/view/ftptest)
+5. image - format - post
+6. cnn - conf - post
+7. cnn - train - post
+8. cnn - predict- put (local test)
+8. cnn - predict- post (file upload)
 """
-
-
 """
 Wdnn Test Sequence !!
 2. common - nninfo - post
