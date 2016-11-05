@@ -8,20 +8,22 @@ from tfmsacore.train.conv_train import train_conv_network
 
 class ConvNeuralNetTrain(APIView):
     """
-    1. Name : ConvNeuralNetPredict (step 10)
+    1. Name : ConvNeuralNetTrain
     2. Steps - CNN essential steps
         - post /api/v1/type/common/env/
-        - post /api/v1/type/common/job/{nnid}/
-        - post /api/v1/type/dataframe/base/{baseid}/table/{tb}/
-        - post /api/v1/type/dataframe/base/{baseid}/table/{tb}/data/
-        - post /api/v1/type/dataframe/base/{baseid}/table/{tb}/data/{args}/
-        - post /api/v1/type/dataframe/base/{baseid}/table/{tb}/format/{nnid}/
+        - post /api/v1/type/common/nninfo/{nnid}/
+        - post /api/v1/type/imagedata/base/{baseid}/
+        - post /api/v1/type/imagedata/base/{baseid}/table/{tb}/
+        - post /api/v1/type/imagedata/base/{baseid}/table/{tb}/label/{label}/data/
+        - post /api/v1/type/imagedata/base/{baseid}/table/{tb}/label/{label}/data/{args}/
+        - post /api/v1/type/imagedata/base/{baseid}/table/{tb}/label/{label}/format/{nnid}/
+        - post /api/v1/type/imagedata/base/{baseid}/table/{tb}/label/{label}/format/{nnid}/
         - post /api/v1/type/cnn/conf/{nnid}/
         - post /api/v1/type/cnn/train/{nnid}/
         - post /api/v1/type/cnn/eval/{nnid}/
         - post /api/v1/type/cnn/predict/{nnid}/
     3. Description \n
-        Manage data store schema (strucutre : schema - table - data)
+        Predict Label with image data
     """
 
     def post(self, request, nnid):

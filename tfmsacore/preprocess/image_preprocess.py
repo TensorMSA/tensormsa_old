@@ -46,8 +46,6 @@ class ImagePreprocess:
         x_size = format_info['x_size']
         y_size = format_info['y_size']
         table = net_info['table']
-        preview_img_path = "{0}/{1}".format(settings.STATIC_ROOT , table)
-        preview_img_file = "{0}/{1}/{2}".format(settings.STATIC_ROOT , table, file_name)
 
         im = Image.open(path).convert('L')
         width = float(im.size[0])
@@ -67,16 +65,10 @@ class ImagePreprocess:
             img = im.resize((nwidth, y_size), Image.ANTIALIAS).filter(ImageFilter.SHARPEN)
             wleft = int(round(((y_size - nwidth) / 2), 0))
             newImage.paste(img, (wleft, 4))
-
-        # create preview image
-        if not os.path.exists(preview_img_path):
-            os.mkdir(preview_img_path)
-
-        # check preview image number
-        if(len([name for name in os.listdir(preview_img_path)  \
-                if os.path.isfile(os.path.join(preview_img_path, name))]) < 10) :
-            newImage.save(preview_img_file)
         width, height = newImage.size
+
+        #save preview on jango static folder
+        self.save_preview_image(newImage, table, file_name)
         return newImage.getdata(), width, height
 
     def simple_resize(self, path, x_size, y_size):
@@ -106,3 +98,25 @@ class ImagePreprocess:
             newImage.paste(img, (wleft, 4))
 
         return newImage.getdata()
+
+    def save_preview_image(self, newImage, table, file_name):
+        """
+        save preview image for UI
+        :return:
+        """
+        preview_path = "{0}/{1}".format(settings.STATIC_ROOT, "preview")
+        preview_img_path = "{0}/{1}/{2}".format(settings.STATIC_ROOT, "preview", table)
+        preview_img_file = "{0}/{1}/{2}/{3}".format(settings.STATIC_ROOT, "preview", table, file_name)
+
+        # create preview image
+        if not os.path.exists(preview_path):
+            os.mkdir(preview_path)
+
+        # create preview image
+        if not os.path.exists(preview_img_path):
+            os.mkdir(preview_img_path)
+
+        # check preview image number
+        if(len([name for name in os.listdir(preview_img_path)  \
+                if os.path.isfile(os.path.join(preview_img_path, name))]) < 10) :
+            newImage.save(preview_img_file)

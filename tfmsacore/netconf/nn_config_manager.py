@@ -94,10 +94,12 @@ def save_conf(net_id, conf_data):
 
     try:
         f = open(directory + net_id, 'w')
-        f.write(str(conf_data, 'utf-8'))
-
-    except:
-        raise SystemError("json conf save error")
+        if(isinstance(conf_data, (str))):
+            f.write(conf_data)
+        else :
+            f.write(str(conf_data, 'utf-8'))
+    except Exception as e:
+        raise SystemError("json conf save error : {0}".format(e))
     finally:
         f.close()
 

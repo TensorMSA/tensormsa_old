@@ -121,7 +121,7 @@ def dataframe_base_delete():
 ####################################################################################
 def dataframe_table_post():
     #resp = requests.post('http://' + url + '/api/v1/type/dataframe/base/csvtest/table/titanic/')
-    resp = requests.post('http://' + url + '/api/v1/type/dataframe/base/scm/table/tb_data_cokes10/')
+    resp = requests.post('http://' + url + '/api/v1/type/dataframe/base/scm/table/tb_data_cokes20/')
     data = json.loads(resp.json())
     print("evaluation result : {0}".format(data))
 
@@ -617,7 +617,7 @@ def cnn_eval_get():
 # image - format
 ####################################################################################
 def image_format_post():
-    resp = requests.post('http://' + url + '/api/v1/type/imagefile/base/mes/table/testtable/format/nn0000090/',
+    resp = requests.post('http://' + url + '/api/v1/type/imagefile/base/mes/table/testtable2/format/nn0000090/',
                          json={"x_size": 32,
                                "y_size": 32
                                })
@@ -625,22 +625,22 @@ def image_format_post():
     print("evaluation result : {0}".format(data))
 
 def image_format_get():
-    resp = requests.get('http://' + url + '/api/v1/type/imagefile/base/mes/table/testtable/format/nn0000090/')
+    resp = requests.get('http://' + url + '/api/v1/type/imagefile/base/mes/table/testtable2/format/nn0000090/')
     data = json.loads(resp.json())
     print("evaluation result : {0}".format(data))
 
 def image_table_post():
-    resp = requests.post('http://' + url + '/api/v1/type/imagefile/base/mes/table/testtable/')
+    resp = requests.post('http://' + url + '/api/v1/type/imagefile/base/mes/table/testtable2/')
     data = json.loads(resp.json())
     print("evaluation result : {0}".format(data))
 
 def image_data_get():
-    resp = requests.get('http://' + url + '/api/v1/type/imagefile/base/mes/table/testtable/label/1/data/')
+    resp = requests.get('http://' + url + '/api/v1/type/imagefile/base/mes/table/testtable2/label/1/data/')
     data = json.loads(resp.json())
     print("evaluation result : {0}".format(data))
 
 def image_data_put():
-    resp = requests.put('http://' + url + '/api/v1/type/imagefile/base/mes/table/testtable/label/1/data/',
+    resp = requests.put('http://' + url + '/api/v1/type/imagefile/base/mes/table/testtable2/label/1/data/',
                         json=["1","10"])
     print(resp)
 
@@ -697,7 +697,7 @@ data setup  screen
 #common, dataframe, cnn, wdnn
 category1 = "cnn"
 # checker, predict, stat, evaluation, train, conf, nnfino, base, data, format, table, pre
-category2 = "train"
+category2 = "predict"
 #dataframe_table_get
 # post, get, put, delete
 request = "post"

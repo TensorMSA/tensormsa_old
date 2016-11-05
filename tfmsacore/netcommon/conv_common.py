@@ -131,7 +131,7 @@ class ConvCommonManager:
             curren_matrix[1] = int(curren_matrix[1]/max_pool_stride[1] - 1)
         return curren_matrix
 
-    def save_changed_data_info(self, nn_id, train_data_set, train_label_set):
+    def save_changed_data_info(self, nn_id, train_data_set):
         """
         save train data size related information on db
         :param nn_id: neural network management id
@@ -139,14 +139,11 @@ class ConvCommonManager:
         :return: None
         """
         train_len = len(train_data_set[0])
-        label_len = len(train_label_set[0])
-        json_conf = netconf.load_conf(nn_id)
+        json_conf = self.conf
         json_conf.data.datalen = train_len
-        json_conf.data.taglen = label_len
         len_sqrt = int(math.ceil(math.sqrt(train_len)))
 
         flag = False
-
         for i in range(0, len_sqrt):
             for x in range(0, len_sqrt):
                 if(int(json_conf.data.datalen) == (len_sqrt + x) * (len_sqrt - i)):
@@ -157,3 +154,17 @@ class ConvCommonManager:
             json_conf.data.matrix = [train_len, 1]
 
         netconf.save_conf(nn_id, json.dumps(json_conf, cls=CusJsonEncoder))
+
+
+    def create_dummy_matrix(self, data_len):
+        """
+
+        :param train_len:
+        :param label_len:
+        :return:
+        """
+        dummyarray = []
+        for x in range(int(data_len)):
+            dummyarray.append(0)
+        return  dummyarray
+
