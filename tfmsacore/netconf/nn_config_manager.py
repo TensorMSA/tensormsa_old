@@ -98,8 +98,8 @@ def save_conf(net_id, conf_data):
             f.write(conf_data)
         else :
             f.write(str(conf_data, 'utf-8'))
-    except Exception as e:
-        raise SystemError("json conf save error : {0}".format(e))
+    except:
+        raise SystemError("json conf save error")
     finally:
         f.close()
 
