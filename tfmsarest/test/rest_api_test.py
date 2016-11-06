@@ -593,7 +593,7 @@ def common_livy_delete():
 ####################################################################################
 
 def cnn_checker_post():
-    resp = requests.post('http://' + url + '/api/v1/type/cnn/checker/nn0000010/')
+    resp = requests.post('http://' + url + '/api/v1/type/cnn/checker/nn0000090/')
     data = json.loads(resp.json())
     print("evaluation result : {0}".format(data))
 
@@ -603,13 +603,13 @@ def cnn_checker_post():
 ####################################################################################
 
 def cnn_eval_post():
-    resp = requests.post('http://' + url + '/api/v1/type/cnn/eval/nn0000010/',
+    resp = requests.post('http://' + url + '/api/v1/type/cnn/eval/nn0000090/',
                          json={'samplenum': 0.1, 'samplemethod' : '1'})
     data = json.loads(resp.json())
     print("evaluation result : {0}".format(data))
 
 def cnn_eval_get():
-    resp = requests.get('http://' + url + '/api/v1/type/cnn/eval/nn0000010/')
+    resp = requests.get('http://' + url + '/api/v1/type/cnn/eval/nn0000090/')
     data = json.loads(resp.json())
     print("evaluation result : {0}".format(data))
 
@@ -660,9 +660,11 @@ CNN TEST Sequence
 4. Image Upload (use ui http://localhost:8989/view/ftptest)
 5. image - format - post
 6. cnn - conf - post
-7. cnn - train - post
-8. cnn - predict- put (local test)
-8. cnn - predict- post (file upload)
+7. cnn - checker - post
+8. cnn - train - post
+9. cnn - predict- put (local test)
+9. cnn - predict- post (file upload)
+10. cnn - eval - post
 """
 """
 Wdnn Test Sequence !!
@@ -685,9 +687,9 @@ data setup  screen
 
 """
 #common, dataframe, cnn, wdnn
-category1 = "wdnn"
+category1 = "cnn"
 # checker, predict, stat, evaluation, train, conf, nnfino, base, data, format, table, pre
-category2 = "train"
+category2 = "checker"
 #dataframe_table_get
 # post, get, put, delete
 request = "post"
