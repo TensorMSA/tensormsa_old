@@ -5,6 +5,7 @@ from tfmsacore.utils.logger import tfmsa_logger
 from django.core import serializers as serial
 import json
 
+
 def create_new_network(req):
     """
     create new nn user request

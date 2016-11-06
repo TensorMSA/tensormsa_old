@@ -133,3 +133,27 @@ class ServerConf(models.Model):
 
     def __getitem__(self, item):
         return self.__dict__[item]
+
+
+class TrainResults(models.Model):
+    nn_id = models.CharField(max_length=10, blank=True, default='')                           # neural network key
+    loss = models.CharField(max_length=10, blank=True, default='')                          # loss
+    step = models.CharField(max_length=10, blank=True, default='')                          # current step
+    max_step = models.CharField(max_length=10, blank=True, default='')                      # final step
+    trainDate = models.CharField(max_length=20, blank=True, default='')                     # train date
+    testsets = models.CharField(max_length=20, blank=True, default='')                      # number of evaluation data set
+
+   #nnid	loss	step	max_step	traningdate	train_num
+    def json(self):
+        return dict(
+            nn_id = self.nn_id,
+            loss=self.loss,
+            step=self.step,
+            max_step=self.max_step,
+            trainDate=self.trainDate,
+            testsets = self.testsets
+        )
+
+
+    def __getitem__(self, item):
+        return self.__dict__[item]
