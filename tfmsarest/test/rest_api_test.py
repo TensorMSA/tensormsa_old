@@ -4,6 +4,9 @@ import tensorflow as tf
 import logging
 from django.conf import settings
 from PIL import Image, ImageFilter
+#from tfmsacore import netconf
+#from tfmsacore.utils.json_conv import JsonDataConverter as jc
+import datetime
 
 # Reference
 #https://realpython.com/blog/python/api-integration-in-python/
@@ -327,7 +330,7 @@ def dataframe_pre_delete():
 def wdnn_conf_post():
     resp = requests.post('http://' + url + '/api/v1/type/wdnn/conf/nn0000100/',
                          json={
-                                 "layer":[100,100,100,50]
+                                 "layer":[100,50]
                              })
     data = json.loads(resp.json())
     print("evaluation result : {0}".format(data))
@@ -341,7 +344,7 @@ def wdnn_train_post():
 
 def wdnn_predict_post():
     #resp = requests.post('http://' + url + '/api/v1/type/wdnn/predict/nn0000011/')
-    resp = requests.post('http://' + url + '/api/v1/type/wdnn/predict/nn0000090/')
+    resp = requests.post('http://' + url + '/api/v1/type/wdnn/predict/nn0000100/')
     data = json.loads(resp.json())
     print("evaluation result : {0}".format(data))
 
@@ -600,6 +603,7 @@ def cnn_checker_post():
 
 ####################################################################################
 # cnn - eval - post
+
 ####################################################################################
 
 def cnn_eval_post():
@@ -653,6 +657,30 @@ def image_preview_get():
     resp = requests.get('http://' + url + '/api/v1/type/imgpreview/nnid/nn0000090/')
     data = json.loads(resp.json())
     print("evaluation result : {0}".format(data))
+
+
+def log_insert_test():
+    # resp = requests.post('http://' + url + '/api/v1/type/common/nninfo/',
+    #                      json={
+    #                          "nn_id": "nn0000011",
+    #                          "category": "evaluation",
+    #                          "subcate" : "csv",
+    #                          "name": "evaluation",
+    #                          "desc" : "wdnn_protoType"
+    #                      })
+    resp = requests.post('http://' + url + '/api/v1/type/common/nninfo/',
+                         json={
+                             "nn_id": "nn0000100",
+                             "loss": "0.001",
+                             "step": "100",
+                             "max_step": "1000",
+                             "trainDate": "2013-01-29",
+                             "testsets": "1"
+                         })
+
+    data = json.loads(resp.json())
+    print("evaluation result : {0}".format(data))
+
 
 
 ####################################################################################

@@ -30,7 +30,8 @@ class WideDeepNetTrain(APIView):
         - desc : train requested model and save
         """
         try:
-            result = train.wdd_train(nnid)
+            result = train.wdnn_train().run_wdd_train(nnid) # commom class modification 16.11.04
+            #result = train.
             return_data = {"status": "200", "result": result}
             return Response(json.dumps(return_data))
         except Exception as e:

@@ -33,3 +33,13 @@ class ServerConfSerializer(serializers.ModelSerializer):
         model = models.ServerConf
         fields = ('version', 'state', 'store_type', 'fw_capa', 'livy_host', 'livy_sess', 'spark_host', 'spark_core',
                   'spark_memory', 'hdfs_host', 'hdfs_root', 's3_host', 's3_access', 's3_sess', 's3_bucket')
+
+
+class TrainResultsSerializer(serializers.ModelSerializer):
+    """
+    Table : TensorMSA config data
+    """
+    class Meta:
+        model = models.TrainResults
+        fields = ('nn_id', 'loss', 'step', 'max_step', 'trainDate', 'testsets')
+
