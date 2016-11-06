@@ -596,7 +596,7 @@ def common_livy_delete():
 ####################################################################################
 
 def cnn_checker_post():
-    resp = requests.post('http://' + url + '/api/v1/type/cnn/checker/nn0000010/')
+    resp = requests.post('http://' + url + '/api/v1/type/cnn/checker/nn0000090/')
     data = json.loads(resp.json())
     print("evaluation result : {0}".format(data))
 
@@ -607,13 +607,13 @@ def cnn_checker_post():
 ####################################################################################
 
 def cnn_eval_post():
-    resp = requests.post('http://' + url + '/api/v1/type/cnn/eval/nn0000010/',
+    resp = requests.post('http://' + url + '/api/v1/type/cnn/eval/nn0000090/',
                          json={'samplenum': 0.1, 'samplemethod' : '1'})
     data = json.loads(resp.json())
     print("evaluation result : {0}".format(data))
 
 def cnn_eval_get():
-    resp = requests.get('http://' + url + '/api/v1/type/cnn/eval/nn0000010/')
+    resp = requests.get('http://' + url + '/api/v1/type/cnn/eval/nn0000090/')
     data = json.loads(resp.json())
     print("evaluation result : {0}".format(data))
 
@@ -621,7 +621,7 @@ def cnn_eval_get():
 # image - format
 ####################################################################################
 def image_format_post():
-    resp = requests.post('http://' + url + '/api/v1/type/imagefile/base/mes/table/testtable/format/nn0000090/',
+    resp = requests.post('http://' + url + '/api/v1/type/imagefile/base/mes/table/testtable2/format/nn0000090/',
                          json={"x_size": 32,
                                "y_size": 32
                                })
@@ -629,28 +629,35 @@ def image_format_post():
     print("evaluation result : {0}".format(data))
 
 def image_format_get():
-    resp = requests.get('http://' + url + '/api/v1/type/imagefile/base/mes/table/testtable/format/nn0000090/')
+    resp = requests.get('http://' + url + '/api/v1/type/imagefile/base/mes/table/testtable2/format/nn0000090/')
     data = json.loads(resp.json())
     print("evaluation result : {0}".format(data))
 
 def image_table_post():
-    resp = requests.post('http://' + url + '/api/v1/type/imagefile/base/mes/table/testtable/')
+    resp = requests.post('http://' + url + '/api/v1/type/imagefile/base/mes/table/testtable2/')
     data = json.loads(resp.json())
     print("evaluation result : {0}".format(data))
 
 def image_data_get():
-    resp = requests.get('http://' + url + '/api/v1/type/imagefile/base/mes/table/testtable/label/1/data/')
+    resp = requests.get('http://' + url + '/api/v1/type/imagefile/base/mes/table/testtable2/label/1/data/')
     data = json.loads(resp.json())
     print("evaluation result : {0}".format(data))
 
 def image_data_put():
-    resp = requests.put('http://' + url + '/api/v1/type/imagefile/base/mes/table/testtable/label/1/data/',
+    resp = requests.put('http://' + url + '/api/v1/type/imagefile/base/mes/table/testtable2/label/1/data/',
                         json=["1","10"])
-    print(resp)
-
+    data = json.loads(resp.json())
+    print("evaluation result : {0}".format(data))
 def image_table_delete():
-    resp = requests.delete('http://' + url + '/api/v1/type/imagefile/base/mes/table/testtable/')
-    print(resp)
+    resp = requests.delete('http://' + url + '/api/v1/type/imagefile/base/mes/table/testtable2/')
+    data = json.loads(resp.json())
+    print("evaluation result : {0}".format(data))
+
+def image_preview_get():
+    resp = requests.get('http://' + url + '/api/v1/type/imgpreview/nnid/nn0000090/')
+    data = json.loads(resp.json())
+    print("evaluation result : {0}".format(data))
+
 
 def log_insert_test():
     # resp = requests.post('http://' + url + '/api/v1/type/common/nninfo/',
@@ -681,27 +688,19 @@ def log_insert_test():
 ####################################################################################
 
 """
-Test Sequence !!
+CNN TEST Sequence
 1. common - env - post
 2. common - nninfo - post
-3. dataframe - base - post
-    3.1 Hbase does not need it
-4. dataframe - table - post
-
-5. JSON(dataframe - data - post)
-    5.1 Json devolop for next time
-5. CSV(use ui http://localhost:8989/view/ftptest)
-
-6. dataframe - format - post
-7. dataframe - pre - post
-   7.1 doesn't need it for wdnnb
-8. cnn - conf - post
-9. cnn - checker - post
-10. cnn - train - post
-11. cnn - predict- post
+3. dataframe - table - post
+4. Image Upload (use ui http://localhost:8989/view/ftptest)
+5. image - format - post
+6. cnn - conf - post
+7. cnn - checker - post
+8. cnn - train - post
+9. cnn - predict- put (local test)
+9. cnn - predict- post (file upload)
+10. cnn - eval - post
 """
-
-
 """
 Wdnn Test Sequence !!
 2. common - nninfo - post
@@ -723,13 +722,12 @@ data setup  screen
 
 """
 #common, dataframe, cnn, wdnn
-category1 = "wdnn"
-# checker, wdnn, stat, evaluation, train, conf, nnfino, base, data, format, table, pre
-category2 = "train"
+category1 = "image"
+# checker, predict, stat, evaluation, train, conf, nnfino, base, data, format, table, pre
+category2 = "preview"
 #dataframe_table_get
 # post, get, put, delete
-#log_insert_test
-request = "post"
+request = "get"
 
 
 locals()["{0}_{1}_{2}".format(category1, category2, request)]()

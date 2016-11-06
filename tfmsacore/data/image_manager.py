@@ -53,7 +53,7 @@ class ImageManager(HbaseManager):
             for file in file_set:
                 row_value = dict()
                 row_key = table_name + ":" + self.make_hbasekey()
-                byte_buffer, width, height = self.image_preprocess(file, net_info, format_info)
+                byte_buffer, width, height = self.image_preprocess(file, net_info, format_info, label)
                 row_value[':'.join(('data', 'filebyte'))] = str(list(byte_buffer))
                 row_value[':'.join(('data', 'label'))] = str(label)
                 row_value[':'.join(('data', 'decoder'))] = str(file._name).split(".")[1]
@@ -118,7 +118,7 @@ class ImageManager(HbaseManager):
 
         return conn, table
 
-    def image_preprocess(self, file, net_info, format_info):
+    def image_preprocess(self, file, net_info, format_info, label):
         """
 
         :param file:
@@ -140,7 +140,7 @@ class ImageManager(HbaseManager):
 
         # resize image
         byte_buffer, width, height = preprocess.ImagePreprocess().\
-            resize_file_image(save_file, net_info, format_info, file._name)
+            resize_file_image(save_file, net_info, format_info, file._name, label)
 
         if os.path.isfile(save_file):
             os.remove(save_file)
@@ -165,3 +165,25 @@ class ImageManager(HbaseManager):
             jd.nn_id = net_info['nn_id']
             jd.datasets = json.dumps(label_list)
             result = netconf.update_network(jd)
+
+    def get_preview_list(self, nn_id):
+        """
+        return preview file locations
+        :param nn_id:
+        :return:
+        """
+        net_info = netconf.get_network_config(nn_id)
+        dataframe = net_info['dir']
+        table = net_info['table']
+        label_set = json.loads(net_info['datasets'])
+        preview_file_list = {}
+
+        preview_table = "{0}/{1}/{2}/{3}".format(settings.PREVIEW_IMG_PATH, "preview", dataframe, table)
+
+        for label in label_set:
+            preview_file_list[label] = []
+            for filename in os.listdir("{0}/{1}/".format(preview_table, label)):
+                preview_file_list[label].append(filename)
+
+        print(preview_file_list)
+        return preview_file_list

@@ -37,24 +37,26 @@ def train_conv_network(nn_id, epoch = 100, testset = 100):
         else:
             raise Exception("unknown data type")
 
+        # data size info change
+        utils.tfmsa_logger("[5]modify data stuctor info")
+        ConvCommonManager(conf_info).save_changed_data_info(nn_id, train_data_set)
+
         learnrate = conf_info.data.learnrate
         conf_info.n_class = len(json.loads(net_info['datasets']))
+
+        # change to nummpy array
         train_x = np.array(train_data_set, np.float32)
         train_y = np.array(train_label_set, np.int32)
 
         # define classifier
-        utils.tfmsa_logger("[5]define classifier")
+        utils.tfmsa_logger("[6]define classifier")
         classifier = learn.Estimator(model_fn=ConvCommonManager(conf_info).struct_cnn_layer,
                                      model_dir=netconf.nn_model_manager.get_model_save_path(nn_id))
 
         # start train
-        utils.tfmsa_logger("[6]fit CNN")
+        utils.tfmsa_logger("[7]fit CNN")
         classifier.fit(train_x, train_y, steps=int(epoch))
 
-        # utils.tfmsa_logger("[7]predict CNN")
-        # y_predicted = [
-        #     p['class'] for p in classifier.predict(train_x, as_iterable=True)]
-        #
         return len(train_y)
 
     except Exception as e:

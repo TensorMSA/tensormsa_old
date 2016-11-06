@@ -134,6 +134,10 @@ urlpatterns = [
     url(r'^api/v1/type/imagefile/base/',
       csrf_exempt(rest_view.ImageFileSchema.as_view())),
 
+    # image fire preview
+    url(r'^api/v1/type/imgpreview/nnid/(?P<nnid>.*)/',
+      csrf_exempt(rest_view.ImageFilePreview.as_view())),
+
     # UI / View index
     url(r'^$', csrf_exempt(ui_view.UI_Service.as_view())),
     url(r'^view/index/$', csrf_exempt(ui_view.UI_Service.as_view())),
