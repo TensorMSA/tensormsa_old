@@ -16,10 +16,19 @@
             <form action="/api/v1/type/imagefile/base/mes/table/testtable2/label/1/data/nn0000090/"
               method="post"
               enctype="multipart/form-data">
-            Image Upload:
+            Image Upload (1):
             <input type="file"
                    name="file"
                    id="id_file2" multiple/>
+            <input type="submit" value="UPLOAD" />
+            </form>
+            <form action="/api/v1/type/imagefile/base/mes/table/testtable2/label/2/data/nn0000090/"
+              method="post"
+              enctype="multipart/form-data">
+            Image Upload (2):
+            <input type="file"
+                   name="file"
+                   id="id_file3" multiple/>
             <input type="submit" value="UPLOAD" />
             </form>
             <form action="/api/v1/type/cnn/predict/nn0000090/"
@@ -28,7 +37,7 @@
             Image Predict Test :
             <input type="file"
                    name="file"
-                   id="id_file3" multiple/>
+                   id="id_file4" multiple/>
             <input type="submit" value="UPLOAD" />
             </form>
     </body>

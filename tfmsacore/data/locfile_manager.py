@@ -2,9 +2,9 @@ from pyspark import SparkContext, SparkConf
 from tfmsacore.utils.logger import tfmsa_logger
 from pyspark.sql import SQLContext
 from django.conf import settings
+from tfmsacore import netconf
 import pandas as pd
-import os
-import shutil
+import os, json, shutil
 
 class LocalFileManager:
     """
@@ -463,3 +463,5 @@ class LocalFileManager:
             sc.clearFiles()
             sc.stop()
             tfmsa_logger("stop context")
+
+

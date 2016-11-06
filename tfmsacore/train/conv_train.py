@@ -57,11 +57,6 @@ def train_conv_network(nn_id, epoch = 100, testset = 100):
         utils.tfmsa_logger("[7]fit CNN")
         classifier.fit(train_x, train_y, steps=int(epoch))
 
-        print(classifier.predict(train_x, as_iterable=True))
-        # utils.tfmsa_logger("[7]predict CNN")
-        # y_predicted = [
-        #     p['class'] for p in classifier.predict(train_x, as_iterable=True)]
-        #
         return len(train_y)
 
     except Exception as e:

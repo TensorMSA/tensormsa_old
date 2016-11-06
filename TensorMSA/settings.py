@@ -143,6 +143,7 @@ SPARK_WORKER_CORE = '2'
 SPARK_WORKER_MEMORY = '4G'
 HBASE_HOST = '172.32.11.52'
 HBASE_HOST_PORT = 9090
+PREVIEW_IMG_PATH = os.path.join(BASE_DIR, "tfmsaview/static")
 FILE_TEMP_UPLOAD_ROOT = '/tensormsa/temp/file'
 FILE_ROOT = '/tensormsa/temp'
 HDFS_HOST = '172.32.11.52:9000'
