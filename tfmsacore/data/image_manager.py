@@ -179,11 +179,10 @@ class ImageManager(HbaseManager):
         preview_file_list = {}
 
         preview_table = "{0}/{1}/{2}/{3}".format(settings.PREVIEW_IMG_PATH, "preview", dataframe, table)
+        url_path = "/{0}/{1}/{2}/{3}".format("dist", "preview", dataframe, table)
 
         for label in label_set:
             preview_file_list[label] = []
             for filename in os.listdir("{0}/{1}/".format(preview_table, label)):
-                preview_file_list[label].append(filename)
-
-        print(preview_file_list)
+                preview_file_list[label].append("{0}/{1}/{2}".format(url_path, label, filename))
         return preview_file_list
