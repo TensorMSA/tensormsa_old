@@ -23,4 +23,20 @@ def return_index_position(index_list, target_data):
     :param target_data:
     :return:
     """
-    return index_list.index(target_data)
+    if (target_data in index_list) :
+        return index_list.index(target_data)
+    else:
+        return 0
+
+def convert_to_index(index_list):
+    """
+    return tensorflow acceptable output list
+    :param index_list:
+    :param target_data:
+    :return:
+    """
+    return_list = []
+    for value in index_list :
+        return_list.append(index_list.index(value))
+
+    return return_list

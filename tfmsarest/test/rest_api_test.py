@@ -57,8 +57,8 @@ def common_nninfo_post():
     #                      })
     resp = requests.post('http://' + url + '/api/v1/type/common/nninfo/',
                          json={
-                             "nn_id": "nn0000100",
-                             "category": "SCM",
+                             "nn_id": "nn0000091",
+                             "category": "MES",
                              "subcate" : "csv",
                              "name": "CENSUS_INCOME",
                              "desc" : "INCOME PREDICT"
@@ -352,12 +352,12 @@ def wdnn_predict_post():
 # CNN - Config
 ####################################################################################
 def cnn_conf_post():
-    resp = requests.post('http://' + url + '/api/v1/type/cnn/conf/nn0000090/',
+    resp = requests.post('http://' + url + '/api/v1/type/cnn/conf/nn0000091/',
                          json={
                                  "data":
                                      {
                                          "datalen": 1024,
-                                         "taglen": 2,
+                                         "taglen": 4,
                                          "matrix": [32, 32],
                                          "learnrate": 0.01,
                                          "epoch": 10
@@ -404,7 +404,7 @@ def cnn_conf_post():
                                              "cnnstride": "",
                                              "maxpoolmatrix": "",
                                              "maxpoolstride": "",
-                                             "node_in_out": [32, 2],
+                                             "node_in_out": [32, 4],
                                              "regualizer": "",
                                              "padding": "SAME",
                                              "droprate": ""
@@ -424,9 +424,9 @@ def cnn_conf_put():
                         json={
                             "data":
                                 {
-                                    "datalen": 10000,
-                                    "taglen": 2,
-                                    "matrix": [100, 100],
+                                    "datalen": 1024,
+                                    "taglen": 4,
+                                    "matrix": [32, 32],
                                     "learnrate": 0.01,
                                     "epoch": 10
                                 },
@@ -435,8 +435,8 @@ def cnn_conf_put():
                                     {
                                         "type": "input",
                                         "active": "relu",
-                                        "cnnfilter": [4, 4],
-                                        "cnnstride": [4, 4],
+                                        "cnnfilter": [2, 2],
+                                        "cnnstride": [2, 2],
                                         "maxpoolmatrix": [2, 2],
                                         "maxpoolstride": [2, 2],
                                         "node_in_out": [1, 16],
@@ -447,8 +447,8 @@ def cnn_conf_put():
                                     {
                                         "type": "cnn",
                                         "active": "relu",
-                                        "cnnfilter": [4, 4],
-                                        "cnnstride": [4, 4],
+                                        "cnnfilter": [2, 2],
+                                        "cnnstride": [2, 2],
                                         "maxpoolmatrix": [2, 2],
                                         "maxpoolstride": [2, 2],
                                         "node_in_out": [16, 32],
@@ -472,7 +472,7 @@ def cnn_conf_put():
                                         "cnnstride": "",
                                         "maxpoolmatrix": "",
                                         "maxpoolstride": "",
-                                        "node_in_out": [32, 2],
+                                        "node_in_out": [32, 4],
                                         "regualizer": "",
                                         "padding": "SAME",
                                         "droprate": ""
@@ -493,7 +493,7 @@ def cnn_conf_delete():
 ####################################################################################
 
 def cnn_train_post():
-    resp = requests.post('http://' + url + '/api/v1/type/cnn/train/nn0000090/',
+    resp = requests.post('http://' + url + '/api/v1/type/cnn/train/nn0000091/',
                          json= {
                              "epoch" : "10",
                              "testset" : "10"
@@ -506,9 +506,9 @@ def cnn_train_post():
 # CNN - Predict
 ####################################################################################
 
-def cnn_predict_post():
+def cnn_predict_put():
     img = simple_resize("/home/dev/TensorMSA/tfmsacore/resources/test.png", 32, 32 )
-    resp = requests.post('http://' + url + '/api/v1/type/cnn/predict/nn0000090/',
+    resp = requests.put('http://' + url + '/api/v1/type/cnn/predict/nn0000091/',
                          json= [img]
                          )
     data = json.loads(resp.json())
@@ -608,7 +608,7 @@ def cnn_checker_post():
 
 def cnn_eval_post():
     resp = requests.post('http://' + url + '/api/v1/type/cnn/eval/nn0000090/',
-                         json={'samplenum': 0.1, 'samplemethod' : '1'})
+                         json={'sampcnn_predictlenum': 0.1, 'samplemethod' : '1'})
     data = json.loads(resp.json())
     print("evaluation result : {0}".format(data))
 
@@ -621,7 +621,7 @@ def cnn_eval_get():
 # image - format
 ####################################################################################
 def image_format_post():
-    resp = requests.post('http://' + url + '/api/v1/type/imagefile/base/mes/table/testtable2/format/nn0000090/',
+    resp = requests.post('http://' + url + '/api/v1/type/imagefile/base/mes/table/testtable2/format/nn0000091/',
                          json={"x_size": 32,
                                "y_size": 32
                                })
@@ -629,35 +629,39 @@ def image_format_post():
     print("evaluation result : {0}".format(data))
 
 def image_format_get():
-    resp = requests.get('http://' + url + '/api/v1/type/imagefile/base/mes/table/testtable2/format/nn0000090/')
+    resp = requests.get('http://' + url + '/api/v1/type/imagefile/base/mes/table/testtable3/format/nn0000091/')
     data = json.loads(resp.json())
     print("evaluation result : {0}".format(data))
 
 def image_table_post():
-    resp = requests.post('http://' + url + '/api/v1/type/imagefile/base/mes/table/testtable2/')
+    resp = requests.post('http://' + url + '/api/v1/type/imagefile/base/mes/table/testtable3/')
     data = json.loads(resp.json())
     print("evaluation result : {0}".format(data))
 
 def image_data_get():
-    resp = requests.get('http://' + url + '/api/v1/type/imagefile/base/mes/table/testtable2/label/1/data/')
+    resp = requests.get('http://' + url + '/api/v1/type/imagefile/base/mes/table/testtable3/label/mario/data/')
     data = json.loads(resp.json())
     print("evaluation result : {0}".format(data))
 
 def image_data_put():
-    resp = requests.put('http://' + url + '/api/v1/type/imagefile/base/mes/table/testtable2/label/1/data/',
+    resp = requests.put('http://' + url + '/api/v1/type/imagefile/base/mes/table/testtable3/label/mario/data/',
                         json=["1","10"])
     data = json.loads(resp.json())
     print("evaluation result : {0}".format(data))
 def image_table_delete():
-    resp = requests.delete('http://' + url + '/api/v1/type/imagefile/base/mes/table/testtable2/')
+    resp = requests.delete('http://' + url + '/api/v1/type/imagefile/base/mes/table/testtable3/')
     data = json.loads(resp.json())
     print("evaluation result : {0}".format(data))
 
 def image_preview_get():
-    resp = requests.get('http://' + url + '/api/v1/type/imgpreview/nnid/nn0000090/')
+    resp = requests.get('http://' + url + '/api/v1/type/imgpreview/nnid/nn0000091/')
     data = json.loads(resp.json())
     print("evaluation result : {0}".format(data))
 
+def image_preview_delete():
+    resp = requests.delete('http://' + url + '/api/v1/type/imgpreview/nnid/nn0000091/')
+    data = json.loads(resp.json())
+    print("evaluation result : {0}".format(data))
 
 def log_insert_test():
     # resp = requests.post('http://' + url + '/api/v1/type/common/nninfo/',
@@ -691,9 +695,9 @@ def log_insert_test():
 CNN TEST Sequence
 1. common - env - post
 2. common - nninfo - post
-3. dataframe - table - post
-4. Image Upload (use ui http://localhost:8989/view/ftptest)
-5. image - format - post
+3. image - table - post
+4. image - format - post
+5. Image Upload (use ui http://localhost:8989/view/ftptest)
 6. cnn - conf - post
 7. cnn - checker - post
 8. cnn - train - post
@@ -722,9 +726,9 @@ data setup  screen
 
 """
 #common, dataframe, cnn, wdnn
-category1 = "image"
+category1 = "common"
 # checker, predict, stat, evaluation, train, conf, nnfino, base, data, format, table, pre
-category2 = "preview"
+category2 = "nninfo"
 #dataframe_table_get
 # post, get, put, delete
 request = "get"

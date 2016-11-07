@@ -14,7 +14,23 @@ class ImageFilePreview(APIView):
         try:
             result = data.ImageManager().get_preview_list(nnid)
             return_data = {"status": "200", "result": result}
+            print(json.dumps(return_data))
             return Response(json.dumps(return_data))
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}
             return Response(json.dumps(return_data))
+
+
+    def delete(self, request, nnid):
+        """
+        - desc : get image file list \n
+        """
+        try:
+            result = data.ImageManager().delete_preview_list(nnid)
+            return_data = {"status": "200", "result": result}
+            print(json.dumps(return_data))
+            return Response(json.dumps(return_data))
+        except Exception as e:
+            return_data = {"status": "404", "result": str(e)}
+            return Response(json.dumps(return_data))
+

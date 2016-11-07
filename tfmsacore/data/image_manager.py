@@ -9,6 +9,7 @@ import pandas as pd
 from tfmsacore.data.hbase_manager import HbaseManager
 from tfmsacore import preprocess
 from tfmsacore.utils.json_conv import JsonDataConverter as jc
+import shutil
 
 class ImageManager(HbaseManager):
     """
@@ -183,6 +184,28 @@ class ImageManager(HbaseManager):
 
         for label in label_set:
             preview_file_list[label] = []
+            if not os.path.exists("{0}/{1}/".format(preview_table, label)):
+                os.makedirs("{0}/{1}/".format(preview_table, label))
             for filename in os.listdir("{0}/{1}/".format(preview_table, label)):
                 preview_file_list[label].append("{0}/{1}/{2}".format(url_path, label, filename))
+        return preview_file_list
+
+
+    def delete_preview_list(self, nn_id):
+        """
+        return preview file locations
+        :param nn_id:
+        :return:
+        """
+        net_info = netconf.get_network_config(nn_id)
+        dataframe = net_info['dir']
+        table = net_info['table']
+        label_set = json.loads(net_info['datasets'])
+        preview_file_list = {}
+
+        preview_table = "{0}/{1}/{2}/{3}".format(settings.PREVIEW_IMG_PATH, "preview", dataframe, table)
+
+        for label in label_set:
+            preview_file_list[label] = []
+            shutil.rmtree(("{0}/{1}/".format(preview_table, label)))
         return preview_file_list
