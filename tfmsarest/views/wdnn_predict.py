@@ -77,7 +77,7 @@ class WideDeepNetPredict(APIView):
                 #return HttpResponse(json.dumps(results_data))
 
 
-            result = predict.wdd_predict(nnid,filename)
+            result = predict.wdnn_predict().wdd_predict(nnid,filename)
             print("return results %s" % type(result))
             #return_data = json.dumps(result,cls=PythonObjectEncoder)
             return_data = json.dumps(result)
@@ -88,9 +88,9 @@ class WideDeepNetPredict(APIView):
             return Response(json.dumps(return_data))
 
 
-
-class PythonObjectEncoder(JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, (list, dict, str, unicode, int, float, bool, type(None))):
-            return JSONEncoder.default(self, obj)
-        return {'_python_object': pickle.dumps(obj)}
+#
+# class PythonObjectEncoder(JSONEncoder):
+#     def default(self, obj):
+#         if isinstance(obj, (list, dict, str, unicode, int, float, bool, type(None))):
+#             return JSONEncoder.default(self, obj)
+#         return {'_python_object': pickle.dumps(obj)}

@@ -56,7 +56,7 @@ class wdnn_train(WdnnCommonManager):
 
             print("((2.Get Dataframe from Hbase)) ##Start## (" + database+ " , "+ table_name + " , " + label_column + ")")
 
-            limit_no = 10000 #limit number for hbase cnt
+            limit_no = 3000 #limit number for hbase cnt
             df = data.DataMaster().query_data(database, table_name, "a", use_df=True,limit_cnt=limit_no,with_label=label_column)
             print("what is df type")
             print(type(df))
@@ -64,14 +64,27 @@ class wdnn_train(WdnnCommonManager):
 
             ##MAKE MONITOR
             print("###################make monitors ##############")
-            customsMonitor = Monitors.MonitorCommon(p_nn_id = nnid, p_max_steps=limit_no, p_every_n_steps=50)
+            model_lint_cnt = 10000
+            customsMonitor = Monitors.MonitorCommon(p_nn_id = nnid, p_max_steps=model_lint_cnt, p_every_n_steps=1000)
 
             print("((3.Wide & Deep Network Train )) ##Start##  (" + nnid + ")")
-            wdnn_model.fit(input_fn=lambda: WdnnCommonManager.input_fn(self, df, nnid), steps=limit_no, monitors=[customsMonitor])
+            wdnn_model.fit(input_fn=lambda: WdnnCommonManager.input_fn(self, df, nnid), steps=model_lint_cnt, monitors=[customsMonitor])
             print("((3.Wide & Deep Network Train )) ##End##  (" + nnid + ")")
 
             #conf dir need
             results = wdnn_model.evaluate(input_fn=lambda: WdnnCommonManager.input_fn(self, df, nnid), steps=1)
+
+            #predict_results = wdnn_model.predict(input_fn=lambda: WdnnCommonManager.input_fn(self, df, nnid))
+            #wdnn_model.predict(i)
+            print("##########predict cokes###############")
+            #print(predict_results)
+
+            #thefile = open('/home/dev/test_predict.txt', 'w')
+            #for item in predict_results:
+            #    thefile.write("%s\n" % item)
+
+            #for predict_y in predict_results:
+            #    print(predict_y)
 
             for key in sorted(results):
                 print("((4.Wide & Deep Network Accurary)) %s: %s" % (key, results[key]))
