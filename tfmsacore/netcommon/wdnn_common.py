@@ -111,6 +111,7 @@ class WdnnCommonManager:
         :return: json string """
 
         utils.tfmsa_logger("((get_json_by_nnid)) ## START##")
+        print(nnid)
         #print("get_json_networkid########")
         #print("((get_json_by_nnid)) ## START##")
         result = netconf.get_network_config(nnid)
