@@ -44,8 +44,8 @@ class ImageFileData(APIView):
         """
         try:
             logger.tfmsa_logger("start uploading image on hdfs")
-            if 'file' in request.FILES:
-                data_count = data.ImageManager().put_data(baseid, table , label, request.FILES.getlist('file'), nnid)
+            if len(request.FILES.keys()) > 0 :
+                data_count = data.ImageManager().put_data(baseid, table , label, request.FILES, nnid)
             return_data = {"status": "200", "result": data_count}
             return Response(json.dumps(return_data))
         except Exception as e:

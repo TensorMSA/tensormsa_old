@@ -57,7 +57,7 @@ def common_nninfo_post():
     #                      })
     resp = requests.post('http://' + url + '/api/v1/type/common/nninfo/',
                          json={
-                             "nn_id": "nn0000091",
+                             "nn_id": "nn0000045",
                              "category": "MES",
                              "subcate" : "csv",
                              "name": "CENSUS_INCOME",
@@ -365,7 +365,7 @@ def cnn_conf_post():
                                  "layer":
                                      [
                                          {
-                                             "type": "input",
+                                             "type": "cnn",
                                              "active": "relu",
                                              "cnnfilter": [2, 2],
                                              "cnnstride": [2, 2],
@@ -415,12 +415,12 @@ def cnn_conf_post():
     print("evaluation result : {0}".format(data))
 
 def cnn_conf_get():
-    resp = requests.get('http://' + url + '/api/v1/type/cnn/conf/nn0000010/')
+    resp = requests.get('http://' + url + '/api/v1/type/cnn/conf/nn0000091/')
     data = json.loads(resp.json())
     print("evaluation result : {0}".format(data))
 
 def cnn_conf_put():
-    resp = requests.put('http://' + url + '/api/v1/type/cnn/conf/nn0000010/',
+    resp = requests.put('http://' + url + '/api/v1/type/cnn/conf/nn0000091/',
                         json={
                             "data":
                                 {
@@ -433,7 +433,7 @@ def cnn_conf_put():
                             "layer":
                                 [
                                     {
-                                        "type": "input",
+                                        "type": "cnn",
                                         "active": "relu",
                                         "cnnfilter": [2, 2],
                                         "cnnstride": [2, 2],
@@ -483,7 +483,7 @@ def cnn_conf_put():
     print("evaluation result : {0}".format(data))
 
 def cnn_conf_delete():
-    resp = requests.delete('http://' + url + '/api/v1/type/cnn/conf/nn0000090/')
+    resp = requests.delete('http://' + url + '/api/v1/type/cnn/conf/nn0000091/')
     data = json.loads(resp.json())
     print("evaluation result : {0}".format(data))
 
@@ -493,7 +493,7 @@ def cnn_conf_delete():
 ####################################################################################
 
 def cnn_train_post():
-    resp = requests.post('http://' + url + '/api/v1/type/cnn/train/nn0000091/',
+    resp = requests.post('http://' + url + '/api/v1/type/cnn/train/nn0000045/',
                          json= {
                              "epoch" : "10",
                              "testset" : "10"
@@ -508,7 +508,7 @@ def cnn_train_post():
 
 def cnn_predict_put():
     img = simple_resize("/home/dev/TensorMSA/tfmsacore/resources/test.png", 32, 32 )
-    resp = requests.put('http://' + url + '/api/v1/type/cnn/predict/nn0000091/',
+    resp = requests.put('http://' + url + '/api/v1/type/cnn/predict/nn0000045/',
                          json= [img]
                          )
     data = json.loads(resp.json())
@@ -621,7 +621,7 @@ def cnn_eval_get():
 # image - format
 ####################################################################################
 def image_format_post():
-    resp = requests.post('http://' + url + '/api/v1/type/imagefile/base/mes/table/testtable2/format/nn0000091/',
+    resp = requests.post('http://' + url + '/api/v1/type/imagefile/base/mes/table/test10/format/nn0000091/',
                          json={"x_size": 32,
                                "y_size": 32
                                })
@@ -634,7 +634,7 @@ def image_format_get():
     print("evaluation result : {0}".format(data))
 
 def image_table_post():
-    resp = requests.post('http://' + url + '/api/v1/type/imagefile/base/mes/table/testtable3/')
+    resp = requests.post('http://' + url + '/api/v1/type/imagefile/base/mes/table/test10/')
     data = json.loads(resp.json())
     print("evaluation result : {0}".format(data))
 
@@ -726,12 +726,12 @@ data setup  screen
 
 """
 #common, dataframe, cnn, wdnn
-category1 = "common"
+category1 = "image"
 # checker, predict, stat, evaluation, train, conf, nnfino, base, data, format, table, pre
-category2 = "nninfo"
+category2 = "format"
 #dataframe_table_get
 # post, get, put, delete
-request = "get"
+request = "post"
 
 
 locals()["{0}_{1}_{2}".format(category1, category2, request)]()

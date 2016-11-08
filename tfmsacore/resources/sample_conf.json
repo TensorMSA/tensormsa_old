@@ -1,50 +1,59 @@
 {
     "data":
         {
-             "datalen": 16,
-             "taglen" : 2,
-             "matrix" : [4 , 4],
-             "learnrate" : 0.01
+            "datalen": 1024,
+            "taglen": 4,
+            "matrix": [32, 32],
+            "learnrate": 0.01,
+            "label":[],
+            "epoch": 10
         },
     "layer":
         [
             {
-                "type" : "input",
-                "active" : "relu",
-                "cnnfilter" : [2,2],
-                "cnnstride" : [1, 1],
-                "maxpoolmatrix" : [2, 2],
-                "maxpoolstride" : [1, 1],
-                "node_in_out" : [1,16],
-                "regualizer" : "",
-                "padding" : "SAME",
-                "droprate" : ""
+                "type": "cnn",
+                "active": "relu",
+                "cnnfilter": [2, 2],
+                "cnnstride": [2, 2],
+                "maxpoolmatrix": [2, 2],
+                "maxpoolstride": [2, 2],
+                "node_in_out": [1, 16],
+                "regualizer": "",
+                "padding": "SAME",
+                "droprate": ""
             },
-
             {
-                "type" : "cnn",
-                "active" : "relu",
-                "cnnfilter" : [2,2],
-                "cnnstride" : [1, 1],
-                "maxpoolmatrix" : [2, 2],
-                "maxpoolstride" : [1, 1],
-                "node_in_out" : [16,32],
-                "regualizer" : "",
-                "padding" : "SAME",
-                "droprate" : ""
+                "type": "cnn",
+                "active": "relu",
+                "cnnfilter": [2, 2],
+                "cnnstride": [2, 2],
+                "maxpoolmatrix": [2, 2],
+                "maxpoolstride": [2, 2],
+                "node_in_out": [16, 32],
+                "regualizer": "",
+                "padding": "SAME",
+                "droprate": ""
             },
-
             {
-                "type" : "out",
-                "active" : "softmax",
-                "cnnfilter" : "",
-                "cnnstride" : "",
-                "maxpoolmatrix" : "",
-                "maxpoolstride" : "",
-                "node_in_out" : [100,2],
-                "regualizer" : "",
-                "padding" : "SAME",
-                "droprate" : ""
+                "type": "reshape"
+            },
+            {
+                "type": "drop",
+                "active": "relu",
+                "regualizer": "",
+                "droprate": "0.5"
+            },
+            {
+                "type": "out",
+                "active": "softmax",
+                "cnnfilter": "",
+                "cnnstride": "",
+                "maxpoolmatrix": "",
+                "maxpoolstride": "",
+                "node_in_out": [32, 4],
+                "regualizer": "",
+                "padding": "SAME",
+                "droprate": ""
             }
         ]
- }
+}

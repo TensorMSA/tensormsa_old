@@ -22,13 +22,12 @@ from tfmsaview import views as ui_view
 from django.conf import settings
 from django.conf.urls.static import static
 from django.views.decorators.csrf import csrf_exempt
-from rest_framework_swagger.views import get_swagger_view
-
-schema_view = get_swagger_view(title='Pastebin API')
+#from rest_framework_swagger.views import get_swagger_view
+#schema_view = get_swagger_view(title='Pastebin API')
 
 urlpatterns = [
 
-    url(r'^docs/',  schema_view),
+    url(r'^docs/', include('rest_framework_swagger.urls')),
 
     url(r'^admin/', csrf_exempt(admin.site.urls)),
     # network info

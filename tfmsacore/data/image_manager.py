@@ -51,13 +51,14 @@ class ImageManager(HbaseManager):
             tfmsa_logger("[6]upload image on Hbase - start ")
             file_list = []
 
-            for file in file_set:
+            for key in file_set.keys():
+                file = file_set[key]
                 row_value = dict()
                 row_key = table_name + ":" + self.make_hbasekey()
                 byte_buffer, width, height = self.image_preprocess(file, net_info, format_info, label)
                 row_value[':'.join(('data', 'filebyte'))] = str(list(byte_buffer))
                 row_value[':'.join(('data', 'label'))] = str(label)
-                row_value[':'.join(('data', 'decoder'))] = str(file._name).split(".")[1]
+                row_value[':'.join(('data', 'decoder'))] = str(key).split(".")[1]
                 row_value[':'.join(('data', 'width'))] = str(width)
                 row_value[':'.join(('data', 'height'))] = str(height)
                 file_list.append(file._name)
