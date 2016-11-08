@@ -76,7 +76,7 @@ class ConvNeuralNetConfig(APIView):
             netconf.update_network(jd)
             netconf.remove_conf(nnid)
             netconf.remove_trained_data(nnid)
-            return_data = {"status": "404", "result": str(nnid)}
+            return_data = {"status": "200", "result": str(nnid)}
             return Response(json.dumps(return_data))
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}

@@ -112,24 +112,23 @@ class ImagePreprocess:
         preview_img_file = "{0}/{1}/{2}/{3}/{4}/{5}".format(
             settings.PREVIEW_IMG_PATH, "preview", dataframe, table, label, file_name)
 
-        print("==========1")
         # create preview path
         if not os.path.exists(preview_path):
             os.mkdir(preview_path)
-        print("==========2")
+
         # create database path
         if not os.path.exists(preview_database):
             os.mkdir(preview_database)
-        print("==========3")
+
         # create table path
         if not os.path.exists(preview_table):
             os.mkdir(preview_table)
-        print("==========4")
+
         # create label path
         if not os.path.exists(preview_label):
             os.mkdir(preview_label)
-        print("==========5")
+
         # check preview image number
         if(len([name for name in os.listdir(preview_label)  \
-                if os.path.isfile(os.path.join(preview_label, name))]) < 10) :
+                if os.path.isfile(os.path.join(preview_label, name))]) < 100) :
             newImage.save(preview_img_file)

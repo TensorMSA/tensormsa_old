@@ -3,6 +3,7 @@ import tensorflow as tf
 from tensorflow.contrib import learn
 import numpy as np
 from tfmsacore import netconf
+from tfmsacore import netcommon
 from tfmsacore import utils
 from TensorMSA import const
 import json, math
@@ -37,13 +38,13 @@ def predict_conv_network(nn_id, predict_data):
         #TODO : need to find way to predict without fit
         utils.tfmsa_logger("[5]fit dummy")
         train_x = np.array([ConvCommonManager(conf_info).create_dummy_matrix(len(predict_data[0]))], np.float32)
-        train_y = np.array(json.loads(net_info['datasets']), np.int32)
+        train_y = np.array(netcommon.convert_to_index(json.loads(net_info['datasets'])), np.int32)
         classifier.fit(train_x, train_y, steps=int(1))
 
         # predict result
         utils.tfmsa_logger("[6]predict result")
         y_predicted = [
-            int(p['class']) for p in classifier.predict(
+            label_set[int(p['class'])] for p in classifier.predict(
                 x=np.array(predict_data, np.float32),
                 batch_size=1,
                 as_iterable=True)

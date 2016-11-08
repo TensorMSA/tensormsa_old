@@ -54,6 +54,7 @@ class ConvCommonManager:
         train_data_set = tf.reshape(train_data_set, [-1, matrix[0], matrix[1], 1])
         curren_matrix = matrix
         curren_matrix_num = 0
+
         train_label_set = tf.one_hot(train_label_set, int(conf_info.n_class), 1, 0)
         for i in range(0, int(num_layers)):
             data = conf_info.layer[i]
