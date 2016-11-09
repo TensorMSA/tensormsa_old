@@ -126,9 +126,11 @@ urlpatterns = [
     # imagedata - manage table
     url(r'^api/v1/type/imagefile/base/(?P<baseid>.*)/table/(?P<table>.*)/',
       csrf_exempt(rest_view.ImageFileTable.as_view())),
+    url(r'^api/v1/type/imagefile/base/(?P<baseid>.*)/table/',
+      csrf_exempt(rest_view.ImageFileTable.as_view())),
 
     # imagedata - manage data frame
-    url(r'^api/v1/type/imagefile/base/(?P<baseid>\w+:?(?=/))/',
+    url(r'^api/v1/type/imagefile/base/(?P<baseid>.*)/',
       csrf_exempt(rest_view.ImageFileSchema.as_view())),
     url(r'^api/v1/type/imagefile/base/',
       csrf_exempt(rest_view.ImageFileSchema.as_view())),
