@@ -157,3 +157,23 @@ class TrainResults(models.Model):
 
     def __getitem__(self, item):
         return self.__dict__[item]
+
+class DetailTrainResult(models.Model):
+    nn_id = models.ForeignKey(NNInfo)
+    #nn_id = models.CharField(max_length=10, blank=False, primary_key=True)                 # neural network key
+    label = models.CharField(max_length=50, blank=True, default='')                         # target label (known answer)
+    guess = models.CharField(max_length=50, blank=True, default='')                         # guess result
+    ratio = models.CharField(max_length=10, blank=True, default='')                         # ratio out of 100
+    created = models.DateTimeField(auto_now_add=True)                                       # day created
+
+   #nnid	loss	step	max_step	traningdate	train_num
+    def json(self):
+        return dict(
+            nn_id = self.nn_id,
+            label=self.label,
+            guess=self.guess,
+            ratio=self.ratio
+        )
+
+    def __getitem__(self, item):
+        return self.__dict__[item]

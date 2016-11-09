@@ -7,7 +7,7 @@ from tfmsacore import utils
 from TensorMSA import const
 import json, math
 from tfmsacore.netcommon.conv_common import ConvCommonManager
-
+from tfmsacore.netcommon import monitors_common as Monitors
 
 def train_conv_network(nn_id, epoch = 100, testset = 100):
     try:
@@ -55,7 +55,8 @@ def train_conv_network(nn_id, epoch = 100, testset = 100):
 
         # start train
         utils.tfmsa_logger("[7]fit CNN")
-        classifier.fit(train_x, train_y, steps=int(epoch))
+        customsMonitor = Monitors.MonitorCommon(p_nn_id=nn_id, p_max_steps=int(epoch))
+        classifier.fit(train_x, train_y, steps=int(epoch), monitors=[customsMonitor])
 
         return len(train_y)
 
