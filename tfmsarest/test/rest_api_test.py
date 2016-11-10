@@ -13,7 +13,7 @@ import datetime
 #http://www.slideshare.net/Byungwook/rest-api-60505484
 
 url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8989")
-
+#url = "52.78.19.96:8989"
 
 ####################################################################################
 # Common - nninfo
@@ -72,7 +72,7 @@ def common_nninfo_post():
 def common_nninfo_get():
     #resp = requests.get('http://' + url + '/api/v1/type/common/nninfo/nn0000009/category/cate1/subcate/subcate1/')
     #resp = requests.get('http://' + url + '/api/v1/type/common/nninfo//category//subcate/subcate1/')
-    resp = requests.get('http://' + url + '/api/v1/type/common/nninfo//category//subcate//')
+    resp = requests.get('http://' + url + '/api/v1/type/common/nninfo/nn0000091/category//subcate//')
     data = json.loads(resp.json())
     print("evaluation result : {0}".format(data))
 
@@ -638,7 +638,12 @@ def image_table_post():
     data = json.loads(resp.json())
     print("evaluation result : {0}".format(data))
 
-def image_data_get():
+def image_table_get():
+    resp = requests.get('http://' + url + '/api/v1/type/imagefile/base/mes/')
+    data = json.loads(resp.json())
+    print("evaluation result : {0}".format(data))
+
+def image_table_get():
     resp = requests.get('http://' + url + '/api/v1/type/imagefile/base/mes/table/testtable3/label/mario/data/')
     data = json.loads(resp.json())
     print("evaluation result : {0}".format(data))
@@ -662,6 +667,17 @@ def image_preview_delete():
     resp = requests.delete('http://' + url + '/api/v1/type/imgpreview/nnid/nn0000091/')
     data = json.loads(resp.json())
     print("evaluation result : {0}".format(data))
+
+def image_label_post():
+    resp = requests.post('http://' + url + '/api/v1/type/imagefile/label/xxx/nnid/nn0000091/')
+    data = json.loads(resp.json())
+    print("evaluation result : {0}".format(data))
+
+def image_label_get():
+    resp = requests.get('http://' + url + '/api/v1/type/imagefile/label/nn0000091/')
+    data = json.loads(resp.json())
+    print("evaluation result : {0}".format(data))
+
 
 def log_insert_test():
     # resp = requests.post('http://' + url + '/api/v1/type/common/nninfo/',
@@ -728,7 +744,7 @@ data setup  screen
 #common, dataframe, cnn, wdnn
 category1 = "image"
 # checker, predict, stat, evaluation, train, conf, nnfino, base, data, format, table, pre
-category2 = "format"
+category2 = "label"
 #dataframe_table_get
 # post, get, put, delete
 request = "post"

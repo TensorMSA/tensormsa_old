@@ -168,6 +168,42 @@ class ImageManager(HbaseManager):
             jd.datasets = json.dumps(label_list)
             result = netconf.update_network(jd)
 
+    def get_label_list(self, nn_id):
+        """
+        get image label list
+        :param net_info:
+        :param label:
+        :return:
+        """
+        net_info = netconf.get_network_config(nn_id)
+        if (len(str(net_info['datasets'])) == 0):
+            label_list = []
+        else:
+            label_list = json.loads(net_info['datasets'])
+            print(label_list)
+        return label_list
+
+    def update_label_list(self, nn_id, label):
+        """
+        update image label list
+        :param net_info:
+        :param label:
+        :return:
+        """
+        net_info = netconf.get_network_config(nn_id)
+        if (len(str(net_info['datasets'])) == 0):
+            label_list = []
+        else:
+            label_list = json.loads(net_info['datasets'])
+
+        if label not in label_list:
+            label_list.append(label)
+            jd = jc.load_obj_json("{}")
+            jd.nn_id = net_info['nn_id']
+            jd.datasets = json.dumps(label_list)
+            result = netconf.update_network(jd)
+        return self.get_label_list(nn_id)
+
     def get_preview_list(self, nn_id):
         """
         return preview file locations

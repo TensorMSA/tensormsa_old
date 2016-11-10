@@ -123,6 +123,12 @@ urlpatterns = [
     url(r'^api/v1/type/imagefile/base/(?P<baseid>.*)/table/(?P<table>.*)/label/(?P<label>.*)/data/',
       csrf_exempt(rest_view.ImageFileData.as_view())),
 
+    # imagedata - data upload, search
+    url(r'^api/v1/type/imagefile/label/(?P<label>.*)/nnid/(?P<nnid>.*)/',
+      csrf_exempt(rest_view.ImageFileLabel.as_view())),
+    url(r'^api/v1/type/imagefile/label/(?P<nnid>.*)/',
+      csrf_exempt(rest_view.ImageFileLabel.as_view())),
+
     # imagedata - manage table
     url(r'^api/v1/type/imagefile/base/(?P<baseid>.*)/table/(?P<table>.*)/',
       csrf_exempt(rest_view.ImageFileTable.as_view())),
