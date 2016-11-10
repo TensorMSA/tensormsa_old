@@ -84,14 +84,11 @@ def filter_network_config(nn_id = None, category = None, subcate = None):
     """
 
     try:
-        print("filter_network_config1")
         query_set = models.NNInfo.objects.filter(nn_id__contains= nn_id, \
                                                  category__contains = category, \
                                                  subcate__contains = subcate)
-        print("filter_network_config2")
         query_set = serial.serialize("json", query_set)
-        print("filter_network_config3")
-        return json.loads(query_set, 'utf-8')
+        return json.loads(query_set)
     except Exception as e:
         raise Exception(e)
 
