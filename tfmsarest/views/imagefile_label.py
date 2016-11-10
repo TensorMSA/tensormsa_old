@@ -33,12 +33,12 @@ class ImageFileLabel(APIView):
             return_data = {"status": "404", "result": str(e)}
             return Response(json.dumps(return_data))
 
-    def delete(self, request, nnid):
+    def delete(self, request, nnid, label):
         """
         - desc : delete label info \n
         """
         try:
-            result = data.ImageManager().delete_preview_list(nnid)
+            result = data.ImageManager().delete_label_list(nnid, label)
             return_data = {"status": "200", "result": result}
             print(json.dumps(return_data))
             return Response(json.dumps(return_data))
