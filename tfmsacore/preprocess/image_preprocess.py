@@ -43,8 +43,8 @@ class ImagePreprocess:
         :param path:
         :return:
         """
-        x_size = format_info['x_size']
-        y_size = format_info['y_size']
+        x_size = int(format_info['x_size'])
+        y_size = int(format_info['y_size'])
         dataframe = net_info['dir']
         table = net_info['table']
 

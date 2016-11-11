@@ -180,7 +180,6 @@ class ImageManager(HbaseManager):
             label_list = []
         else:
             label_list = json.loads(net_info['datasets'])
-            print(label_list)
         return label_list
 
     def update_label_list(self, nn_id, label):
@@ -234,9 +233,11 @@ class ImageManager(HbaseManager):
         net_info = netconf.get_network_config(nn_id)
         dataframe = net_info['dir']
         table = net_info['table']
-        label_set = json.loads(net_info['datasets'])
+        if (len(str(net_info['datasets'])) == 0):
+            label_set = []
+        else:
+            label_set = json.loads(net_info['datasets'])
         preview_file_list = {}
-
         preview_table = "{0}/{1}/{2}/{3}".format(settings.PREVIEW_IMG_PATH, "preview", dataframe, table)
         url_path = "/{0}/{1}/{2}/{3}".format("dist", "preview", dataframe, table)
 
@@ -258,9 +259,11 @@ class ImageManager(HbaseManager):
         net_info = netconf.get_network_config(nn_id)
         dataframe = net_info['dir']
         table = net_info['table']
-        label_set = json.loads(net_info['datasets'])
+        if (len(str(net_info['datasets'])) == 0):
+            label_set = []
+        else:
+            label_set = json.loads(net_info['datasets'])
         preview_file_list = {}
-
         preview_table = "{0}/{1}/{2}/{3}".format(settings.PREVIEW_IMG_PATH, "preview", dataframe, table)
 
         for label in label_set:
