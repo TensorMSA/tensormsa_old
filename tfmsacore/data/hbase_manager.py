@@ -168,9 +168,20 @@ class HbaseManager:
                 df['label'] = (
                     df[with_label].apply(lambda x: label_first_value in x)).astype(int) #16.10.25 auto check label values for 2 type values
             tfmsa_logger("End query data!")
-            if use_df == None:
-                result = json.dumps(df.to_string(index=False))
+            #print(use_df)
+            #print(None)
+            if use_df is None:
+                resultList = list()
+
+                #resultList.append(df.columns.values.tolist().append(df.values.tolist()))
+                resultList = df.values.tolist()
+                resultList.insert(0,df.columns.values.tolist())
+                result = json.loads(json.dumps(resultList))
+
+                #result = json.loads(json.dumps(df.values.tolist()))
+                #result = json.loads(json.dumps(df.columns.values.tolist()))
             else:
+                #print("dfdfdfdfdf")
                 result = df
                 #print(df)
             #print(df.to_string(index=False))
