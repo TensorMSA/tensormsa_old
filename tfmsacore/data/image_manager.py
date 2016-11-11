@@ -51,13 +51,14 @@ class ImageManager(HbaseManager):
             tfmsa_logger("[6]upload image on Hbase - start ")
             file_list = []
 
-            for file in file_set:
+            for key in file_set.keys():
+                file = file_set[key]
                 row_value = dict()
                 row_key = table_name + ":" + self.make_hbasekey()
                 byte_buffer, width, height = self.image_preprocess(file, net_info, format_info, label)
                 row_value[':'.join(('data', 'filebyte'))] = str(list(byte_buffer))
                 row_value[':'.join(('data', 'label'))] = str(label)
-                row_value[':'.join(('data', 'decoder'))] = str(file._name).split(".")[1]
+                row_value[':'.join(('data', 'decoder'))] = str(key).split(".")[1]
                 row_value[':'.join(('data', 'width'))] = str(width)
                 row_value[':'.join(('data', 'height'))] = str(height)
                 file_list.append(file._name)
@@ -167,6 +168,62 @@ class ImageManager(HbaseManager):
             jd.datasets = json.dumps(label_list)
             result = netconf.update_network(jd)
 
+    def get_label_list(self, nn_id):
+        """
+        get image label list
+        :param net_info:
+        :param label:
+        :return:
+        """
+        net_info = netconf.get_network_config(nn_id)
+        if (len(str(net_info['datasets'])) == 0):
+            label_list = []
+        else:
+            label_list = json.loads(net_info['datasets'])
+        return label_list
+
+    def update_label_list(self, nn_id, label):
+        """
+        update image label list
+        :param net_info:
+        :param label:
+        :return:
+        """
+        net_info = netconf.get_network_config(nn_id)
+        if (len(str(net_info['datasets'])) == 0):
+            label_list = []
+        else:
+            label_list = json.loads(net_info['datasets'])
+
+        if label not in label_list:
+            label_list.append(label)
+            jd = jc.load_obj_json("{}")
+            jd.nn_id = net_info['nn_id']
+            jd.datasets = json.dumps(label_list)
+            result = netconf.update_network(jd)
+        return self.get_label_list(nn_id)
+
+    def delete_label_list(self, nn_id, label):
+        """
+        delete image label list
+        :param net_info:
+        :param label:
+        :return:
+        """
+        net_info = netconf.get_network_config(nn_id)
+        if (len(str(net_info['datasets'])) == 0):
+            label_list = []
+        else:
+            label_list = json.loads(net_info['datasets'])
+
+        if label in label_list:
+            label_list.remove(label)
+            jd = jc.load_obj_json("{}")
+            jd.nn_id = net_info['nn_id']
+            jd.datasets = json.dumps(label_list)
+            result = netconf.update_network(jd)
+        return self.get_label_list(nn_id)
+
     def get_preview_list(self, nn_id):
         """
         return preview file locations
@@ -176,9 +233,11 @@ class ImageManager(HbaseManager):
         net_info = netconf.get_network_config(nn_id)
         dataframe = net_info['dir']
         table = net_info['table']
-        label_set = json.loads(net_info['datasets'])
+        if (len(str(net_info['datasets'])) == 0):
+            label_set = []
+        else:
+            label_set = json.loads(net_info['datasets'])
         preview_file_list = {}
-
         preview_table = "{0}/{1}/{2}/{3}".format(settings.PREVIEW_IMG_PATH, "preview", dataframe, table)
         url_path = "/{0}/{1}/{2}/{3}".format("dist", "preview", dataframe, table)
 
@@ -200,9 +259,11 @@ class ImageManager(HbaseManager):
         net_info = netconf.get_network_config(nn_id)
         dataframe = net_info['dir']
         table = net_info['table']
-        label_set = json.loads(net_info['datasets'])
+        if (len(str(net_info['datasets'])) == 0):
+            label_set = []
+        else:
+            label_set = json.loads(net_info['datasets'])
         preview_file_list = {}
-
         preview_table = "{0}/{1}/{2}/{3}".format(settings.PREVIEW_IMG_PATH, "preview", dataframe, table)
 
         for label in label_set:

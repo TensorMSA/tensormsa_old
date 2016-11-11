@@ -43,3 +43,10 @@ class TrainResultsSerializer(serializers.ModelSerializer):
         model = models.TrainResults
         fields = ('nn_id', 'loss', 'step', 'max_step', 'trainDate', 'testsets')
 
+class DetailTrainResultSerializer(serializers.ModelSerializer):
+    """
+    Table : TensorMSA config data
+    """
+    class Meta:
+        model = models.DetailTrainResult
+        fields = ('nn_id', 'label', 'guess', 'ratio')

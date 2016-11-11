@@ -22,13 +22,12 @@ from tfmsaview import views as ui_view
 from django.conf import settings
 from django.conf.urls.static import static
 from django.views.decorators.csrf import csrf_exempt
-from rest_framework_swagger.views import get_swagger_view
-
-schema_view = get_swagger_view(title='Pastebin API')
+#from rest_framework_swagger.views import get_swagger_view
+#schema_view = get_swagger_view(title='Pastebin API')
 
 urlpatterns = [
 
-    url(r'^docs/',  schema_view),
+    url(r'^docs/', include('rest_framework_swagger.urls')),
 
     url(r'^admin/', csrf_exempt(admin.site.urls)),
     # network info
@@ -124,12 +123,20 @@ urlpatterns = [
     url(r'^api/v1/type/imagefile/base/(?P<baseid>.*)/table/(?P<table>.*)/label/(?P<label>.*)/data/',
       csrf_exempt(rest_view.ImageFileData.as_view())),
 
+    # imagedata - data upload, search
+    url(r'^api/v1/type/imagefile/label/(?P<label>.*)/nnid/(?P<nnid>.*)/',
+      csrf_exempt(rest_view.ImageFileLabel.as_view())),
+    url(r'^api/v1/type/imagefile/label/(?P<nnid>.*)/',
+      csrf_exempt(rest_view.ImageFileLabel.as_view())),
+
     # imagedata - manage table
     url(r'^api/v1/type/imagefile/base/(?P<baseid>.*)/table/(?P<table>.*)/',
       csrf_exempt(rest_view.ImageFileTable.as_view())),
+    url(r'^api/v1/type/imagefile/base/(?P<baseid>.*)/table/',
+      csrf_exempt(rest_view.ImageFileTable.as_view())),
 
     # imagedata - manage data frame
-    url(r'^api/v1/type/imagefile/base/(?P<baseid>\w+:?(?=/))/',
+    url(r'^api/v1/type/imagefile/base/(?P<baseid>.*)/',
       csrf_exempt(rest_view.ImageFileSchema.as_view())),
     url(r'^api/v1/type/imagefile/base/',
       csrf_exempt(rest_view.ImageFileSchema.as_view())),

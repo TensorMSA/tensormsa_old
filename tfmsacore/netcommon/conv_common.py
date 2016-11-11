@@ -59,7 +59,7 @@ class ConvCommonManager:
         for i in range(0, int(num_layers)):
             data = conf_info.layer[i]
             utils.tfmsa_logger("[{0}]define layers : {1}".format(i, data.type))
-            if (data.type == "input"):
+            if (data.type == "cnn" and i ==0):
                 train_data_set = tf.reshape(train_data_set, [-1, matrix[0], matrix[1], 1])
                 network = tf.contrib.layers.conv2d(train_data_set,
                                                    num_outputs=data.node_in_out[1],

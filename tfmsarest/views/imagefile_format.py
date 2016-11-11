@@ -64,7 +64,7 @@ class ImageFileFormat(APIView):
         """
         try:
             result = netconf.load_ori_format(nnid)
-            return_data = {"status": "200", "result": result}
+            return_data = {"status": "200", "result": json.loads(result)}
             return Response(json.dumps(return_data))
         except Exception as e:
             return_data = {"status": "400", "result": str(e)}
