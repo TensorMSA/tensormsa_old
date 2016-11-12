@@ -1,173 +1,83 @@
-# from tfmsacore.utils.logger import tfmsa_logger
-# from tfmsacore import netconf
-# import numpy as np
-# import tflearn as tflearn
-# from tflearn.layers.conv import conv_2d, max_pool_2d
-# from tflearn.layers.core import input_data, dropout, fully_connected
-# from tflearn.layers.estimator import regression
-# from tflearn.layers.normalization import local_response_normalization
-# from tfmsacore.data.data_master import DataMaster
-# from tfmsacore.data.table_preprocess import DFPreProcessor
-# from tfmsacore.utils.json_conv import JsonDataConverter as jc
-# from tfmsacore import data as td
-# from tfmsacore import netconf
-# from tfmsacore import utils
-# from tfmsacore.utils import tfmsa_logger
-#
-# class CNNEval:
-#     """
-#     Convolutional Neuralnetwork Evaluation Class
-#     """
-#     def __int__(self):
-#         """
-#         initialize variables
-#         :return:
-#         """
-#         tfmsa_logger("init CNN Evaluation")
-#         self.nn_id = None
-#         self.sample_percent = None
-#         self.sample_num = None
-#         self.sample_method = None
-#         self.test_pass = None
-#         self.test_fail = None
-#         self.acc = None
-#
-#     def eval_model(self, nn_id, sample_percent, sample_method):
-#         """
-#         evaluate accuracy with extracting random sample data
-#         :param nn_id:
-#         :param sample_percent:
-#         :param sample_method:
-#         :return:
-#         """
-#         self.nn_id = nn_id
-#         self.sample_percent = float(sample_percent)
-#         self.sample_num = int(0)
-#         self.sample_method = sample_method
-#         self.test_pass = int(0)
-#         self.test_fail = int(0)
-#         self.acc = float(0)
-#
-#         #get test data from spark
-#         self.save_condition(sample_percent, sample_method)
-#         self.test_cnn()
-#         self.save_result()
-#
-#     def save_condition(self, sample_percent, sample_method):
-#         """
-#         save test condition on database
-#         :return:
-#         """
-#         jd = jc.load_obj_json("{}")
-#         jd.samplepercent = sample_percent
-#         jd.samplemethod = sample_method
-#         jd.nn_id = self.nn_id
-#         netconf.update_network(jd)
-#
-#     def save_result(self):
-#         """
-#         save test result on database
-#         :return:
-#         """
-#         tfmsa_logger("sample_num  {0}".format(self.sample_num))
-#         tfmsa_logger("acc  {0}".format(self.acc))
-#         tfmsa_logger("test_pass  {0}".format(self.test_pass))
-#         tfmsa_logger("test_fail  {0}".format(self.test_fail))
-#
-#         jd = jc.load_obj_json("{}")
-#         jd.samplepercent = self.sample_percent
-#         jd.samplemethod = self.sample_method
-#         jd.samplenum = self.sample_num
-#         jd.testpass = self.test_pass
-#         jd.testfail = self.test_fail
-#         jd.acc = self.acc
-#         jd.nn_id = self.nn_id
-#         netconf.update_network(jd)
-#
-#     def compare_result(self, data1, data2):
-#         """
-#         compare original data and predict data
-#         :param data1:
-#         :param data2:
-#         :return:
-#         """
-#         for idx in range(0, len(data2)):
-#             if(data1[idx].index(max(data1[idx])) == data2[idx].index(max(data2[idx]))):
-#                 self.test_pass += 1
-#             else:
-#                 self.test_fail += 1
-#
-#         self.sample_num = self.test_pass + self.test_fail
-#         self.acc = round(float(self.test_pass) / self.sample_num, 3)
-#
-#
-#     def test_cnn(self):
-#         """
-#         test cnn and get predict result
-#         :return:
-#         """
-#         try:
-#             tfmsa_logger("start Evaluation....")
-#             # load NN conf form db
-#             conf = netconf.load_conf(self.nn_id)
-#
-#             # modify predict fit to tarin
-#             sp_loader = DFPreProcessor().get_eval_data(self.nn_id)
-#
-#             # set spaces for input data
-#             datalen = conf.data.datalen
-#             matrix = conf.data.matrix
-#             learnrate = conf.data.learnrate
-#             request_x = np.reshape(sp_loader.m_train, (-1, matrix[0], matrix[1], 1))
-#             request_y = sp_loader.m_tag
-#
-#             # create network conifg
-#             num_layers = len(conf.layer)
-#             for i in range(0, num_layers):
-#
-#                 data = conf.layer[i]
-#                 if (data.type == "input"):
-#                     network = input_data(shape=[None, matrix[0], matrix[1], 1], name='input')
-#                     network = conv_2d(network, data.node_in_out[1], data.cnnfilter, activation=str(data.active),
-#                                       regularizer=data.regualizer)
-#                     network = max_pool_2d(network, data.maxpoolmatrix)
-#                     network = local_response_normalization(network)
-#
-#                 elif (data.type == "cnn"):
-#                     network = conv_2d(network, data.node_in_out[1], data.cnnfilter, activation=str(data.active),
-#                                       regularizer=data.regualizer)
-#                     network = max_pool_2d(network, data.maxpoolmatrix)
-#                     network = local_response_normalization(network)
-#
-#                 elif (data.type == "drop"):
-#                     network = fully_connected(network, data.node_in_out[0], activation=str(data.active))
-#                     network = dropout(network, int(data.droprate))
-#                     network = fully_connected(network, data.node_in_out[1], activation=str(data.active))
-#                     network = dropout(network, int(data.droprate))
-#
-#                 elif (data.type == "out"):
-#                     network = fully_connected(network, data.node_in_out[1], activation=str(data.active))
-#                     network = regression(network, optimizer='adam', learning_rate=learnrate,
-#                                          loss='categorical_crossentropy', name='target')
-#
-#                 elif (data.type == "fully"):
-#                     network = fully_connected(network, data.node_in_out[1], activation=str(data.active))
-#
-#                 else:
-#                     raise SyntaxError("there is no such kind of nn type : " + str(data.active))
-#
-#             # set net conf to real tensorflow
-#             model = tflearn.DNN(network, tensorboard_verbose=0)
-#
-#             # restore model and start predict with given data
-#             model = netconf.nn_data_manager.load_trained_data(self.nn_id, model)
-#             result = model.predict(request_x)
-#
-#             self.compare_result(request_y, result)
-#
-#             tfmsa_logger("End Evaluation with result : {0}".format(self.acc))
-#             return self.acc
-#
-#         except SyntaxError as e:
-#             tfmsa_logger("Error while Evaluation  : {0}".format(e))
-#             return e
+from sklearn import metrics
+import tensorflow as tf
+from tensorflow.contrib import learn
+import numpy as np
+from tfmsacore import netconf
+from tfmsacore import utils
+from TensorMSA import const
+import json, math
+from tfmsacore.netcommon.conv_common import ConvCommonManager
+from tfmsacore.netcommon.acc_eval_common import AccEvalCommon
+from tfmsacore import netcommon
+
+def eval_conv_network(nn_id, sampcnn_predictlenum = 0.1, samplemethod = 1):
+    try:
+        # check network is ready to train
+        utils.tfmsa_logger("[1]check pre steps ready")
+        utils.check_requested_nn(nn_id)
+
+        # get network base info
+        utils.tfmsa_logger("[2]get network base info")
+        net_info = netconf.get_network_config(nn_id)
+
+        # get network format info
+        utils.tfmsa_logger("[3]get network format info")
+        conf_info = netconf.load_conf(nn_id)
+
+        # load train data
+        utils.tfmsa_logger("[4]load train data")
+        train_data_set = []
+        train_label_set = []
+
+        # TODO : need to change data loader to get sample data (not all data)
+        if(const.TYPE_IMAGE == net_info['preprocess']):
+            train_data_set, train_label_set = ConvCommonManager(conf_info).prepare_image_data(nn_id, net_info)
+        elif(const.TYPE_DATA_FRAME == net_info['preprocess']):
+            raise Exception("function not ready")
+        elif(const.TYPE_TEXT == net_info['preprocess']):
+            raise Exception("function not ready")
+        else:
+            raise Exception("unknown data type")
+
+        # data size info change
+        utils.tfmsa_logger("[5]modify data stuctor info")
+        ConvCommonManager(conf_info).save_changed_data_info(nn_id, train_data_set)
+
+        learnrate = conf_info.data.learnrate
+        label_set = json.loads(net_info['datasets'])
+        conf_info.n_class = len(label_set)
+
+        # change to nummpy array
+        train_x = np.array(train_data_set, np.float32)
+        train_y = np.array(train_label_set, np.int32)
+
+        # define classifier
+        utils.tfmsa_logger("[6]define classifier")
+        classifier = learn.Estimator(model_fn=ConvCommonManager(conf_info).struct_cnn_layer,
+                                     model_dir=netconf.nn_model_manager.get_model_save_path(nn_id))
+
+        # start train
+        #TODO : need to find way to predict without fit
+        utils.tfmsa_logger("[5]fit dummy")
+        train_x = np.array([ConvCommonManager(conf_info).create_dummy_matrix(len(train_x[0]))], np.float32)
+        train_y = np.array(netcommon.convert_to_index(json.loads(net_info['datasets'])), np.int32)
+        classifier.fit(train_x, train_y, steps=int(1))
+
+        # start train
+        utils.tfmsa_logger("[8]evaluate prediction result")
+        y_predicted = [
+            label_set[int(p['class'])] for p in classifier.predict(
+                x=np.array(train_x, np.float32),
+                batch_size=1,
+                as_iterable=True)
+            ]
+
+        counter = 0
+        for p in classifier.predict(x=np.array(train_x, np.float32),batch_size=1,as_iterable=True):
+            AccEvalCommon.set_result(label_set[train_y[counter]], label_set[int(p['class'])])
+
+        return len(train_y)
+
+    except Exception as e:
+        print("Error Message : {0}".format(e))
+        raise Exception(e)

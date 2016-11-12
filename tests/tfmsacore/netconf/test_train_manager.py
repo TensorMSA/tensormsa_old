@@ -3,7 +3,7 @@ from tfmsacore import netconf
 from tfmsacore.utils import tfmsa_logger
 from PIL import Image, ImageFilter
 
-class TestImagePredictProcess(unittest.TestCase):
+class TestImageTrainManager(unittest.TestCase):
     """
     ./manage.py jenkins ./tests/tfmsacore/netconf --enable-coverage
     ./manage.py jenkins ./tests/tfmsacore/netconf

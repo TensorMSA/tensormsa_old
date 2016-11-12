@@ -34,6 +34,18 @@ def get_train_loss(nn_id):
     except Exception as e:
         raise Exception(e)
 
+def delete_train_loss(nn_id):
+    """
+    delete all loss history data on nn_id
+    :param nn_id:
+    :return:
+    """
+    try:
+        models.TrainResultLoss.objects.filter(nn_id=nn_id).delete()
+        return nn_id
+    except Exception as e:
+        raise Exception(e)
+
 
 def post_train_acc(req):
     """
@@ -59,8 +71,20 @@ def get_train_acc(nn_id):
     :return:
     """
     try:
-        query_set = models.NNInfo.objects.filter(nn_id=nn_id).select_related()
+        query_set = models.TrainResultAcc.objects.filter(nn_id=nn_id).select_related()
         query_set = serial.serialize("json", query_set)
         return json.loads(query_set)
+    except Exception as e:
+        raise Exception(e)
+
+def delete_train_acc(nn_id):
+    """
+    delete all loss history data on nn_id
+    :param nn_id:
+    :return:
+    """
+    try:
+        models.TrainResultAcc.objects.filter(nn_id=nn_id).delete()
+        return nn_id
     except Exception as e:
         raise Exception(e)

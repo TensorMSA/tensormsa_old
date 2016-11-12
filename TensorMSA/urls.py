@@ -109,9 +109,9 @@ urlpatterns = [
     url(r'^api/v1/type/cnn/checker/(?P<nnid>.*)/',
          csrf_exempt(rest_view.ConvNeuralNetChecker.as_view())),
 
-    # # Evaluate accuracy of CNN model
-    #  url(r'^api/v1/type/cnn/eval/(?P<nnid>.*)/',
-    #       csrf_exempt(rest_view.ConvNeuralNetEval.as_view())),
+    # Evaluate accuracy of CNN model
+     url(r'^api/v1/type/cnn/eval/(?P<nnid>.*)/',
+          csrf_exempt(rest_view.ConvNeuralNetEval.as_view())),
 
     # imagedata - manage column data types
     url(r'^api/v1/type/imagefile/base/(?P<baseid>.*)/table/(?P<table>.*)/format/(?P<nnid>.*)/',
