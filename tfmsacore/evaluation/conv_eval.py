@@ -10,7 +10,7 @@ from tfmsacore.netcommon.conv_common import ConvCommonManager
 from tfmsacore.netcommon.acc_eval_common import AccEvalCommon
 from tfmsacore import netcommon
 
-def eval_conv_network(nn_id, sampcnn_predictlenum = 0.1, samplemethod = 1):
+def eval_conv_network(nn_id, samplenum = 0.1, samplemethod = 1):
     try:
         # check network is ready to train
         utils.tfmsa_logger("[1]check pre steps ready")
@@ -74,7 +74,7 @@ def eval_conv_network(nn_id, sampcnn_predictlenum = 0.1, samplemethod = 1):
 
         counter = 0
         for p in classifier.predict(x=np.array(train_x, np.float32),batch_size=1,as_iterable=True):
-            AccEvalCommon.set_result(label_set[train_y[counter]], label_set[int(p['class'])])
+            AccEvalCommon(nn_id).set_result(label_set[train_y[counter]], label_set[int(p['class'])])
 
         return len(train_y)
 

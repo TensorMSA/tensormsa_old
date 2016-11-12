@@ -654,7 +654,7 @@ def image_data_put():
     data = json.loads(resp.json())
     print("evaluation result : {0}".format(data))
 def image_table_delete():
-    resp = requests.delete('http://' + url + '/api/v1/type/imagefile/base/mes/table/testtable3/')
+    resp = requests.delete('http://' + url + '/api/v1/type/imagefile/base/mes/table/nn0000045/')
     data = json.loads(resp.json())
     print("evaluation result : {0}".format(data))
 
@@ -744,10 +744,10 @@ data setup  screen
 #common, dataframe, cnn, wdnn
 category1 = "image"
 # checker, predict, stat, evaluation, train, conf, nnfino, base, data, format, table, pre
-category2 = "label"
+category2 = "table"
 #dataframe_table_get
 # post, get, put, delete
-request = "post"
+request = "delete"
 
 
 locals()["{0}_{1}_{2}".format(category1, category2, request)]()

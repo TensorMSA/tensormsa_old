@@ -33,7 +33,9 @@ class ConvNeuralNetEval(APIView):
         - desc : evaluate train result
         """
         try:
-            jd = jc.load_obj_json(request.body)
+            print(request.body)
+            jd = jc.load_obj_json(str(request.body, 'utf-8'))
+            print(jd.samplenum)
             result = eval_conv_network(nnid, jd.samplenum, jd.samplemethod)
             return_data = {"status": "ok", "result": result}
             return Response(json.dumps(return_data))
