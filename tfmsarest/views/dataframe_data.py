@@ -82,17 +82,18 @@ class DataFrameData(APIView):
         - desc : select data form spark table
         """
         try:
-            print("get parameter ---> " + str(request.body))
-            limits_t = json.loads(str(request.body,'utf-8'))
-            limit = limits_t["limits"]
+            #print("get parameter ---> " + str(request.body))
+            #limits_t = json.loads(str(request.body,'utf-8'))
+            limit = 0 #limits_t["limits"]
             #int()
             print(limit)
             if(args == None):
                 print("Here Arg None----> " + str(args))
-                result = data.HbaseManager().query_data(baseid, tb, "select * from " + str(tb),  int(limit))
+                result = data.HbaseManager().query_data(baseid, tb, "", args ,  int(limit))
+                # query_data(self, data_frame, table_name, query_str, use_df= None, limit_cnt=0, with_label = "None"):
             else:
                 print("Here Arg Here Arg----> " + str(args))
-                result = data.HbaseManager().query_data(baseid, tb, args,  int(limit))
+                result = data.HbaseManager().query_data(baseid, tb, "", args,  int(limit))
 
             return_data = {"status": "ok", "result": result}
 
