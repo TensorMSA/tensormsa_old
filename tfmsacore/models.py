@@ -135,15 +135,15 @@ class ServerConf(models.Model):
         return self.__dict__[item]
 
 
-class TrainResults(models.Model):
-    nn_id = models.CharField(max_length=10, blank=True, default='')                           # neural network key
+class TrainResultLoss(models.Model):
+    nn_id = models.ForeignKey(NNInfo)
+    key = models.AutoField(primary_key=True)
     loss = models.CharField(max_length=10, blank=True, default='')                          # loss
     step = models.CharField(max_length=10, blank=True, default='')                          # current step
     max_step = models.CharField(max_length=10, blank=True, default='')                      # final step
     trainDate = models.CharField(max_length=20, blank=True, default='')                     # train date
     testsets = models.CharField(max_length=20, blank=True, default='')                      # number of evaluation data set
 
-   #nnid	loss	step	max_step	traningdate	train_num
     def json(self):
         return dict(
             nn_id = self.nn_id,
@@ -158,15 +158,14 @@ class TrainResults(models.Model):
     def __getitem__(self, item):
         return self.__dict__[item]
 
-class DetailTrainResult(models.Model):
+class TrainResultAcc(models.Model):
     nn_id = models.ForeignKey(NNInfo)
-    #nn_id = models.CharField(max_length=10, blank=False, primary_key=True)                 # neural network key
+    key = models.AutoField(primary_key=True)                                                # version id (primary)
     label = models.CharField(max_length=50, blank=True, default='')                         # target label (known answer)
     guess = models.CharField(max_length=50, blank=True, default='')                         # guess result
     ratio = models.CharField(max_length=10, blank=True, default='')                         # ratio out of 100
     created = models.DateTimeField(auto_now_add=True)                                       # day created
 
-   #nnid	loss	step	max_step	traningdate	train_num
     def json(self):
         return dict(
             nn_id = self.nn_id,
