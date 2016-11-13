@@ -43,8 +43,9 @@ class MonitorCommon(monitors.EveryN):
         """
         try:
             utils.tfmsa_logger("MonitorCommon.monitors_update_end ---> postgres" )
+            netconf.delete_train_loss(self.nn_id)
             body=json.loads(json.dumps(logInfoData))
-            return_data = netconf.insert_train_results(body)
+            return_data = netconf.post_train_loss(body)
         except Exception as e:
             print("Error Message : {0}".format(e))
             raise Exception(e)

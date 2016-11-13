@@ -19,5 +19,7 @@ TYPE_DATA_FRAME = '1'
 TYPE_IMAGE = '2'
 TYPE_TEXT = '3'
 
-#monitor
+#monitor - loss
 LOG_OUT_STEPS = 100
+#monitor - acc
+ACC_OUT_STEPS = 1

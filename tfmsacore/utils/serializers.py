@@ -27,7 +27,7 @@ class JobManagementSerializer(serializers.ModelSerializer):
 
 class ServerConfSerializer(serializers.ModelSerializer):
     """
-    Table : TensorMSA config data
+    Table : ServerConf
     """
     class Meta:
         model = models.ServerConf
@@ -35,18 +35,18 @@ class ServerConfSerializer(serializers.ModelSerializer):
                   'spark_memory', 'hdfs_host', 'hdfs_root', 's3_host', 's3_access', 's3_sess', 's3_bucket')
 
 
-class TrainResultsSerializer(serializers.ModelSerializer):
+class TrainResultLossSerializer(serializers.ModelSerializer):
     """
-    Table : TensorMSA config data
+    Table : TrainResultLoss
     """
     class Meta:
-        model = models.TrainResults
-        fields = ('nn_id', 'loss', 'step', 'max_step', 'trainDate', 'testsets')
+        model = models.TrainResultLoss
+        fields = ('nn_id', 'key', 'loss', 'step', 'max_step', 'trainDate', 'testsets')
 
-class DetailTrainResultSerializer(serializers.ModelSerializer):
+class TrainResultAccSerializer(serializers.ModelSerializer):
     """
-    Table : TensorMSA config data
+    Table : TrainResultAcc
     """
     class Meta:
-        model = models.DetailTrainResult
-        fields = ('nn_id', 'label', 'guess', 'ratio')
+        model = models.TrainResultAcc
+        fields = ('nn_id', 'key', 'label', 'guess', 'ratio')
