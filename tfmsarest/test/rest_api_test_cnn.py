@@ -8,17 +8,6 @@ import datetime
 
 url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8989")
 
-
-
-
-"""
-CNN TEST Sequence
-1. common - env - post
-2. common - nninfo - post
-3. image - table - post
-
-"""
-
 def common_nninfo_post():
     resp = requests.post('http://' + url + '/api/v1/type/common/nninfo/',
                          json={
@@ -43,19 +32,6 @@ def image_format_post():
                                })
     data = json.loads(resp.json())
     print("evaluation result : {0}".format(data))
-
-
-
-"""
-4. image - format - post
-5. Image Upload (use ui http://localhost:8989/view/ftptest)
-6. cnn - conf - post
-7. cnn - checker - post
-8. cnn - train - post
-9. cnn - predict- put (local test)
-9. cnn - predict- post (file upload)
-10. cnn - eval - post
-"""
 
 def cnn_conf_post():
     resp = requests.post('http://' + url + '/api/v1/type/cnn/conf/' + net_work_id + '/',
@@ -136,21 +112,46 @@ def cnn_eval_post():
     data = json.loads(resp.json())
     print("evaluation result : {0}".format(data))
 
-net_work_id = "nn0000047"
-database = "mes"
-table = "nn0000047"
+"""
+STEP1
+1. common - env - post
+2. common - nninfo - post
+3. image - table - post
+4. image - format - post
+"""
 
 def cnn_step1():
     common_nninfo_post()
     image_table_post()
     image_format_post()
 
+"""
+STEP2
+Upload File
+http://IP:8989
+>>data>image>upload
+"""
+
+"""
+STEP3
+6. cnn - conf - post
+7. cnn - checker - post
+8. cnn - train - post
+"""
 def cnn_step2():
     cnn_conf_post()
     cnn_train_post()
 
+"""
+STEP4
+9. cnn - predict- put (local test)
+9. cnn - predict- post (file upload)
+10. cnn - eval - post
+"""
 def cnn_step3():
     cnn_eval_post()
 
 
-cnn_step3()
+net_work_id = "nn0000047"
+database = "mes"
+table = "nn0000047"
