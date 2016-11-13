@@ -2,21 +2,53 @@ from TensorMSA import const
 from tfmsacore import netconf
 from tfmsacore.utils.json_conv import JsonDataConverter as jc
 
-class AccStaticResult:
+class AccStaticResult():
     """
     {1 : {1:30, 2:30}, 2 : {1:30, 2:30}}
     """
     #
-    acc_result_list = {}
-    chk_steps = 0
-    prd_success = 0
-    prd_fail = 0
+    def __init__(self):
+        self._acc_result_list = {}
+        self._chk_steps = 0
+        self._prd_success = 0
+        self._prd_fail = 0
+
+    @property
+    def acc_result_list(self):
+        return self._acc_result_list
+
+    @acc_result_list.setter
+    def acc_result_list(self, value):
+        self._acc_result_list = value
+
+    @property
+    def chk_steps(self):
+        return self._chk_steps
+
+    @chk_steps.setter
+    def chk_steps(self, value):
+        self._chk_steps = value
+
+    @property
+    def prd_success(self):
+        return self._prd_success
+
+    @prd_success.setter
+    def prd_success(self, value):
+        self._prd_success = value
+
+    @property
+    def prd_fail(self):
+        return self._prd_fail
+
+    @prd_fail.setter
+    def prd_fail(self, value):
+        self._prd_fail = value
 
 class AccEvalCommon():
     """
     manage train result
     """
-
     def __init__(self,  net_id):
         """
         set network id on init
@@ -25,28 +57,29 @@ class AccEvalCommon():
         self.nn_id = net_id
         self.steps_put_db = const.ACC_OUT_STEPS
 
-
-    def set_result(self, real_result, prd_result):
+    def set_result(self, result_obj ,real_result, prd_result):
         """
         get one predict and real and update
         :param prd_result:model predicted result
         :param real_result:real result we know
         :return:
         """
-        if real_result not in AccStaticResult.acc_result_list.keys():
-            AccStaticResult.acc_result_list[real_result] = {}
+        if real_result not in result_obj.acc_result_list.keys():
+            result_obj.acc_result_list[real_result] = {}
 
-        AccStaticResult.acc_result_list[real_result] = \
-            self.set_guess(AccStaticResult.acc_result_list[real_result], prd_result)
-        AccStaticResult.chk_steps = AccStaticResult.chk_steps + 1
+        result_obj.acc_result_list[real_result] = \
+        self.set_guess(result_obj.acc_result_list[real_result], prd_result)
+        result_obj.chk_steps = result_obj.chk_steps + 1
 
         if(real_result == prd_result):
-            AccStaticResult.prd_success = AccStaticResult.prd_success + 1
+            result_obj.prd_success = result_obj.prd_success + 1
         else :
-            AccStaticResult.prd_fail = AccStaticResult.prd_fail + 1
+            result_obj.prd_fail = result_obj.prd_fail + 1
 
-        if (AccStaticResult.chk_steps % self.steps_put_db == 0):
-            self.save_result(AccStaticResult.acc_result_list)
+        if (result_obj.chk_steps % self.steps_put_db == 0):
+            self.save_result(result_obj, result_obj.acc_result_list)
+
+        return result_obj
 
     def set_guess(self, guess_set, prd_result):
         """
@@ -61,7 +94,7 @@ class AccEvalCommon():
             guess_set[prd_result] = guess_set[prd_result] + 1
         return guess_set
 
-    def save_result(self, train_result):
+    def save_result(self, result_obj, train_result):
         """
         save result on db
         :param train_result:
@@ -79,9 +112,9 @@ class AccEvalCommon():
 
         jd = jc.load_obj_json("{}")
         jd.nn_id = self.nn_id
-        jd.testpass = AccStaticResult.prd_success
-        jd.testfail = AccStaticResult.prd_fail
-        jd.acc = AccStaticResult.prd_success / (AccStaticResult.prd_success + AccStaticResult.prd_fail)
+        jd.testpass = result_obj.prd_success
+        jd.testfail = result_obj.prd_fail
+        jd.acc = result_obj.prd_success / (result_obj.prd_success + result_obj.prd_fail)
         netconf.update_network(jd)
 
 

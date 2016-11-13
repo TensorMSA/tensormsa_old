@@ -112,6 +112,11 @@ def cnn_eval_post():
     data = json.loads(resp.json())
     print("evaluation result : {0}".format(data))
 
+def cnn_eval_get():
+    resp = requests.get('http://' + url + '/api/v1/type/cnn/eval/' + net_work_id +'/')
+    data = json.loads(resp.json())
+    print("evaluation result : {0}".format(data))
+
 """
 STEP1
 1. common - env - post
@@ -150,8 +155,11 @@ STEP4
 """
 def cnn_step3():
     cnn_eval_post()
+    cnn_eval_get()
 
 
 net_work_id = "nn0000047"
 database = "mes"
 table = "nn0000047"
+
+cnn_step3()
