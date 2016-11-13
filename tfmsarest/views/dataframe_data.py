@@ -50,26 +50,57 @@ class DataFrameData(APIView):
 
             elif(args == "CSV"):
                 logger.tfmsa_logger("start uploading csv on file system")
-                if 'file' in request.FILES:
-                    file = request.FILES['file']
-                    filename = file._name
+                print(request.FILES)
+                results_data = ""
+                if len(request.FILES.keys()) > 0:
+                    #loop files
+                    for key, requestSingileFile in request.FILES.items():
+                        print("in the loop")
+                        print(requestSingileFile)
+                        print(key)
 
-                    # save file on file system
-                    directory = "{0}/{1}/{2}".format(settings.FILE_ROOT, baseid, tb)
-                    if not os.path.exists(directory):
-                        os.makedirs(directory)
-                    fp = open("{0}/{1}/{2}/{3}".format(settings.FILE_ROOT, baseid, tb, filename), 'wb')
-                    for chunk in file.chunks():
-                        fp.write(chunk)
-                    fp.close()
-                    logger.tfmsa_logger("Before calling save csv_to df")
-                    #update on hdfs
-                    #lastRowKey,  insertedRows, lastRowKey
-                    results_data = data.HbaseManager().save_csv_to_df(baseid, tb, filename)
+                        file = requestSingileFile
+                        print("multi error")
+                        print(file)
+                        filename = file._name
+                        print(filename)
+                        # save file on file system
+                        directory = "{0}/{1}/{2}".format(settings.FILE_ROOT, baseid, tb)
+                        if not os.path.exists(directory):
+                            os.makedirs(directory)
+                        fp = open("{0}/{1}/{2}/{3}".format(settings.FILE_ROOT, baseid, tb, filename), 'wb')
+                        for chunk in file.chunks():
+                            fp.write(chunk)
+                        fp.close()
+                        logger.tfmsa_logger("Before calling save csv_to df")
+                        results_data = data.HbaseManager().save_csv_to_df(baseid, tb, filename)
 
-                    #return HttpResponse(json.dumps(results_data))
-            else :
-                raise Exception("not supported type")
+
+                        # if 'file' in requestSingileFile:
+                        #     checkFileinit = True
+                        #     print(checkFileinit)
+                        # if 'file' in request.FILES:
+                        #     file = request.FILES['file']
+                        #     print("multi error")
+                        #     print(file)
+                        #     filename = file._name
+                        #     print(filename)
+                        #     # save file on file system
+                        #     directory = "{0}/{1}/{2}".format(settings.FILE_ROOT, baseid, tb)
+                        #     if not os.path.exists(directory):
+                        #         os.makedirs(directory)
+                        #     fp = open("{0}/{1}/{2}/{3}".format(settings.FILE_ROOT, baseid, tb, filename), 'wb')
+                        #     for chunk in file.chunks():
+                        #         fp.write(chunk)
+                        #     fp.close()
+                        #     logger.tfmsa_logger("Before calling save csv_to df")
+                        #     #update on hdfs
+                        #     #lastRowKey,  insertedRows, lastRowKey
+                        #     results_data = data.HbaseManager().save_csv_to_df(baseid, tb, filename)
+                        #
+                        #     #return HttpResponse(json.dumps(results_data))
+                    else :
+                        raise Exception("not supported type")
 
             return_data = {"status": "ok", "result": results_data}
             return Response(json.dumps(return_data))
