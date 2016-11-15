@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from django.http import HttpResponse
 from rest_framework.views import APIView
 from tfmsacore.utils import CusJsonEncoder,logger
+from tfmsacore import netconf
 from tfmsacore import data
 
 class ImageFileData(APIView):
@@ -46,6 +47,7 @@ class ImageFileData(APIView):
             logger.tfmsa_logger("start uploading image on hdfs")
             if len(request.FILES.keys()) > 0 :
                 data_count = data.ImageManager().put_data(baseid, table , label, request.FILES, nnid)
+            netconf.set_on_data(nnid)
             return_data = {"status": "200", "result": data_count}
             return Response(json.dumps(return_data))
         except Exception as e:

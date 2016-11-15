@@ -11,18 +11,19 @@ def save_upload_file(request):
     try:
         ran = random.randrange(1000, 9999)
         directory = settings.FILE_TEMP_UPLOAD_ROOT + "/" + str(ran)
-        if 'file' in request.FILES:
-            file = request.FILES['file']
+
+        output_file_list = []
+        for file in  request.FILES.getlist('file'):
             filename = file._name
             # save file on file system
             file_path = directory + "/" + filename
-            print(directory)
+            output_file_list.append(file_path)
             if not os.path.exists(directory):
                 os.makedirs(directory)
             fp = open(file_path, 'wb')
             for chunk in file.chunks():
                 fp.write(chunk)
-        return file_path
+        return output_file_list
     except Exception as e :
         raise Exception (e)
     finally :

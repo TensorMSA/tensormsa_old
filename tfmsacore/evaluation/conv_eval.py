@@ -5,9 +5,10 @@ import numpy as np
 from tfmsacore import netconf
 from tfmsacore import utils
 from TensorMSA import const
-import json, math
+import json, math, copy
 from tfmsacore.netcommon.conv_common import ConvCommonManager
 from tfmsacore.netcommon.acc_eval_common import AccEvalCommon
+from tfmsacore.netcommon.acc_eval_common import AccStaticResult
 from tfmsacore import netcommon
 
 def eval_conv_network(nn_id, samplenum = 0.1, samplemethod = 1):
@@ -59,23 +60,17 @@ def eval_conv_network(nn_id, samplenum = 0.1, samplemethod = 1):
         # start train
         #TODO : need to find way to predict without fit
         utils.tfmsa_logger("[5]fit dummy")
-        train_x = np.array([ConvCommonManager(conf_info).create_dummy_matrix(len(train_x[0]))], np.float32)
-        train_y = np.array(netcommon.convert_to_index(json.loads(net_info['datasets'])), np.int32)
-        classifier.fit(train_x, train_y, steps=int(1))
+        dummy_x = np.array([ConvCommonManager(conf_info).create_dummy_matrix(len(train_x[0]))], np.float32)
+        dummy_y = np.array(netcommon.convert_to_index(json.loads(net_info['datasets'])), np.int32)
+        classifier.fit(dummy_x, dummy_y, steps=int(1))
 
         # start train
         utils.tfmsa_logger("[8]evaluate prediction result")
-        y_predicted = [
-            label_set[int(p['class'])] for p in classifier.predict(
-                x=np.array(train_x, np.float32),
-                batch_size=1,
-                as_iterable=True)
-            ]
-
         counter = 0
+        acc_result_obj = AccStaticResult()
         for p in classifier.predict(x=np.array(train_x, np.float32),batch_size=1,as_iterable=True):
-            AccEvalCommon(nn_id).set_result(label_set[train_y[counter]], label_set[int(p['class'])])
-
+            acc_result_obj = AccEvalCommon(nn_id).set_result(acc_result_obj, label_set[train_y[counter]], label_set[int(p['class'])])
+            counter = counter + 1
         return len(train_y)
 
     except Exception as e:

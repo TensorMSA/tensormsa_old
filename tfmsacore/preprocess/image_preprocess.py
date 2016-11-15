@@ -130,5 +130,5 @@ class ImagePreprocess:
 
         # check preview image number
         if(len([name for name in os.listdir(preview_label)  \
-                if os.path.isfile(os.path.join(preview_label, name))]) < 100) :
+                if os.path.isfile(os.path.join(preview_label, name))]) < 8) :
             newImage.save(preview_img_file)

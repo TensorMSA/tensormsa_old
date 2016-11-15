@@ -72,9 +72,13 @@ class DataFrameFormat(APIView):
             jd.datadesc = str(request.body,'utf-8')
             netconf.save_format(nnid, str(request.body,'utf-8'))
             result = netconf.update_network(jd)
+            netconf.set_on_data(nnid)
+            netconf.set_on_data_conf(nnid)
             return_data = {"status": "200", "result": result}
             return Response(json.dumps(return_data))
         except Exception as e:
+            netconf.set_off_data(nnid)
+            netconf.set_off_data_conf(nnid)
             return_data = {"status": "400", "result": str(e)}
             return Response(json.dumps(return_data))
 
@@ -143,9 +147,13 @@ class DataFrameFormat(APIView):
             jd.datadesc = ""
             netconf.remove_format(nnid)
             result = netconf.update_network(jd)
+            netconf.set_on_data(nnid)
+            netconf.set_on_data_conf(nnid)
             return_data = {"status": "200", "result": result}
             return Response(json.dumps(return_data))
         except Exception as e:
+            netconf.set_off_data(nnid)
+            netconf.set_off_data_conf(nnid)
             return_data = {"status": "400", "result": str(e)}
             return Response(json.dumps(return_data))
 

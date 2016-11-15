@@ -35,6 +35,8 @@ urlpatterns = [
         csrf_exempt(rest_view.CommonNetInfo.as_view())),
     url(r'^api/v1/type/common/nninfo/$',
         csrf_exempt(rest_view.CommonNetInfo.as_view())),
+    url(r'^api/v1/type/common/nninfo/(?P<nnid>.*)/$',
+        csrf_exempt(rest_view.CommonNetInfo.as_view())),
 
     # pre process for dataframe data
     url(r'^api/v1/type/dataframe/base/(?P<baseid>.*)/table/(?P<tb>.*)/pre/(?P<nnid>.*)/',
@@ -144,6 +146,14 @@ urlpatterns = [
     # image fire preview
     url(r'^api/v1/type/imgpreview/nnid/(?P<nnid>.*)/',
       csrf_exempt(rest_view.ImageFilePreview.as_view())),
+
+    # cifar
+    url(r'^api/v1/type/cifar/kind/ten/',
+      csrf_exempt(rest_view.CifarTenPredict.as_view())),
+
+    # common stat result
+    url(r'^api/v1/type/common/stat/(?P<nnid>.*)/',
+      csrf_exempt(rest_view.CommonResultStatInfo.as_view())),
 
     # UI / View index
     url(r'^$', csrf_exempt(ui_view.UI_Service.as_view())),

@@ -42,15 +42,12 @@ class WideDeepNetConfig(APIView):
               pytype: json
         """
         try:
-            jd = jc.load_obj_json("{}")
-            jd.config = "Y"
-            jd.nn_id = nnid
-            #jd.datasize = request.body
-            netconf.update_network(jd)
+            netconf.set_on_net_conf()
             netconf.save_conf(nnid, str(request.body, 'utf-8'))
             return_data = {"status": "200", "result": nnid}
             return Response(json.dumps(return_data))
         except Exception as e:
+            netconf.set_off_net_conf()
             return_data = {"status": "404", "result": str(e)}
             return Response(json.dumps(return_data))
 
@@ -84,10 +81,7 @@ class WideDeepNetConfig(APIView):
         -desc : delete selected net work conf
         """
         try:
-            jd = jc.load_obj_json("{}")
-            jd.config = ""
-            jd.nn_id = nnid
-            netconf.update_network(jd)
+            netconf.set_off_net_conf(nnid)
             netconf.remove_conf(nnid)
             netconf.remove_trained_data(nnid)
             return_data = {"status": "404", "result": str(nnid)}

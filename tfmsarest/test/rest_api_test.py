@@ -705,6 +705,10 @@ def log_insert_test():
     data = json.loads(resp.json())
     print("evaluation result : {0}".format(data))
 
+def common_stat_get():
+    resp = requests.get('http://' + url + '/api/v1/type/common/stat/nn0000045/')
+    data = json.loads(resp.json())
+    print("evaluation result : {0}".format(data))
 
 
 ####################################################################################
@@ -747,6 +751,7 @@ dataframe_base_get
 
 """
 #common, dataframe, cnn, wdnn
+
 category1 = "dataframe"
 # checker, predict, stat, evaluation, train, conf, nnfino, base, data, format, table, pre
 category2 = "format"

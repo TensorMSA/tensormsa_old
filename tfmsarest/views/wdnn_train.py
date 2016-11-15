@@ -2,8 +2,7 @@ import json
 
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from TensorMSA import const
-from tfmsacore import service
+from tfmsacore import netconf
 from tfmsacore import train
 
 
@@ -31,9 +30,10 @@ class WideDeepNetTrain(APIView):
         """
         try:
             result = train.wdnn_train().run_wdd_train(nnid) # commom class modification 16.11.04
-            #result = train.
+            netconf.set_on_train(nnid)
             return_data = {"status": "200", "result": result}
             return Response(json.dumps(return_data))
         except Exception as e:
+            netconf.set_off_train(nnid)
             return_data = {"status": "404", "result": str(e)}
             return Response(json.dumps(return_data))
