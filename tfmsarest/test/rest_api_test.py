@@ -701,6 +701,10 @@ def log_insert_test():
     data = json.loads(resp.json())
     print("evaluation result : {0}".format(data))
 
+def common_stat_get():
+    resp = requests.get('http://' + url + '/api/v1/type/common/stat/nn0000045/')
+    data = json.loads(resp.json())
+    print("evaluation result : {0}".format(data))
 
 
 ####################################################################################
@@ -742,12 +746,12 @@ data setup  screen
 
 """
 #common, dataframe, cnn, wdnn
-category1 = "image"
+category1 = "common"
 # checker, predict, stat, evaluation, train, conf, nnfino, base, data, format, table, pre
-category2 = "table"
+category2 = "stat"
 #dataframe_table_get
 # post, get, put, delete
-request = "delete"
+request = "get"
 
 
 locals()["{0}_{1}_{2}".format(category1, category2, request)]()

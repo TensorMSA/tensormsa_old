@@ -145,9 +145,13 @@ urlpatterns = [
     url(r'^api/v1/type/imgpreview/nnid/(?P<nnid>.*)/',
       csrf_exempt(rest_view.ImageFilePreview.as_view())),
 
-    # image fire preview
+    # cifar
     url(r'^api/v1/type/cifar/kind/ten/',
       csrf_exempt(rest_view.CifarTenPredict.as_view())),
+
+    # common stat result
+    url(r'^api/v1/type/common/stat/(?P<nnid>.*)/',
+      csrf_exempt(rest_view.CommonResultStatInfo.as_view())),
 
     # UI / View index
     url(r'^$', csrf_exempt(ui_view.UI_Service.as_view())),

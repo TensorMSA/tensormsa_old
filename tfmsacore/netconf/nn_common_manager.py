@@ -127,3 +127,26 @@ def delete_net_info(nn_id):
     except Exception as e:
         return e
 
+
+def get_net_summary(nn_id):
+    """
+       search network eval suummary
+       :param net_id:
+       :return:
+       """
+    try:
+        result_set = {}
+        query_set = models.NNInfo.objects.filter(nn_id = nn_id)
+        query_set = serial.serialize("json", query_set)
+        query_set = json.loads(query_set)[0]['fields']
+
+        result_set['nn_id'] = nn_id
+        result_set['samplepercent'] = query_set['samplepercent']
+        result_set['samplenum'] = query_set['samplenum']
+        result_set['samplemethod'] = query_set['samplemethod']
+        result_set['testpass'] = query_set['testpass']
+        result_set['testfail'] = query_set['testfail']
+
+        return result_set
+    except Exception as e:
+        return e

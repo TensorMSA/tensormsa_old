@@ -22,3 +22,4 @@ from .imagefile_table import ImageFileTable
 from .imagefile_preview import ImageFilePreview
 from .imagefile_label import ImageFileLabel
 from .cifar_ten_predict import CifarTenPredict
+from .common_stat import CommonResultStatInfo
