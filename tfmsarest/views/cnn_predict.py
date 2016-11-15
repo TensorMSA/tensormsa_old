@@ -46,10 +46,12 @@ class ConvNeuralNetPredict(APIView):
         """
         try:
             conf = netconf.load_format(nnid)
-            path = file_util.save_upload_file(request)
-            pre_img = ImagePreprocess().simple_resize(path, conf.x_size, conf.y_size)
-            file_util.delete_upload_file(path)
-            result = predict.predict_conv_network(nnid, [pre_img])
+            paths = file_util.save_upload_file(request)
+            pre_img = []
+            for path in paths :
+                pre_img.append(ImagePreprocess().simple_resize(path, conf.x_size, conf.y_size))
+                file_util.delete_upload_file(path)
+            result = predict.predict_conv_network(nnid, pre_img)
             return_data = {"status": "200", "result": result}
             return Response(json.dumps(return_data))
         except Exception as e:
