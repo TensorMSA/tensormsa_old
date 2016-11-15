@@ -154,5 +154,6 @@ HDFS_CONF_ROOT = '/tensormsa/config'
 HDFS_TRAIN_ROOT = '/tensormsa/traindata'
 HDFS_FORMAT_ROOT = '/tensormsa/format'
 HDFS_MODEL_ROOT = '/tensormsa/model'
+HDFS_EXTENSION_ROOT = '/tensormsa/extension'
 TFMSA_MASTER_SERVER = '172.32.1.21'
 TFMSA_TRAIN_SERVER = ['172.31.8.184:8989',]
