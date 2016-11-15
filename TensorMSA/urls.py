@@ -35,6 +35,8 @@ urlpatterns = [
         csrf_exempt(rest_view.CommonNetInfo.as_view())),
     url(r'^api/v1/type/common/nninfo/$',
         csrf_exempt(rest_view.CommonNetInfo.as_view())),
+    url(r'^api/v1/type/common/nninfo/(?P<nnid>.*)/$',
+        csrf_exempt(rest_view.CommonNetInfo.as_view())),
 
     # pre process for dataframe data
     url(r'^api/v1/type/dataframe/base/(?P<baseid>.*)/table/(?P<tb>.*)/pre/(?P<nnid>.*)/',

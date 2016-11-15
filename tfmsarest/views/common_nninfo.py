@@ -93,12 +93,12 @@ class CommonNetInfo(APIView):
             return_data = {"status": "400", "result": str(e)}
             return Response(json.dumps(return_data))
 
-    def delete(self, request):
+    def delete(self, request, nnid):
         """
         - desc: delete selected nn_info data
         """
         try:
-            result = netconf.delete_net_info(json.loads(str(request.body, 'utf-8')))
+            result = netconf.delete_net_info(nnid)
             return_data = {"status": "200", "result": result}
             return Response(json.dumps(return_data))
         except Exception as e:
