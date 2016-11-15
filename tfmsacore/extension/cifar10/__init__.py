@@ -1,0 +1,1 @@
+from .cifar10_train import s_predict_file
