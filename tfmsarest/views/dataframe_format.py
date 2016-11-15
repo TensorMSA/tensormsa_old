@@ -82,8 +82,30 @@ class DataFrameFormat(APIView):
         """
         - desc : return network data format information
         """
+        #get_network_config
         try:
-            result = netconf.load_ori_format()(nnid, request.body)
+            print("dataframe_format_Get")
+            #result = netconf.load_ori_format()(nnid, request.body)
+            result_temp = netconf.get_network_config(nnid)
+            result_datadesc_source = eval(result_temp["datadesc"])
+            print(str(request.body, 'utf-8'))
+            print("after get data")
+            print(result_datadesc_source)
+            result = ""
+            result1 = result_datadesc_source["cell_feature"]
+            result2 = result_datadesc_source["label"]
+
+            cell_label_condition = eval(str(request.body, 'utf-8'))
+            print(cell_label_condition)
+            #cell_label_condition["type"]
+
+            print(cell_label_condition)
+            #request.body
+            if cell_label_condition["type"] == "cell_feature":
+                result = result_datadesc_source["cell_feature"]
+            elif cell_label_condition["type"] == "label":
+                result = result_datadesc_source["label"]
+
             return_data = {"status": "200", "result": result}
             return Response(json.dumps(return_data))
         except Exception as e:
