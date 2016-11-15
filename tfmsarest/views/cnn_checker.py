@@ -3,6 +3,7 @@ import json
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from tfmsacore import validation
+from tfmsacore import netconf
 from tfmsacore.utils.json_conv import JsonDataConverter as jc
 
 
@@ -32,8 +33,10 @@ class ConvNeuralNetChecker(APIView):
         try:
             result = validation.CNNChecker().check_sequence(nnid)
             if(len(result) == 0):
+                netconf.set_on_net_vaild(nnid)
                 return_data = {"status": "200", "result": result}
             else :
+                netconf.set_off_net_vaild(nnid)
                 return_data = {"status": "400", "result": result}
             return Response(json.dumps(return_data))
         except Exception as e:

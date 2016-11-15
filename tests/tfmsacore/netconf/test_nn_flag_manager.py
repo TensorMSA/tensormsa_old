@@ -23,7 +23,7 @@ class TestFlagManager(unittest.TestCase):
         # just consider worsk fine if no exception occurs
         netconf.set_on_net_conf("test00001")
         netconf.set_on_net_vaild("test00001")
-        netconf.set_on_train("test00001", "0.1")
+        netconf.set_on_train("test00001")
         netconf.set_on_data_conf("test00001")
         netconf.set_on_data("test00001")
 
@@ -34,7 +34,7 @@ class TestFlagManager(unittest.TestCase):
             self.assertEqual(result[idx], 'Y')
         netconf.set_off_net_conf("test00001")
         netconf.set_off_net_vaild("test00001")
-        netconf.set_off_train("test00001", "0.1")
+        netconf.set_off_train("test00001")
         netconf.set_off_data_conf("test00001")
         netconf.set_off_data("test00001")
 

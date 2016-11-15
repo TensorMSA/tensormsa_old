@@ -35,6 +35,7 @@ class ConvNeuralNetConfig(APIView):
             jd.nn_id = nnid
             netconf.update_network(jd)
             netconf.save_conf(nnid, request.body)
+            netconf.set_on_net_conf(nnid)
             return_data = {"status": "200", "result": nnid}
             return Response(json.dumps(return_data))
         except Exception as e:
@@ -70,10 +71,7 @@ class ConvNeuralNetConfig(APIView):
         - desc : delete cnn configuration data
         """
         try:
-            jd = jc.load_obj_json("{}")
-            jd.config = ""
-            jd.nn_id = nnid
-            netconf.update_network(jd)
+            netconf.set_off_net_conf(nnid)
             netconf.remove_conf(nnid)
             netconf.remove_trained_data(nnid)
             return_data = {"status": "200", "result": str(nnid)}
