@@ -181,12 +181,11 @@ class TrainResultAcc(models.Model):
 
 class DataSchemaCategory(models.Model):
     schema = models.CharField(max_length=50, blank=False, primary_key=True)                 # combined_key : categroy_subcategory_filetype_datastep
-    filetype = models.CharField(max_length=2, blank=False, default='')                      # 1:dataframe, 2:image, 3:rawtext
-    datastep = models.CharField(max_length=2, blank=False, default='')                      # 1:rawdata, 2:preprocessed
+    filetype = models.CharField(max_length=15, blank=False, default='')                      # 1:dataframe, 2:image, 3:rawtext
+    datastep = models.CharField(max_length=15, blank=False, default='')                      # 1:rawdata, 2:preprocessed
     category = models.CharField(max_length=10, blank=False, default='')                     # ratio out of 100
     subcate = models.CharField(max_length=10, blank=False, default='')                      # ratio out of 100
     order = models.CharField(max_length=10, blank=False, default='')                        # display sequence
-    created = models.DateTimeField(auto_now_add=True)                                       # day created
 
     def json(self):
         return dict(
@@ -194,8 +193,7 @@ class DataSchemaCategory(models.Model):
             filetype=self.filetype,
             datastep=self.datastep,
             category=self.category,
-            subcate=self.subcate,
-            order=self.order
+            subcate=self.subcate
         )
 
     def __getitem__(self, item):
