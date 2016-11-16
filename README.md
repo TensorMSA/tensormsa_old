@@ -46,7 +46,7 @@ python legacy systems can use deep learning easily
    - Start tfmsa-was container (dev purpose)  </br>
    
    ```python
-       docker run -it --env="DISPLAY" --env="QT_X11_NO_MITSHM=1" --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw"  -p 8989:8989 tmddno1/tensormsa:v3
+       docker run -it --env="DISPLAY" --env="QT_X11_NO_MITSHM=1" --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw"  -p 8989:8989 -p 8888:8888 -p 5432:5432 tmddno1/tensormsa:v3
    ```
    - Start tfmsa-was container (dev purpose) </br>
    
