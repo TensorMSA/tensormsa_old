@@ -34,7 +34,7 @@ python legacy systems can use deep learning easily
    ```python
       data-master : docker pull tmddno1/tfmsa_name_node:v2
       data-slave : docker pull tmddno1/tfmsa_data_node:v2
-      tfmsa-was : docker pull tmddno1/tensormsa:v3
+      tfmsa-was : docker pull tmddno1/tensormsa:v4
       CI tools : docker pull tmddno1/jenkins:v1  
    ```
 
@@ -46,8 +46,13 @@ python legacy systems can use deep learning easily
    - Start tfmsa-was container (dev purpose)  </br>
    
    ```python
-       docker run -it --env="DISPLAY" --env="QT_X11_NO_MITSHM=1" --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw"  -p 8989:8989 -p 8888:8888 -p 5432:5432 tmddno1/tensormsa:v3
+       docker run -it --env="DISPLAY" --env="QT_X11_NO_MITSHM=1" --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw"  -p 8989:8989 -p 8888:8888 -p 5432:5432 tmddno1/tensormsa:v4
    ```
+   - postgres tool (dev purpose)  </br>
+ 
+   ```python
+       pgadmin3 &
+   ```   
    - Start tfmsa-was container (dev purpose) </br>
    
    ```python
@@ -57,8 +62,7 @@ python legacy systems can use deep learning easily
  
    ```python
        docker run -it -p 8080:8080 -d --name tmddno1/jenkins:v1
-   ```    
-   
+   ```     
    - Check servers  </br>
    ```python
       TensorMSA : http://locahost:8989  
