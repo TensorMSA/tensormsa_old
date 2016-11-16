@@ -45,7 +45,7 @@ def train_conv_network(nn_id, epoch = 100, testset = 100):
         conf_info.n_class = len(json.loads(net_info['datasets']))
 
         # change to nummpy array
-        train_x = np.array(train_data_set, np.float32)
+        train_x = np.array(np.array(train_data_set).astype(float), np.float32)
         train_y = np.array(train_label_set, np.int32)
 
         # define classifier
