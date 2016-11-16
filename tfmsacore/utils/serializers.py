@@ -50,3 +50,27 @@ class TrainResultAccSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.TrainResultAcc
         fields = ('nn_id', 'key', 'label', 'guess', 'ratio')
+
+class DataSchemaCategorySerializer(serializers.ModelSerializer):
+    """
+    Table : DataSchemaCategory
+    """
+    class Meta:
+        model = models.DataSchemaCategory
+        fields = ('schema', 'filetype', 'datastep', 'category', 'subcate', 'order')
+
+class MetaCategorySerializer(serializers.ModelSerializer):
+    """
+    Table : MetaCategory
+    """
+    class Meta:
+        model = models.MetaCategory
+        fields = ('category_id', 'category_name', 'desc', 'order')
+
+class MetaSubCategorySerializer(serializers.ModelSerializer):
+    """
+    Table : MetaSubCategory
+    """
+    class Meta:
+        model = models.MetaSubCategory
+        fields = ('category_id', 'subcateogry_id', 'subcategory_name', 'desc', 'order')

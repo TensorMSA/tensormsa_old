@@ -2,7 +2,7 @@ from django.db import models
 
 
 class NNInfo(models.Model):
-    nn_id = models.CharField(max_length=10, blank=False, primary_key=True)       # unique key name (nn00000001)
+    nn_id = models.CharField(max_length=50, blank=False, primary_key=True)       # unique key name (nn00000001)
     category = models.CharField(max_length=10, blank=False)                      # business category
     subcate = models.CharField(max_length=10, blank=False)                       # business sub category
     name = models.CharField(max_length=100, blank=True, default='')              # business name
@@ -65,7 +65,7 @@ class NNInfo(models.Model):
 
 
 class JobManagement(models.Model):
-    nn_id = models.CharField(max_length=10, blank=False, primary_key=True)                  # neural network key
+    nn_id = models.CharField(max_length=50, blank=False, primary_key=True)                  # unique key name (nn00000001)
     type = models.CharField(max_length=10, blank=False , default='')                        # init(0), preprocess(1), training(2)
     request = models.DateTimeField(auto_now_add=False, null=True, blank=True )              # time job registerd
     start = models.DateTimeField(auto_now_add=False, null=True, blank=True )                # time job started
@@ -80,6 +80,7 @@ class JobManagement(models.Model):
     def json(self):
         return dict(
             nn_id = self.nn_id,
+            key=self.key,
             type=self.type,
             request=str(self.request),
             start=str(self.start),
@@ -172,6 +173,65 @@ class TrainResultAcc(models.Model):
             label=self.label,
             guess=self.guess,
             ratio=self.ratio
+        )
+
+    def __getitem__(self, item):
+        return self.__dict__[item]
+
+
+class DataSchemaCategory(models.Model):
+    schema = models.CharField(max_length=50, blank=False, primary_key=True)                 # combined_key : categroy_subcategory_filetype_datastep
+    filetype = models.CharField(max_length=2, blank=False, default='')                      # 1:dataframe, 2:image, 3:rawtext
+    datastep = models.CharField(max_length=2, blank=False, default='')                      # 1:rawdata, 2:preprocessed
+    category = models.CharField(max_length=10, blank=False, default='')                     # ratio out of 100
+    subcate = models.CharField(max_length=10, blank=False, default='')                      # ratio out of 100
+    order = models.CharField(max_length=10, blank=False, default='')                        # display sequence
+    created = models.DateTimeField(auto_now_add=True)                                       # day created
+
+    def json(self):
+        return dict(
+            schema = self.schema,
+            filetype=self.filetype,
+            datastep=self.datastep,
+            category=self.category,
+            subcate=self.subcate,
+            order=self.order
+        )
+
+    def __getitem__(self, item):
+        return self.__dict__[item]
+
+class MetaCategory(models.Model):
+    category_id = models.CharField(max_length=50, blank=False, primary_key=True)           # cateogory id
+    category_name = models.CharField(max_length=50, blank=False, default='')               # cateogory name
+    desc = models.CharField(max_length=500, blank=False, default='')                       # category descrittion
+    order = models.CharField(max_length=10, blank=False, default='')                       # display sequence
+
+    def json(self):
+        return dict(
+            category_id = self.category_id,
+            category_name=self.category_name,
+            desc=self.desc,
+            order=self.order
+        )
+
+    def __getitem__(self, item):
+        return self.__dict__[item]
+
+class MetaSubCategory(models.Model):
+    category_id = models.ForeignKey(MetaCategory)                                          # foregin key connecting MetaCategory
+    subcateogry_id = models.CharField(max_length=50, blank=False, primary_key=True)        # category id
+    subcategory_name = models.CharField(max_length=50, blank=False, default='')            # cateogory name
+    desc = models.CharField(max_length=500, blank=False, default='')                       # 1:dataframe, 2:image, 3:rawtext
+    order = models.CharField(max_length=10, blank=False, default='')                       # display sequence
+
+    def json(self):
+        return dict(
+            category_id = self.category_id,
+            subcateogry_id=self.subcateogry_id,
+            subcategory_name=self.subcategory_name,
+            desc=self.desc,
+            order=self.order
         )
 
     def __getitem__(self, item):
