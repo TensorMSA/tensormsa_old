@@ -65,10 +65,12 @@ class DataFrameFormat(APIView):
               pytype: json
         """
         try:
+            print("dataframe_format_post")
             jd = jc.load_obj_json("{}")
             jd.dir = baseid
             jd.table = tb
             jd.nn_id = nnid
+            print( str(request.body,'utf-8'))
             jd.datadesc = str(request.body,'utf-8')
             netconf.save_format(nnid, str(request.body,'utf-8'))
             result = netconf.update_network(jd)
@@ -82,32 +84,33 @@ class DataFrameFormat(APIView):
             return_data = {"status": "400", "result": str(e)}
             return Response(json.dumps(return_data))
 
-    def get(self, request, baseid, tb, nnid):
+    def get(self, request, nnid, type):
         """
         - desc : return network data format information
         """
         #get_network_config
         try:
             print("dataframe_format_Get")
+            print(nnid)
             #result = netconf.load_ori_format()(nnid, request.body)
             result_temp = netconf.get_network_config(nnid)
             result_datadesc_source = eval(result_temp["datadesc"])
-            print(str(request.body, 'utf-8'))
+            #print(str(request.body, 'utf-8'))
             print("after get data")
             print(result_datadesc_source)
             result = ""
             result1 = result_datadesc_source["cell_feature"]
             result2 = result_datadesc_source["label"]
 
-            cell_label_condition = eval(str(request.body, 'utf-8'))
-            print(cell_label_condition)
+            #cell_label_condition = eval(str(request.body, 'utf-8'))
+            print(type)
             #cell_label_condition["type"]
 
-            print(cell_label_condition)
+            #print(cell_label_condition)
             #request.body
-            if cell_label_condition["type"] == "cell_feature":
+            if type == "cell_feature":
                 result = result_datadesc_source["cell_feature"]
-            elif cell_label_condition["type"] == "label":
+            elif type == "label":
                 result = result_datadesc_source["label"]
 
             return_data = {"status": "200", "result": result}
