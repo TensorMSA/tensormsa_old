@@ -52,8 +52,8 @@ urlpatterns = [
     url(r'^api/v1/type/dataframe/base/(?P<baseid>.*)/table/(?P<tb>.*)/format/(?P<nnid>.*)/',
         csrf_exempt(rest_view.DataFrameFormat.as_view())),
     # get manage column data types
-    #url(r'^api/v1/type/dataframe/format/(?P<nnid>.*)/type/(?P<type>.*)/',
-#          csrf_exempt(rest_view.DataFrameFormat.as_view())),
+    url(r'^api/v1/type/dataframe/format/(?P<nnid>.*)/type/(?P<type>.*)/',
+          csrf_exempt(rest_view.DataFrameFormat.as_view())),
 
     #manage table
     url(r'^api/v1/type/dataframe/base/(?P<baseid>.*)/table/(?P<tb>.*)/',
@@ -83,6 +83,10 @@ urlpatterns = [
     # WDNN Train
     url(r'^api/v1/type/wdnn/train/(?P<nnid>.*)/',
         csrf_exempt(rest_view.WideDeepNetTrain.as_view())),
+
+    # WDNN Eval
+      url(r'^api/v1/type/wdnn/eval/(?P<nnid>.*)/',
+          csrf_exempt(rest_view.WideDeepNetEval.as_view())),
 
     # CNN training
     url(r'^api/v1/type/cnn/train/(?P<nnid>.*)/',

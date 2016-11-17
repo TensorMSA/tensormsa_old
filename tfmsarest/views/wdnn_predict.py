@@ -52,19 +52,73 @@ class WideDeepNetPredict(APIView):
 
         try:
             logger.tfmsa_logger("[Predict] start uploading csv on file system")
-            if 'file' in request.FILES:
-                file = request.FILES['file']
-                filename = file._name
+            #elif (args == "CSV"):
+            logger.tfmsa_logger("start uploading csv on file system")
+            print(request.FILES)
+            results_data = ""
+            if len(request.FILES.keys()) > 0:
+                # loop files
+                for key, requestSingileFile in request.FILES.items():
+                    print("in the loop")
+                    print(requestSingileFile)
+                    print(key)
+
+                    file = requestSingileFile
+                    print("multi error")
+                    print(file)
+                    filename = file._name
+                    print(filename)
+                    # save file on file system
+                    directory = "{0}/{1}/{2}".format(settings.FILE_ROOT, "predict", nnid)
+                    if not os.path.exists(directory):
+                        os.makedirs(directory)
+                    fp = open("{0}/{1}/{2}/{3}".format(settings.FILE_ROOT, "predict", nnid, filename), 'wb')
+                    for chunk in file.chunks():
+                        fp.write(chunk)
+                    fp.close()
+                  #  logger.tfmsa_logger("Before calling save csv_to df")
+                  #  results_data = data.HbaseManager().save_csv_to_df(baseid, tb, filename)
+           # if 'file' in request.FILES:
+               # file = request.FILES['file']
+              #  filename = file._name
 
                 # save file on file system
-                directory = "{0}/{1}/{2}".format(settings.FILE_ROOT, "predict", nnid)
-                print("wide&dnn predict using csv  " + directory)
-                if not os.path.exists(directory):
-                    os.makedirs(directory)
-                fp = open("{0}/{1}/{2}/{3}".format(settings.FILE_ROOT, "predict", nnid, filename), 'wb')
-                for chunk in file.chunks():
-                    fp.write(chunk)
-                fp.close()
+                #directory = "{0}/{1}/{2}".format(settings.FILE_ROOT, "predict", nnid)
+                #print("wide&dnn predict using csv  " + directory)
+                #f not os.path.exists(directory):
+                 #   os.makedirs(directory)
+                #fp = open("{0}/{1}/{2}/{3}".format(settings.FILE_ROOT, "predict", nnid, filename), 'wb')
+                #for chunk in file.chunks():
+                #    fp.write(chunk)
+                #fp.close()
+                #
+                # elif (args == "CSV"):
+                # logger.tfmsa_logger("start uploading csv on file system")
+                # print(request.FILES)
+                # results_data = ""
+                # if len(request.FILES.keys()) > 0:
+                #     # loop files
+                #     for key, requestSingileFile in request.FILES.items():
+                #         print("in the loop")
+                #         print(requestSingileFile)
+                #         print(key)
+                #
+                #         file = requestSingileFile
+                #         print("multi error")
+                #         print(file)
+                #         filename = file._name
+                #         print(filename)
+                #         # save file on file system
+                #         directory = "{0}/{1}/{2}".format(settings.FILE_ROOT, baseid, tb)
+                #         if not os.path.exists(directory):
+                #             os.makedirs(directory)
+                #         fp = open("{0}/{1}/{2}/{3}".format(settings.FILE_ROOT, baseid, tb, filename), 'wb')
+                #         for chunk in file.chunks():
+                #             fp.write(chunk)
+                #         fp.close()
+                #         logger.tfmsa_logger("Before calling save csv_to df")
+                #         results_data = data.HbaseManager().save_csv_to_df(baseid, tb, filename)
+
 
                 # update to hdfs
                 #results_data = data.DataMaster().save_csv_to_df(baseid, tb, filename)
@@ -76,8 +130,11 @@ class WideDeepNetPredict(APIView):
                 # logger.tfmsa_logger("finish uploading csv on file system")
                 #return HttpResponse(json.dumps(results_data))
 
-
+            print("before predict")
             result = predict.wdnn_predict().wdd_predict(nnid,filename)
+
+
+
             print("return results %s" % type(result))
             #return_data = json.dumps(result,cls=PythonObjectEncoder)
             return_data = json.dumps(result)

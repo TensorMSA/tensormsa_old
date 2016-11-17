@@ -210,8 +210,9 @@ def dataframe_format_post():
     print("evaluation result : {0}".format(data))
 
 def dataframe_format_get():
-    resp = requests.get('http://' + url + '/api/v1/type/dataframe/base/csvtest/table/titanic/format/nn0000102/',json = {"type":"cell_feature"})
-                                           #/api/v1/type/dataframe/base/csvtest/table/titanic/format/nn0000102 /
+    #resp = requests.get('http://' + url + '/api/v1/type/dataframe/base/csvtest/table/titanic/format/nn0000102/',json = {"type":"cell_feature"})
+    #                                       #/api/v1/type/dataframe/base/csvtest/table/titanic/format/nn0000102 /
+    resp = requests.get('http://' + url + '/api/v1/type/dataframe/format/nn0000102/type/cell_feature/')
     data = json.loads(resp.json())
     print("evaluation result : {0}".format(data))
     #/api/v1/type/dataframe/base/csvtest/table/titanic/format/nn0000102/ [object % 20Object]
@@ -237,7 +238,7 @@ def dataframe_format_delete():
     print("evaluation result : {0}".format(data))
 
 ####################################################################################
-# DataFrame - data
+# DataFrame - data33333333333333333
 ####################################################################################
 
 
@@ -332,7 +333,7 @@ def dataframe_pre_delete():
 # WDNN - Config
 ####################################################################################
 def wdnn_conf_post():
-    resp = requests.post('http://' + url + '/api/v1/type/wdnn/conf/nn0000100/',
+    resp = requests.post('http://' + url + '/api/v1/type/wdnn/conf/nn0000102/',
                          json={
                                  "layer":[100,50]
                              })
@@ -341,16 +342,24 @@ def wdnn_conf_post():
 
 def wdnn_train_post():
     #resp = requests.post('http://' + url + '/api/v1/type/wdnn/train/nn0000011/')
-    resp = requests.post('http://' + url + '/api/v1/type/wdnn/train/nn0000100/')
+    resp = requests.post('http://' + url + '/api/v1/type/wdnn/train/nn0000102/')
     data = json.loads(resp.json())
     print("evaluation result : {0}".format(data))
 
 
 def wdnn_predict_post():
     #resp = requests.post('http://' + url + '/api/v1/type/wdnn/predict/nn0000011/')
-    resp = requests.post('http://' + url + '/api/v1/type/wdnn/predict/nn0000100/')
+    resp = requests.post('http://' + url + '/api/v1/type/wdnn/predict/nn0000102/')
     data = json.loads(resp.json())
     print("evaluation result : {0}".format(data))
+
+
+def wdnn_eval_post():
+    #resp = requests.post('http://' + url + '/api/v1/type/wdnn/predict/nn0000011/')
+    resp = requests.post('http://' + url + '/api/v1/type/wdnn/eval/nn0000102/')
+    data = json.loads(resp.json())
+    print("evaluation result : {0}".format(data))
+
 
 ####################################################################################
 # CNN - Config
@@ -752,12 +761,12 @@ dataframe_base_get
 """
 #common, dataframe, cnn, wdnn
 
-category1 = "dataframe"
+category1 = "wdnn"
 # checker, predict, stat, evaluation, train, conf, nnfino, base, data, format, table, pre
-category2 = "format"
+category2 = "eval"
 #dataframe_table_get
 # post, get, put, delete
-request = "get"
+request = "post"
 
 
 locals()["{0}_{1}_{2}".format(category1, category2, request)]()

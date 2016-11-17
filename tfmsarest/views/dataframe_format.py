@@ -74,8 +74,8 @@ class DataFrameFormat(APIView):
             jd.datadesc = str(request.body,'utf-8')
             netconf.save_format(nnid, str(request.body,'utf-8'))
             result = netconf.update_network(jd)
-            netconf.set_on_data(nnid)
-            netconf.set_on_data_conf(nnid)
+            #netconf.set_on_data(nnid)
+            #netconf.set_on_data_conf(nnid)
             return_data = {"status": "200", "result": result}
             return Response(json.dumps(return_data))
         except Exception as e:
@@ -92,9 +92,10 @@ class DataFrameFormat(APIView):
         try:
             print("dataframe_format_Get")
             print(nnid)
-            #result = netconf.load_ori_format()(nnid, request.body)
-            result_temp = netconf.get_network_config(nnid)
-            result_datadesc_source = eval(result_temp["datadesc"])
+            result_temp = netconf.load_ori_format(nnid)#, request.body)
+            print(result_temp)
+            #result_temp = netconf.get_network_config(nnid)
+            result_datadesc_source = eval(result_temp)
             #print(str(request.body, 'utf-8'))
             print("after get data")
             print(result_datadesc_source)

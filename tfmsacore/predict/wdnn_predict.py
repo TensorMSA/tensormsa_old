@@ -28,6 +28,7 @@ class wdnn_predict(WdnnCommonManager):
 
         """
         try:
+            print("############# Wdnn Predict ########")
             json_string = WdnnCommonManager.get_json_by_nnid(self,nnid)
             database = str(json_string['dir'])
             table_name = str(json_string['table'])
@@ -76,9 +77,11 @@ class wdnn_predict(WdnnCommonManager):
 
             predict_results = wdnn_model.predict(input_fn=lambda: WdnnCommonManager.input_fn(self, df, nnid))
             df['predict_label'] = list(predict_results)
+
+
             
-            print("Df file save")
-            csv = df.to_csv('/home/dev/test_predict2.csv', sep='\t', encoding='utf-8')
+            #print("Df file save")
+            #csv = df.to_csv('/home/dev/test_predict2.csv', sep='\t', encoding='utf-8')
 
 
 
@@ -86,13 +89,18 @@ class wdnn_predict(WdnnCommonManager):
             print("##########predict cokes###############")
             print(predict_results)
 
-            thefile = open('/home/dev/test_predict2.txt', 'w')
-            for item in predict_results:
-                thefile.write("%s\n" % item)
+            # resultList.append(df.columns.values.tolist().append(df.values.tolist()))
+            resultList = df.values.tolist()
+            resultList.insert(0, df.columns.values.tolist())
+            results = json.loads(json.dumps(resultList))
 
-            for key in sorted(predicts):
-                print("((4.Wide & Deep Network Accurary)) %s: %s" % (key, predicts[key]))
-                results[key]= str(predicts[key])
+            #thefile = open('/home/dev/test_predict2.txt', 'w')
+            #for item in predict_results:
+            #    thefile.write("%s\n" % item)
+
+            #for key in sorted(predicts):
+            #    print("((4.Wide & Deep Network Accurary)) %s: %s" % (key, predicts[key]))
+            #    results[key]= str(predicts[key])
 
             return results
         except Exception as e:

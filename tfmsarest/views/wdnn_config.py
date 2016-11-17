@@ -42,12 +42,12 @@ class WideDeepNetConfig(APIView):
               pytype: json
         """
         try:
-            netconf.set_on_net_conf()
+            netconf.set_on_net_conf(nnid)
             netconf.save_conf(nnid, str(request.body, 'utf-8'))
             return_data = {"status": "200", "result": nnid}
             return Response(json.dumps(return_data))
         except Exception as e:
-            netconf.set_off_net_conf()
+            netconf.set_off_net_conf(nnid)
             return_data = {"status": "404", "result": str(e)}
             return Response(json.dumps(return_data))
 
