@@ -4,7 +4,7 @@ import os
 import requests
 import json
 
-class TestCommonSchema(unittest.TestCase):
+class TestCommonStat(unittest.TestCase):
     """
     ./manage.py jenkins ./tests/tfmsarest/views/ --enable-coverage
     ./manage.py jenkins ./tests/tfmsarest/views/common/
@@ -12,10 +12,9 @@ class TestCommonSchema(unittest.TestCase):
 
     def test_gete(self):
         host_name = "{0}:{1}".format(os.environ['HOSTNAME'] , "8989")
-        resp = requests.get('http://' + host_name + '/api/v1/type/schema/datatype/image/preprocess/pre/category/mes/subcategory/m60/')
+        resp = requests.get('http://' + host_name + '/api/v1/type/common/stat/nn0000090/',)
 
         data = json.loads(resp.json())
-        self.assertEqual(data['result'][0], "image_pre_mes_m60")
         if (data['status'] == "200"):
             tfmsa_logger("==========PASS==========")
         else :

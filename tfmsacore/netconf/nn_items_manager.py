@@ -47,11 +47,14 @@ def get_namespace(datatype, datastep, category, subcate):
     :return:
     """
     try:
-        query_set = models.DataSchemaCategory.objects.filter(filetype= datatype, \
-                                                             datastep = datastep, \
-                                                             category = category, \
-                                                             subcate = subcate)
+        query_set = models.DataSchemaCategory.objects.filter(filetype__contains= datatype, \
+                                                             datastep__contains = datastep, \
+                                                             category__contains = category, \
+                                                             subcate__contains = subcate)
         query_set = serial.serialize("json", query_set)
-        return query_set[0]['pk']
+        return_list = []
+        for set in json.loads(query_set) :
+            return_list.append(set['pk'])
+        return return_list
     except Exception as e:
         raise Exception(e)
