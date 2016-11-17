@@ -158,8 +158,8 @@ def cnn_step3():
     cnn_eval_get()
 
 
-net_work_id = "nn0000047"
+net_work_id = "nn0000090"
 database = "mes"
-table = "nn0000047"
+table = "nn0000090"
 
 cnn_step3()

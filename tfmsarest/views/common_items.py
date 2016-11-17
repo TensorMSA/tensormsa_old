@@ -3,20 +3,21 @@ import json, unicodedata
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from tfmsacore.utils.json_conv import JsonDataConverter as jc
-from tfmsacore.netconf.nn_common_manager import get_network_config
-from tfmsacore.netcommon.acc_eval_common import AccEvalCommon
 
-class CommonResultStatInfo(APIView):
 
-    def get(self, request, nnid):
+class CommonItems(APIView):
+    """
+    """
+
+    def get(self, request, type, condition):
         """
         - desc : return nn_info data
         """
         try:
-            result = {}
-            result['detail'] = AccEvalCommon(nnid).reverse_result()
-            result['summary'] = netconf.get_net_summary(nnid)
-            result['loss'] = netconf.get_train_loss(nnid)
+            if type == 'category' :
+                result = netconf.get_category_list()
+            elif type == 'subcategory' :
+                result = netconf.get_subcategory_list(condition)
             return_data = {"status": "200", "result": result}
             return Response(json.dumps(return_data))
         except Exception as e:

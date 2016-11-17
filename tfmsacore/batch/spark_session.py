@@ -8,7 +8,8 @@ from pyspark.sql import SQLContext
 from django.conf import settings
 import pandas as pd
 
-
+class SparkSession:
+    spark_context = None
 
 class SparkSessionManager:
     """
@@ -22,7 +23,6 @@ class SparkSessionManager:
         """
         try :
             tfmsa_logger("Spark Session Created")
-            global spark_context
 
             # #tfmsa_logger("spark_context : {0}".format(spark_context))
             # if (isinstance(spark_context, (SparkContext))):
@@ -36,7 +36,7 @@ class SparkSessionManager:
             conf.set('spark.executor.cores', settings.SPARK_WORKER_CORE)
             conf.set('spark.executor.memory', settings.SPARK_WORKER_MEMORY)
             #conf.set('spark.driver.allowMultipleContexts', "true")
-            spark_context = SparkContext(conf=conf)
+            SparkSession.spark_context = SparkContext(conf=conf)
             return spark_context
         except Exception as e :
             # tfmsa_logger(e)

@@ -29,6 +29,7 @@ class ImageManager(HbaseManager):
         """
         try:
             tfmsa_logger("[1]Start upload images...")
+            self.make_inital_path(nnid)
 
             # get network base info
             tfmsa_logger("[2]get network base info")
@@ -72,6 +73,21 @@ class ImageManager(HbaseManager):
         finally:
             conn.close()
             tfmsa_logger("Finish upload image...")
+
+    def make_inital_path(self, nn_id):
+        """
+        make necessary path
+        :param nn_id:
+        :return:
+        """
+        path_root = "{0}".format(settings.FILE_ROOT)
+        path_nn = "{0}/{1}".format(settings.FILE_ROOT, nn_id)
+
+        if not os.path.exists(path_root):
+            os.mkdir(path_root)
+
+        if not os.path.exists(path_nn):
+            os.mkdir(path_nn)
 
     def load_data(self, data_frame, table_name, st_pnt = "0", end_pnt = "10"):
         """

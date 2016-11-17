@@ -162,6 +162,14 @@ urlpatterns = [
     url(r'^api/v1/type/common/stat/(?P<nnid>.*)/',
       csrf_exempt(rest_view.CommonResultStatInfo.as_view())),
 
+    # search item list
+    url(r'^api/v1/type/common/item/(?P<type>.*)/(?P<condition>.*)/',
+      csrf_exempt(rest_view.CommonItems.as_view())),
+
+    # Schema data
+    url(r'^api/v1/type/schema/datatype/(?P<datatype>.*)/preprocess/(?P<preprocess>.*)/category/(?P<category>.*)/subcategory/(?P<subcategory>.*)/',
+      csrf_exempt(rest_view.CommonSchema.as_view())),
+
     # UI / View index
     url(r'^$', csrf_exempt(ui_view.UI_Service.as_view())),
     url(r'^view/index/$', csrf_exempt(ui_view.UI_Service.as_view())),
