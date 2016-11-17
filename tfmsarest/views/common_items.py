@@ -16,9 +16,8 @@ class CommonItems(APIView):
         try:
             if type == 'category' :
                 result = netconf.get_category_list()
-            elif type == 'subactegory' :
+            elif type == 'subcategory' :
                 result = netconf.get_subcategory_list(condition)
-
             return_data = {"status": "200", "result": result}
             return Response(json.dumps(return_data))
         except Exception as e:
