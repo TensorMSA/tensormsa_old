@@ -113,7 +113,7 @@ def cnn_eval_post():
     print("evaluation result : {0}".format(data))
 
 def cnn_eval_get():
-    resp = requests.get('http://' + url + '/api/v1/type/cnn/eval/' + net_work_id +'/')
+    resp = requests.get('http://' + url + '/api/v1/type/common/stat/' + net_work_id +'/')
     data = json.loads(resp.json())
     print("evaluation result : {0}".format(data))
 
@@ -158,8 +158,8 @@ def cnn_step3():
     cnn_eval_get()
 
 
-net_work_id = "nn0000090"
-database = "mes"
-table = "nn0000090"
+net_work_id = "mesm10cnn61110"
+database = "image_raw_mes_m20"
+table = "test2"
 
 cnn_step3()
