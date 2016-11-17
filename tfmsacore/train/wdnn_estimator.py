@@ -88,6 +88,8 @@ class wdnn_train(WdnnCommonManager):
 
             for key in sorted(results):
                 print("((4.Wide & Deep Network Accurary)) %s: %s" % (key, results[key]))
+
+            return nnid
         except Exception as e:
             print ("Error Message : {0}".format(e))
             raise Exception(e)
