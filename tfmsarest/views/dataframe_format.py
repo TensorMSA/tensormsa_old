@@ -99,7 +99,7 @@ class DataFrameFormat(APIView):
             #print(str(request.body, 'utf-8'))
             print("after get data")
             print(result_datadesc_source)
-            result = ""
+            result = dict()
             result1 = result_datadesc_source["cell_feature"]
             result2 = result_datadesc_source["label"]
 
@@ -113,6 +113,16 @@ class DataFrameFormat(APIView):
                 result = result_datadesc_source["cell_feature"]
             elif type == "label":
                 result = result_datadesc_source["label"]
+            elif type == "all":
+                result = result_datadesc_source["cell_feature"]
+                result_label = result_datadesc_source["label"]
+                label_dict = dict()
+                for k in sorted(result_label):
+                    label_dict["column_type"] = result_label[k]
+                    result[k] = label_dict
+                    #print(k + "----->" + str(result[k]))
+
+                #result.update(result_datadesc_source["label"])
 
             return_data = {"status": "200", "result": result}
             return Response(json.dumps(return_data))

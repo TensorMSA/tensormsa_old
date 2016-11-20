@@ -212,7 +212,9 @@ def dataframe_format_post():
 def dataframe_format_get():
     #resp = requests.get('http://' + url + '/api/v1/type/dataframe/base/csvtest/table/titanic/format/nn0000102/',json = {"type":"cell_feature"})
     #                                       #/api/v1/type/dataframe/base/csvtest/table/titanic/format/nn0000102 /
-    resp = requests.get('http://' + url + '/api/v1/type/dataframe/format/nn0000102/type/cell_feature/')
+    #resp = requests.get('http://' + url + '/api/v1/type/dataframe/format/nn0000102/type/cell_feature/')
+    #resp = requests.get('http://' + url + '/api/v1/type/dataframe/format/nn0000102/type/label/')
+    resp = requests.get('http://' + url + '/api/v1/type/dataframe/format/nn0000102/type/all/')
     data = json.loads(resp.json())
     print("evaluation result : {0}".format(data))
     #/api/v1/type/dataframe/base/csvtest/table/titanic/format/nn0000102/ [object % 20Object]
@@ -761,12 +763,12 @@ dataframe_base_get
 """
 #common, dataframe, cnn, wdnn
 
-category1 = "wdnn"
+category1 = "dataframe"
 # checker, predict, stat, evaluation, train, conf, nnfino, base, data, format, table, pre
-category2 = "eval"
+category2 = "format"
 #dataframe_table_get
 # post, get, put, delete
-request = "post"
+request = "get"
 
 
 locals()["{0}_{1}_{2}".format(category1, category2, request)]()
