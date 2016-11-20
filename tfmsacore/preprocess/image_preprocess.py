@@ -78,7 +78,8 @@ class ImagePreprocess:
         :param path:
         :return:
         """
-
+        x_size = int(x_size)
+        y_size = int(y_size)
         im = Image.open(path).convert('L')
         width = float(im.size[0])
         height = float(im.size[1])
