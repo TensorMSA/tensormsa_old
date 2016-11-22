@@ -134,6 +134,7 @@ class HbaseManager:
                 column_order.append(column_order_dict[':'.join((cf, struct.pack('>q', i)))])
             print("column_ordder_dict")
             print(column_order)
+            limit_cnt = 10
             #row_start = key + 'rows' + struct.pack('>q', 0)
             #row_end = key + 'rows' + struct.pack('>q', sys.maxint)
             row_start = "1"
@@ -163,10 +164,27 @@ class HbaseManager:
                 print("label exsist --> " + with_label)
                 #Label auto check
                 label_values = df[with_label].unique()
-                label_first_value = sorted(label_values)[0]
-                print("sorted label value : " + label_first_value)
+                #label_first_value = sorted(label_values)[0]
+                print("heare is problem")
+                label_first_value = sorted(label_values)
+                print(type(label_first_value))
+                print("heare is problem after")
+                # sorted after make order
+                #label_values.key
+                #for uk in sorted(label_values):
+
+
+                print("sorted label value : " + str(label_first_value))
                 df['label'] = (
-                    df[with_label].apply(lambda x: label_first_value in x)).astype(int) #16.10.25 auto check label values for 2 type values
+                    df[with_label].apply(lambda x: label_first_value.index(x))).astype(int) #16.10.25 auto check label values for 2 type values #16.11.19 multilable
+
+                df_table = pd.DataFrame(columns=columns)
+                df_table["originalY"] = df[with_label]
+                df_table["convertY"] = df['label']
+                print("df_Table_table_table")
+                print(df_table)
+
+
             tfmsa_logger("End query data!")
             #print(use_df)
             #print(None)

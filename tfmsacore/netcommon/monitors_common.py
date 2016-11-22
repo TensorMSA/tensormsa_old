@@ -9,12 +9,15 @@ from TensorMSA import const
 
 class MonitorCommon(monitors.EveryN):
 
-    def __init__(self, p_nn_id, p_max_steps, p_every_n_steps = const.LOG_OUT_STEPS):
+
+
+    def __init__(self, p_nn_id, p_max_steps, p_every_n_steps = const.LOG_OUT_STEPS, p_first_row_check = True):
 
         utils.tfmsa_logger(" ## MonitorCommon Class Init ##")
         monitors.EveryN.__init__(self,every_n_steps=p_every_n_steps)
         self.max_steps =  p_max_steps
         self.nn_id = p_nn_id
+        self.first_row_check = p_first_row_check
 
     def end(self):
         utils.tfmsa_logger("MonitorCommon.end --> Completed run.")
@@ -33,6 +36,7 @@ class MonitorCommon(monitors.EveryN):
         logInfoData["max_step"] = self.max_steps
         logInfoData["trainDate"] = nowDate
         logInfoData["testsets"] = "1"
+        #print(logInfoData)
         self.monitors_update(logInfoData)
 
 
@@ -43,8 +47,15 @@ class MonitorCommon(monitors.EveryN):
         """
         try:
             utils.tfmsa_logger("MonitorCommon.monitors_update_end ---> postgres" )
-            netconf.delete_train_loss(self.nn_id)
+            #bool firstRowFlag = True
+            print(self.first_row_check)
+            if self.first_row_check == True:
+                netconf.delete_train_loss(self.nn_id)
+                utils.tfmsa_logger("MonitorCommon.monitors_delete_firstCheck ---> postgres")
+                self.first_row_check = False
+                print(self.first_row_check)
             body=json.loads(json.dumps(logInfoData))
+
             return_data = netconf.post_train_loss(body)
         except Exception as e:
             print("Error Message : {0}".format(e))
