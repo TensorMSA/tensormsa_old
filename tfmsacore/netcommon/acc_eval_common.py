@@ -128,8 +128,11 @@ class AccEvalCommon():
         result_data = netconf.get_train_acc(self.nn_id)
         for raw in result_data:
             if raw['fields']['label'] not in return_data.keys() :
-                return_data[raw['fields']['label']] = {}
+                return_data[raw['fields']['label']] = []
 
             guess_set = return_data[raw['fields']['label']]
-            guess_set[raw['fields']['guess']] = raw['fields']['ratio']
+            row_data = {}
+            row_data['label'] = raw['fields']['guess']
+            row_data['value'] = raw['fields']['ratio']
+            guess_set.append(row_data)
         return return_data
