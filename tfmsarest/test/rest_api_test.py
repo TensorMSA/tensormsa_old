@@ -72,7 +72,7 @@ def common_nninfo_post():
 def common_nninfo_get():
     #resp = requests.get('http://' + url + '/api/v1/type/common/nninfo/nn0000009/category/cate1/subcate/subcate1/')
     #resp = requests.get('http://' + url + '/api/v1/type/common/nninfo//category//subcate/subcate1/')
-    resp = requests.get('http://' + url + '/api/v1/type/common/nninfo/nn0000091/category//subcate//')
+    resp = requests.get('http://' + url + '/api/v1/type/common/nninfo/scm_default_wdnn_66039/category//subcate//')
     data = json.loads(resp.json())
     print("evaluation result : {0}".format(data))
 
@@ -770,9 +770,9 @@ dataframe_base_get
 """
 #common, dataframe, cnn, wdnn
 
-category1 = "dataframe"
+category1 = "common"
 # checker, predict, stat, evaluation, train, conf, nnfino, base, data, format, table, pre
-category2 = "format"
+category2 = "nninfo"
 #dataframe_table_get
 # post, get, put, delete
 request = "get"
