@@ -94,7 +94,11 @@ class DataFrameFormat(APIView):
             print(nnid)
             #result = netconf.load_ori_format()(nnid, request.body)
             result_temp = netconf.get_network_config(nnid)
-            result_datadesc_source = eval(result_temp["datadesc"])
+
+            datadesc = netconf.load_ori_format(nnid)
+            print(datadesc)
+            result_datadesc_source = json.loads(datadesc)
+            #result_datadesc_source = eval(result_temp["datadesc"])
             #print(str(request.body, 'utf-8'))
             print("after get data")
             print(result_datadesc_source)
@@ -112,6 +116,9 @@ class DataFrameFormat(APIView):
                 result = result_datadesc_source["cell_feature"]
             elif type == "label":
                 result = result_datadesc_source["label"]
+            elif type == "all":
+                result = result_datadesc_source["cell_feature"]
+                result.update(result_datadesc_source["label"])
 
             return_data = {"status": "200", "result": result}
             return Response(json.dumps(return_data))

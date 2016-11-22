@@ -210,8 +210,10 @@ def dataframe_format_post():
     print("evaluation result : {0}".format(data))
 
 def dataframe_format_get():
-    resp = requests.get('http://' + url + '/api/v1/type/dataframe/base/csvtest/table/titanic/format/nn0000102/',json = {"type":"cell_feature"})
+    #resp = requests.get('http://' + url + '/api/v1/type/dataframe/base/csvtest/table/titanic/format//',json = {"type":"cell_feature"})
                                            #/api/v1/type/dataframe/base/csvtest/table/titanic/format/nn0000102 /
+    resp = requests.get('http://' + url + '/api/v1/type/dataframe/format/scm_default_wdnn_66039/type/all/')
+    #resp = requests.get('http://' + url + '/api/v1/type/dataframe/base/csvtest/table/titanic/format/scm_default_wdnn_66039/type/all/')
     data = json.loads(resp.json())
     print("evaluation result : {0}".format(data))
     #/api/v1/type/dataframe/base/csvtest/table/titanic/format/nn0000102/ [object % 20Object]
@@ -272,7 +274,7 @@ def dataframe_data_get():
     """
 
     #resp = requests.get('http://' + url + '/api/v1/type/dataframe/base/scm/table/tb_data_cokes/data/')
-    resp = requests.get('http://' + url + '/api/v1/type/dataframe/base/scm/table/tb_data_cokes/data/'
+    resp = requests.get('http://' + url + '/api/v1/type/dataframe/base/frame_pre_scm_default/table/test111/data/'
                         , json= {
                              "limits" : "0"
                                 }
