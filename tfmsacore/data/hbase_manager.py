@@ -134,7 +134,11 @@ class HbaseManager:
                 column_order.append(column_order_dict[':'.join((cf, struct.pack('>q', i)))])
             print("column_ordder_dict")
             print(column_order)
-            limit_cnt = 10
+            limit_cnt = 0
+            if use_df is None:
+                limit_cnt = 10
+            else:
+                limit_cnt = 0
             #row_start = key + 'rows' + struct.pack('>q', 0)
             #row_end = key + 'rows' + struct.pack('>q', sys.maxint)
             row_start = "1"
@@ -157,7 +161,7 @@ class HbaseManager:
                 #Print when 1000 rows count
                 if rowcnt%1000 == 0:
                     print ("[" + data_frame + "] table_name :" + table_name + " readRows(" + str(rowcnt) + ")")
-            for column, data_type in columns.items():
+            for column, data_type in sorted(columns.items()): # can i sorted??? 11.11.21
                 df[column] = df[column].astype(np.dtype(data_type))
                 print (" column :" + column + " data_type(" + str(data_type) + ")")
             if("None" != with_label):
@@ -176,9 +180,10 @@ class HbaseManager:
 
                 print("sorted label value : " + str(label_first_value))
                 df['label'] = (
-                    df[with_label].apply(lambda x: label_first_value.index(x))).astype(int) #16.10.25 auto check label values for 2 type values #16.11.19 multilable
-
-                df_table = pd.DataFrame(columns=columns)
+                    #df[with_label].apply(lambda x: label_first_value.index(x))).astype(int) #16.10.25 auto check label values for 2 type values #16.11.19 multilable
+                   # df_train["income_bracket"].apply(lambda x: ">50K" in x)).astype(int)
+                    df[with_label].apply(lambda x: 'Y' in x)).astype(int) #16.10.25 auto check label values for 2 type values #16.11.19 multilable
+                df_table = df
                 df_table["originalY"] = df[with_label]
                 df_table["convertY"] = df['label']
                 print("df_Table_table_table")
@@ -199,7 +204,7 @@ class HbaseManager:
                 #result = json.loads(json.dumps(df.values.tolist()))
                 #result = json.loads(json.dumps(df.columns.values.tolist()))
             else:
-                #print("dfdfdfdfdf")
+                print("for training")
                 result = df
                 #print(df)
             #print(df.to_string(index=False))

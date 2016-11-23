@@ -37,9 +37,11 @@ class WdnnCommonManager:
             CATEGORICAL_COLUMNS = []
 
             ##Get datadesc Continuous and Categorical infomation from Postgres nninfo
+            print("modified 16.11.23")
             json_string = self.get_json_by_nnid(nnid)
-            json_object_temp = json_string['datadesc']
-            json_object = json.loads(json_object_temp) # should be change meaning confused
+            #json_object_temp = json_string['datadesc']
+            #json_object = json.loads(json_object_temp) # should be change meaning confused
+            json_object = json_string
 
             utils.tfmsa_logger("((3.1 Wide & Deep Network Make Tensor)) ## JSON CELL FEATURE LOADS ##")
             j_feature = json_object['cell_feature']
@@ -114,6 +116,35 @@ class WdnnCommonManager:
         print(nnid)
         #print("get_json_networkid########")
         #print("((get_json_by_nnid)) ## START##")
+        # result = netconf.load_ori_format()(nnid, request.body)
+        # result_temp = netconf.get_network_config(nnid)
+        #
+        # datadesc = netconf.load_ori_format(nnid)
+        # print(datadesc)
+        # result_datadesc_source = json.loads(datadesc)
+        # # result_datadesc_source = eval(result_temp["datadesc"])
+        # # result_temp = netconf.get_network_config(nnid)
+        # # result_datadesc_source = eval(result_temp)
+        #
+        # # print(str(request.body, 'utf-8'))
+        # print("after get data")
+        # print(result_datadesc_source)
+        # result = dict()
+        # result1 = result_datadesc_source["cell_feature"]
+        # result2 = result_datadesc_source["label"]
+
+        datadesc = netconf.load_ori_format(nnid)
+        result = json.loads(datadesc)
+        print(result)
+        #result = netconf.get_network_config(nnid)
+        utils.tfmsa_logger("((get_json_by_nnid)) ## END##")
+        return result
+    def get_all_info_json_by_nnid(self,nnid):
+        """get network configuration info json
+        :param nnid
+        :return: json string """
+        utils.tfmsa_logger("((get_all_info_json_by_nnid)) ## START##")
+        print(nnid)
         result = netconf.get_network_config(nnid)
         utils.tfmsa_logger("((get_json_by_nnid)) ## END##")
         return result
@@ -165,6 +196,8 @@ class WdnnCommonManager:
             #print("before json convert")
             #print(json_object) #cross_cell
             print("before Cell feature")
+            print(json_object)
+            print(type(json_object))
             j_feature = json_object["cell_feature"]
             print(j_feature)
             print("after Cell feature")
@@ -267,12 +300,32 @@ class WdnnCommonManager:
 
         utils.tfmsa_logger("((1.Make WDN Network Build)) start wddd build (" + nnid + ")")
         # print("((1.Make WDN Network Build)) start wddd build (" + nnid + ")")
-        json_string = self.get_json_by_nnid(nnid)
+
         # print("get json string in wdnn builder ####")
         # print(json_string)
+        # result = netconf.load_ori_format()(nnid, request.body)
+
+
+        # result_temp = netconf.get_network_config(nnid)
+        #
+        # datadesc = netconf.load_ori_format(nnid)
+        # print(datadesc)
+        # result_datadesc_source = json.loads(datadesc)
+        # # result_datadesc_source = eval(result_temp["datadesc"])
+        # # result_temp = netconf.get_network_config(nnid)
+        # # result_datadesc_source = eval(result_temp)
+        #
+        # # print(str(request.body, 'utf-8'))
+        # print("after get data")
+        # print(result_datadesc_source)
+        # result = dict()
+        # result1 = result_datadesc_source["cell_feature"]
+        # result2 = result_datadesc_source["label"]
 
         # json_object = json.loads(json.dumps(json_string["datadesc"])) #3.5 fixed 16.11.02
-        json_object = json.loads(json_string["datadesc"])
+        json_string = netconf.load_ori_format(nnid)
+        json_object = json.loads(json_string)
+        #json_object = json.loads(json_string["datadesc"])
         print("get json string in wdnn builder ####")
         # load NN conf form db
         utils.tfmsa_logger("[4]load net conf form db")
@@ -292,7 +345,7 @@ class WdnnCommonManager:
         try:
             jd = jc.load_obj_json("{}")
             #temporaly use dataset.
-            jd.datasets = model_dir
+            jd.query = model_dir
             jd.nn_id = nnid
             netconf.update_network(jd)
             return_data = {"status": "200", "result": nnid}

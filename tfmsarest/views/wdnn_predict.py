@@ -138,6 +138,7 @@ class WideDeepNetPredict(APIView):
             print("return results %s" % type(result))
             #return_data = json.dumps(result,cls=PythonObjectEncoder)
             return_data = json.dumps(result)
+            print(return_data)
             #return_data = {"status": "200", "result": ""}
             return Response(json.dumps(return_data))
         except Exception as e:

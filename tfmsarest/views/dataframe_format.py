@@ -75,13 +75,12 @@ class DataFrameFormat(APIView):
             jd.datadesc = 'Y'
             print(jd)
             print("dataframe_format_post start")
-            for k in jd.keys():
-                print(k +"dddddddd------>" + jd[k])
+            #for k in jd.keys():
+            #    print(k +"dddddddd------>" + jd[k])
             netconf.save_format(nnid, str(request.body,'utf-8'))
             result = netconf.update_network(jd)
-
             print("dataframe_format_post end")
-            #netconf.set_on_data(nnid)
+            netconf.set_on_data(nnid)
             #netconf.set_on_data_conf(nnid)
             return_data = {"status": "200", "result": result}
             return Response(json.dumps(return_data))
@@ -106,11 +105,6 @@ class DataFrameFormat(APIView):
             datadesc = netconf.load_ori_format(nnid)
             print(datadesc)
             result_datadesc_source = json.loads(datadesc)
-            #result_datadesc_source = eval(result_temp["datadesc"])
-            #result_temp = netconf.get_network_config(nnid)
-            #result_datadesc_source = eval(result_temp)
-
-            #print(str(request.body, 'utf-8'))
             print("after get data")
             print(result_datadesc_source)
             result = dict()

@@ -36,7 +36,7 @@ class wdnn_train(WdnnCommonManager):
             wdnn_model = WdnnCommonManager.wdnn_build(self, nnid = nnid)
 
             #get json from postgres by nnid
-            json_string = WdnnCommonManager.get_json_by_nnid(self, nnid=nnid)
+            json_string = WdnnCommonManager.get_all_info_json_by_nnid(self, nnid=nnid)
             print("############# get json string")
             #print(json_string)
             #parse database, table_name for select data from hbase
@@ -45,14 +45,24 @@ class wdnn_train(WdnnCommonManager):
             table_name = json_string["table"]
 
             #Make NetworkConfiguration Json Objct
-            json_ob = json.loads(json_string["datadesc"],'utf-8')
+
+            json_string = netconf.load_ori_format(nnid)
+            json_ob = json.loads(json_string)
+            print("####################print")
+            print(json_ob)
+            print(type(json_ob))
+
+            #json_ob = json.loads(json_string["datadesc"],'utf-8')
 
             #get label column from hbase nn config json
             t_label = json_ob["label"]
+
             #for key, value in t_label.iteritems():
             #    print("label key   " , key)
-            label_key =   list(t_label.keys()) #3.5
-            label_column = label_key[0]
+            #label_key =   list(t_label.keys()) #3.5
+            #label_column = label_key[0]
+            label_column = list(t_label.keys())[0]
+            #t_label[]
 
             print("((2.Get Dataframe from Hbase)) ##Start## (" + database+ " , "+ table_name + " , " + label_column + ")")
 

@@ -29,25 +29,53 @@ class wdnn_eval(WdnnCommonManager):
 
         """
         try:
-            json_string = WdnnCommonManager.get_json_by_nnid(self, nnid)
-            database = str(json_string['dir'])
-            table_name = str(json_string['table'])
-            json_object = json_string['datadesc']
+            print("start nnid")
+            print(nnid)
+            json_string = WdnnCommonManager.get_all_info_json_by_nnid(self, nnid=nnid)
+            print("WdnnCommonManager.get_json_by_nnid after")
+            print(json_string)
+            print(type(json_string))
+            database = json_string['dir']
+            table_name = json_string['table']
+
+            #
+            # json_string = WdnnCommonManager.get_all_info_json_by_nnid(self, nnid=nnid)
+            # print("############# get json string")
+            # #print(json_string)
+            # #parse database, table_name for select data from hbase
+            # database = json_string["dir"]
+            # print("############# get database from json string")
+            # table_name = json_string["table"]
+
+            print(database)
+            print(table_name)
+
+            json_string_desc = netconf.load_ori_format(nnid)
+            json_ob = json.loads(json_string_desc)  #get datadesc format
+
+            #json_object = json_string['datadesc']
             # should be change
-            model_dir = str(json_string['datasets'])
-            json_ob = json.loads(json_object)
+            model_dir = str(json_string['query'])
+            #json_ob = json.loads(json_object)
 
             tt = json_ob['cell_feature']
 
             wdnn_model = WdnnCommonManager.wdnn_build(self, nnid, model_dir, False)
 
-            t_label = json_ob['label']
+            # t_label = json_ob['label']
+            #
+            # for key, value in t_label.items():
+            #     print("label key   ", key)
+            #
+            # label_key = list(t_label.keys())
+            # label_column = label_key[0]
+            t_label = json_ob["label"]
 
-            for key, value in t_label.items():
-                print("label key   ", key)
-
-            label_key = list(t_label.keys())
-            label_column = label_key[0]
+            #for key, value in t_label.iteritems():
+            #    print("label key   " , key)
+            #label_key =   list(t_label.keys()) #3.5
+            #label_column = label_key[0]
+            label_column = list(t_label.keys())[0]
 
             if filename == None:
                 limit_no = 100
