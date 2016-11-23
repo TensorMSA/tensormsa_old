@@ -28,12 +28,13 @@ def get_train_loss(nn_id):
     :return:
     """
     try:
-        query_set = models.TrainResultLoss.objects.filter(nn_id=nn_id).select_related()
+        query_set = models.TrainResultLoss.objects.filter(nn_id=nn_id).select_related().order_by('step')
         query_set = serial.serialize("json", query_set)
         query_set = json.loads(query_set)
         return_list = []
         for set in query_set:
-            return_list.insert(0, set['fields']['loss'])
+            #return_list.insert(0, set['fields']['loss'])
+            return_list.append(set['fields']['loss'])
         return return_list
     except Exception as e:
         raise Exception(e)
