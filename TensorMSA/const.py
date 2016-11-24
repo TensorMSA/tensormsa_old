@@ -20,6 +20,6 @@ TYPE_IMAGE = '2'
 TYPE_TEXT = '3'
 
 #monitor - loss
-LOG_OUT_STEPS = 100
+LOG_OUT_STEPS = 50
 #monitor - acc
-ACC_OUT_STEPS = 1
+ACC_OUT_STEPS = 30

@@ -69,6 +69,7 @@ class ConvCommonManager:
                                          ksize=[1, data.maxpoolmatrix[0], data.maxpoolmatrix[1], 1],
                                          strides=[1, data.maxpoolstride[0], data.maxpoolstride[1], 1],
                                          padding=data.padding)
+
                 curren_matrix = self.mat_size_cal(curren_matrix, data.padding, data.maxpoolmatrix, data.maxpoolstride)
                 curren_matrix_num = data.node_in_out[1]
             elif (data.type == "cnn"):
@@ -96,8 +97,11 @@ class ConvCommonManager:
             else:
                 raise SyntaxError("there is no such kind of layer type : " + str(data.type))
 
-        prediction, loss = (network)
-        train_op = tf.contrib.layers.optimize_loss(
+        with tf.name_scope('loss'):
+            prediction, loss = (network)
+
+        with tf.name_scope('train_op'):
+            train_op = tf.contrib.layers.optimize_loss(
             loss, tf.contrib.framework.get_global_step(), optimizer='Adagrad',
             learning_rate=0.1)
         return {'class': tf.argmax(prediction, 1), 'prob': prediction}, loss, train_op
@@ -130,6 +134,7 @@ class ConvCommonManager:
         else:
             curren_matrix[0] = int(curren_matrix[0]/max_pool_stride[0] - 1)
             curren_matrix[1] = int(curren_matrix[1]/max_pool_stride[1] - 1)
+
         return curren_matrix
 
     def save_changed_data_info(self, nn_id, train_data_set):

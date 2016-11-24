@@ -9,7 +9,8 @@ import json, math
 from tfmsacore.netcommon.conv_common import ConvCommonManager
 from tfmsacore.netcommon import monitors_common as Monitors
 
-def train_conv_network(nn_id, epoch = 100, testset = 100):
+
+def train_conv_network(nn_id, epoch=1000, testset=100):
     try:
         # check network is ready to train
         utils.tfmsa_logger("[1]check pre steps ready")
@@ -28,18 +29,18 @@ def train_conv_network(nn_id, epoch = 100, testset = 100):
         train_data_set = []
         train_label_set = []
 
-        if(const.TYPE_IMAGE == net_info['preprocess']):
+        if (const.TYPE_IMAGE == net_info['preprocess']):
             train_data_set, train_label_set = ConvCommonManager(conf_info).prepare_image_data(nn_id, net_info)
-        elif(const.TYPE_DATA_FRAME == net_info['preprocess']):
+        elif (const.TYPE_DATA_FRAME == net_info['preprocess']):
             raise Exception("function not ready")
-        elif(const.TYPE_TEXT == net_info['preprocess']):
+        elif (const.TYPE_TEXT == net_info['preprocess']):
             raise Exception("function not ready")
         else:
             raise Exception("unknown data type")
 
         # data size info change
         utils.tfmsa_logger("[5]modify data stuctor info")
-        ConvCommonManager(conf_info).save_changed_data_info(nn_id, train_data_set)
+        # ConvCommonManager(conf_info).save_changed_data_info(nn_id, train_data_set)
 
         learnrate = conf_info.data.learnrate
         conf_info.n_class = len(json.loads(net_info['datasets']))
