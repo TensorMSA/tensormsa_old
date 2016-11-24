@@ -65,23 +65,16 @@ class DataFrameFormat(APIView):
               pytype: json
         """
         try:
-            print("dataframe_format_post")
-            print("table name -->" + tb)
             jd = jc.load_obj_json("{}")
             jd.dir = baseid
             jd.table = tb
             jd.nn_id = nnid
-            print( str(request.body,'utf-8'))
+            jd.preprocess = '1'
             jd.datadesc = 'Y'
-            print(jd)
-            print("dataframe_format_post start")
-            #for k in jd.keys():
-            #    print(k +"dddddddd------>" + jd[k])
             netconf.save_format(nnid, str(request.body,'utf-8'))
             result = netconf.update_network(jd)
             print("dataframe_format_post end")
             netconf.set_on_data(nnid)
-            #netconf.set_on_data_conf(nnid)
             return_data = {"status": "200", "result": result}
             return Response(json.dumps(return_data))
         except Exception as e:
