@@ -50,20 +50,13 @@ class DataFrameData(APIView):
 
             elif(args == "CSV"):
                 logger.tfmsa_logger("start uploading csv on file system")
-                print(request.FILES)
                 results_data = ""
                 if len(request.FILES.keys()) > 0:
                     #loop files
                     for key, requestSingileFile in request.FILES.items():
-                        print("in the loop")
-                        print(requestSingileFile)
-                        print(key)
-
                         file = requestSingileFile
-                        print("multi error")
-                        print(file)
                         filename = file._name
-                        print(filename)
+
                         # save file on file system
                         directory = "{0}/{1}/{2}".format(settings.FILE_ROOT, baseid, tb)
                         if not os.path.exists(directory):
@@ -74,35 +67,10 @@ class DataFrameData(APIView):
                         fp.close()
                         logger.tfmsa_logger("Before calling save csv_to df")
                         results_data = data.HbaseManager().save_csv_to_df(baseid, tb, filename)
-
-
-                        # if 'file' in requestSingileFile:
-                        #     checkFileinit = True
-                        #     print(checkFileinit)
-                        # if 'file' in request.FILES:
-                        #     file = request.FILES['file']
-                        #     print("multi error")
-                        #     print(file)
-                        #     filename = file._name
-                        #     print(filename)
-                        #     # save file on file system
-                        #     directory = "{0}/{1}/{2}".format(settings.FILE_ROOT, baseid, tb)
-                        #     if not os.path.exists(directory):
-                        #         os.makedirs(directory)
-                        #     fp = open("{0}/{1}/{2}/{3}".format(settings.FILE_ROOT, baseid, tb, filename), 'wb')
-                        #     for chunk in file.chunks():
-                        #         fp.write(chunk)
-                        #     fp.close()
-                        #     logger.tfmsa_logger("Before calling save csv_to df")
-                        #     #update on hdfs
-                        #     #lastRowKey,  insertedRows, lastRowKey
-                        #     results_data = data.HbaseManager().save_csv_to_df(baseid, tb, filename)
-                        #
-                        #     #return HttpResponse(json.dumps(results_data))
                     else :
                         raise Exception("not supported type")
 
-            return_data = {"status": "ok", "result": results_data}
+            return_data = {"status": "200", "result": results_data}
             return Response(json.dumps(return_data))
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}
@@ -113,20 +81,13 @@ class DataFrameData(APIView):
         - desc : select data form spark table
         """
         try:
-            #print("get parameter ---> " + str(request.body))
-            #limits_t = json.loads(str(request.body,'utf-8'))
             limit = 0 #limits_t["limits"]
-            #int()
-            print(limit)
             if(args == None):
-                print("Here Arg None----> " + str(args))
                 result = data.HbaseManager().query_data(baseid, tb, "", args ,  int(limit))
-                # query_data(self, data_frame, table_name, query_str, use_df= None, limit_cnt=0, with_label = "None"):
             else:
-                print("Here Arg Here Arg----> " + str(args))
                 result = data.HbaseManager().query_data(baseid, tb, "", args,  int(limit))
 
-            return_data = {"status": "ok", "result": result}
+            return_data = {"status": "200", "result": result}
 
             return Response(json.dumps(return_data))
         except Exception as e:
@@ -173,19 +134,12 @@ class DataFrameData(APIView):
 
                     #upload data to hdfs
                     cols = data.HbaseManager().save_csv_to_df(baseid, tb, filename)
-                    #return Response(json.dumps(cols))
-                    #delete file after upload
-                    #if os.path.isfile("{0}/{1}/{2}/{3}".format(settings.FILE_ROOT, baseid, tb, filename)):
-                    #    os.remove("{0}/{1}/{2}/{3}".format(settings.FILE_ROOT, baseid, tb, filename))
-
-                    #fp.close()
-                    #logger.tfmsa_logger("finish uploading csv on file system")
                     return HttpResponse('File Uploaded')
 
             else:
                 raise Exception("not supported type")
 
-            return_data = {"status": "ok", "result": tb}
+            return_data = {"status": "200", "result": tb}
             return Response(json.dumps(return_data))
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}
