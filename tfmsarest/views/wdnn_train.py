@@ -29,6 +29,7 @@ class WideDeepNetTrain(APIView):
         - desc : train requested model and save
         """
         try:
+            netconf.set_off_train(nnid)
             result = train.wdnn_train().run_wdd_train(nnid) # commom class modification 16.11.04
             netconf.set_on_train(nnid)
             return_data = {"status": "200", "result": result}
