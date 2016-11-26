@@ -17,7 +17,7 @@ class CifarTenPredict(APIView):
         """
         try:
             path = file_util.save_upload_file(request)
-            result = cifar10.s_predict_file([path], "path")
+            result = cifar10.s_predict_file(path, "path")
             file_util.delete_upload_file(path)
             return_data = {"status": "200", "result": result}
             return Response(json.dumps(return_data))
