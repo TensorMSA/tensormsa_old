@@ -17,6 +17,7 @@ class CommonResultStatInfo(APIView):
             result['detail'] = AccEvalCommon(nnid).reverse_result()
             result['summary'] = netconf.get_net_summary(nnid)
             result['loss'] = netconf.get_train_loss(nnid)
+            result['thread'] = netconf.get_thread_status(nnid)
             return_data = {"status": "200", "result": result}
             return Response(json.dumps(return_data))
         except Exception as e:

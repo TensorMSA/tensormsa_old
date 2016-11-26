@@ -33,6 +33,7 @@ class ConvNeuralNetTrain(APIView):
             json_data = json.loads(str(request.body, 'utf-8'))
             # result = service.JobManager().regit_job(nnid, const.JOB_TYPE_CNN_TRAIN,
             #                                         {"epoch" : json_data['epoch'],"testset" : json_data['testset']})
+            netconf.set_off_train(nnid)
             result = train_conv_network(nnid)
             netconf.set_on_train(nnid)
             return_data = {"status": "200", "result": result}
