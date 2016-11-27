@@ -56,8 +56,8 @@ def train_conv_network(nn_id, epoch=50, testset=100):
 
         # start train
         utils.tfmsa_logger("[7]fit CNN")
-        customsMonitor = Monitors.MonitorCommon(p_nn_id=nn_id, p_max_steps=int(epoch))
-        classifier.fit(train_x, train_y, steps=int(epoch), monitors=[customsMonitor])
+        customsMonitor = Monitors.MonitorCommon(p_nn_id=nn_id, p_max_steps=10000, p_every_n_steps=100)
+        classifier.fit(train_x, train_y, steps=1000, monitors=[customsMonitor])
 
         return len(train_y)
 
