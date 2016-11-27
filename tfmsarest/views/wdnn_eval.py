@@ -4,6 +4,8 @@ from rest_framework.views import APIView
 from tfmsacore.evaluation import wdnn_eval
 from tfmsacore.utils import CusJsonEncoder,logger
 from tfmsacore import netconf
+from tfmsacore import service
+from TensorMSA import const
 
 class WideDeepNetEval(APIView):
     """
@@ -44,9 +46,7 @@ class WideDeepNetEval(APIView):
 
         try:
             logger.tfmsa_logger("[eval] start evaluation in hbase")
-            netconf.set_off_eval(nnid)
-            result = wdnn_eval().wdd_eval(nnid)
-            netconf.set_on_eval(nnid)
+            result = service.JobManager().regit_job(nnid, const.JOB_TYPE_WDNN_EVAL)
             return_data = json.dumps(result)
             return Response(json.dumps(return_data))
         except Exception as e:

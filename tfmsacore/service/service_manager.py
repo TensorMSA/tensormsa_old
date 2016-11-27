@@ -1,4 +1,7 @@
-from tfmsacore import train
+from tfmsacore.train.conv_train import train_conv_network
+from tfmsacore.evaluation import eval_conv_network
+from tfmsacore.train.wdnn_estimator import wdnn_train
+from tfmsacore.evaluation.wdnn_eval import wdnn_eval
 from tfmsacore import netconf
 from TensorMSA import const
 from tfmsacore import data
@@ -16,20 +19,21 @@ class JobManager:
         :return:
         """
         try:
-            # get server config information from db
-            server_conf = ServerConfLoader().get()
+            if(JobStateLoader().check_running(nnid) == '3'):
+                tfmsa_logger("==REJECT==")
+                raise Exception ("reject")
 
             # get current running tasks from management db
             num_running = JobStateLoader().create(nnid, type, param)
 
             # check if there is a avail capacity for tfmsa
-            if(int(server_conf['fw_capa']) > num_running):
-                tfmsa_logger("Invoking next prority job")
+            if(int(const.MAX_JOB_CAPA) > num_running):
+                tfmsa_logger("==RUN==")
                 self.invoke_job()
-                return "Run Next"
+                return "run"
             else :
-                tfmsa_logger("Job Pool is full now")
-                return "Pend"
+                tfmsa_logger("==PEND==")
+                raise Exception("pend")
 
         except Exception as e:
             tfmsa_logger("regit_job : {0}".format(e))
@@ -43,10 +47,10 @@ class JobManager:
         try :
             # find next job to run
             next = JobStateLoader().get_next()
-            type = next['type']
-            nnid = next['nn_id']
-            epoch = next['epoch']
-            testsets = next['testsets']
+            type = next.type
+            nnid = next.nn_id
+            epoch = next.epoch
+            testsets = next.testsets
             JobStateLoader().set_run(nnid)
 
             """
@@ -56,13 +60,22 @@ class JobManager:
             ServerStateChecker().check_servers()
 
             # run real jobs
-            if(type == const.JOB_TYPE_DF_PRE_PROCESS):
-                self.dataframe_pre_process(nnid)
-
-            elif(type == const.JOB_TYPE_CNN_TRAIN):
-                # run neural network training
-                train.train_conv_network(nnid, epoch, testsets)
-
+            if(type == const.JOB_TYPE_CNN_TRAIN):
+                netconf.set_off_train(nnid)
+                train_conv_network(nnid, epoch, testsets)
+                netconf.set_on_train(nnid)
+            elif(type == const.JOB_TYPE_CNN_EVAL):
+                netconf.set_off_eval(nnid)
+                eval_conv_network(nnid)
+                netconf.set_on_eval(nnid)
+            elif (type == const.JOB_TYPE_WDNN_TRAIN):
+                netconf.set_off_train(nnid)
+                wdnn_train().run_wdd_train(nnid)
+                netconf.set_on_train(nnid)
+            elif (type == const.JOB_TYPE_WDNN_EVAL):
+                netconf.set_off_eval(nnid)
+                wdnn_eval().wdd_eval(nnid)
+                netconf.set_on_eval(nnid)
             else :
                 raise Exception("not defined task type!!")
 

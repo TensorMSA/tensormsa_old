@@ -4,6 +4,8 @@ from rest_framework.views import APIView
 from tfmsacore.utils.json_conv import JsonDataConverter as jc
 from tfmsacore.evaluation import eval_conv_network
 from tfmsacore import netconf
+from tfmsacore import service
+from TensorMSA import const
 
 class ConvNeuralNetEval(APIView):
     """
@@ -31,11 +33,8 @@ class ConvNeuralNetEval(APIView):
         - desc : evaluate train result
         """
         try:
-            netconf.set_off_eval(nnid)
-            jd = jc.load_obj_json(str(request.body, 'utf-8'))
-            result = eval_conv_network(nnid, jd.samplenum, jd.samplemethod)
-            return_data = {"status": "ok", "result": result}
-            netconf.set_on_eval(nnid)
+            result = service.JobManager().regit_job(nnid, const.JOB_TYPE_CNN_EVAL)
+            return_data = {"status": "200", "result": result}
             return Response(json.dumps(return_data))
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}

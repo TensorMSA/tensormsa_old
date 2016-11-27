@@ -1,8 +1,9 @@
 from tfmsacore import models
 from tfmsacore.utils import serializers
-from tfmsacore.utils.logger import tfmsa_logger
 from datetime import datetime
-
+from tfmsacore.utils.logger import tfmsa_logger
+from django.core import serializers as serial
+import json
 
 class JobStateLoader:
 
@@ -119,9 +120,9 @@ class JobStateLoader:
         try:
             tfmsa_logger("get_next Task Job!")
             data_set = models.JobManagement.objects.filter(status__contains="1").order_by('request')
-            if(len(data_set) > 0 ):
-                return data_set[0].json()
-            else:
+            if(len(data_set) > 0):
+                return data_set[0]
+            else :
                 return None
         except Exception as e:
             tfmsa_logger(e)
@@ -162,3 +163,16 @@ class JobStateLoader:
         except Exception as e:
             tfmsa_logger(e)
             raise Exception(e)
+
+    def check_running(self, nn_id):
+        """
+        check requested nn_id is already running
+        :param nn_id:
+        :return:
+        """
+        try :
+            obj = models.JobManagement.objects.get(nn_id=nn_id)
+            print(obj.status)
+            return obj.status
+        except Exception as e:
+            return 0

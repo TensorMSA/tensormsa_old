@@ -10,7 +10,7 @@ from tfmsacore.netcommon.conv_common import ConvCommonManager
 from tfmsacore.netcommon import monitors_common as Monitors
 
 
-def train_conv_network(nn_id, epoch=1000, testset=100):
+def train_conv_network(nn_id, epoch=50, testset=100):
     try:
         # check network is ready to train
         utils.tfmsa_logger("[1]check pre steps ready")
