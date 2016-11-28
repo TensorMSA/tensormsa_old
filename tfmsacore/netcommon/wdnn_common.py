@@ -7,6 +7,7 @@ import json
 import tempfile
 from django.conf import settings
 from tfmsacore import utils
+from sklearn.preprocessing import LabelEncoder
 
 
 
@@ -78,12 +79,15 @@ class WdnnCommonManager:
                     #print(k)
                     #print("df should ne wrong?")
                     #print(df[k].size)
+                for k in CATEGORICAL_COLUMNS:
+                    df[k] = df[k].astype('str')
+
                 categorical_cols = {k: tf.SparseTensor(
                   indices=[[i, 0] for i in range(df[k].size)],
                   values=df[k].values,
                   shape=[df[k].size, 1])
                                   for k in CATEGORICAL_COLUMNS}
-
+                print("####### sparse tensor input fn END")
             # Merges the two dictionaries into one.
             utils.tfmsa_logger("((3.1 Wide & Deep Network Make Tensor)) ## SAPRSE TENSOR INPUT ##")
             #print("((3.1 Wide & Deep Network Make Tensor)) ## SAPRSE TENSOR INPUT ##")
@@ -96,8 +100,64 @@ class WdnnCommonManager:
                 utils.tfmsa_logger("((3.1 Wide & Deep Network Make Tensor)) ## IF CATEGORICAL ADD LIST")
                 feature_cols.update(categorical_cols)
 
+
+            # 16.11.23 one hot transport
             # Converts the label column into a constant Tensor.
+            #label = tf.constant(df["label"].values)
+
+            #16.11.23 one hot transport
+            #Converts the label column into a constant Tensor.
+
+            # lable_list = df['COKE_Q_DI150_Class'].unique()
+            # print(df["label"].values)
+            # print(sorted(list(lable_list())))
+            # le = LabelEncoder()
+            # lable_list_sorted = sorted(list(lable_list))
+            # le.fit(lable_list_sorted)
+            # f = lambda x: le.transform([x])
+            # lable_encoder_func = lambda x: le.transform([x])
+            # df['label2'] = df['label'].map(lable_encoder_func)
+            print("#################################label select")
+            print(type(df['label']))
+            print(df['label'])
+
+            #df['label'] = (df['label'].apply(lambda x: 'Y' in x)).astype(int)  # 16.10.25 auto check label values for 2 type values #16.11.19 multilable
+
+
+
+            #multi class
+            lable_list = df["label"].unique()
+            print(df["label"].values)
+            print(sorted(list(lable_list)))
+            le = LabelEncoder()
+            lable_list_sorted = sorted(list(lable_list))
+            print("make sorted lable######################")
+            le.fit(lable_list_sorted)
+            print("make label encorder function ######################")
+            lable_encoder_func = lambda x: le.transform([x])
+
+            print("make label mapping start")
+            df['label'] = df['label'].map(lable_encoder_func).astype(int)
+            print(df['label'])
+            print(type(df['label']))
+            print("make label maping end")
+
+
+
             label = tf.constant(df["label"].values)
+
+
+
+
+            #label2 = tf.one_hot([0,1,1,0],2)
+            #print(label2)
+
+            #label = tf.one_hot(list(df["label"].values),len(list(df["label"].unique())))
+
+            #print(label)
+            #print(type(label))
+
+
             #print("((3.1 Wide & Deep Network Make Tensor)) ## END ##")
             utils.tfmsa_logger("((3.1 Wide & Deep Network Make Tensor)) ## END ##")
             #print("((3.1 Wide & Deep Network Make Tensor LABEL)) ## START##")
@@ -177,7 +237,7 @@ class WdnnCommonManager:
 
             print("COMMON_WDNN_build")
 
-            conf,hidden_layers_value,json_object = self.get_init_info_wdnn(nnid)
+            conf,hidden_layers_value,json_object, label_object  = self.get_init_info_wdnn(nnid)
 
 
             #Check Train or Predict
@@ -188,7 +248,8 @@ class WdnnCommonManager:
                 if(model_dir != "No"):
                     model_dir = model_dir
             print("((1.Make WDN Network Build)) set up WDNN directory("+nnid +") ---> " + model_dir)
-
+            label_cnt = len(list(label_object))
+            print("((1.Make WDN Network Build)) set up WDNN label count("+nnid +") ---> " + str(label_cnt))
             # continuous, categorical and embeddingforCategorical(deep) list
             featureColumnCategorical = {}
             featureColumnContinuous = {}
@@ -262,6 +323,8 @@ class WdnnCommonManager:
     #'wide', 'deep', 'wide_n_deep'
             network_type = flags.DEFINE_string
 
+            #make lable count
+
 
 
             if FLAGS.model_type == "wide_n_deep":
@@ -270,6 +333,7 @@ class WdnnCommonManager:
                     model_dir=model_dir,
                     linear_feature_columns=wide_columns,
                     dnn_feature_columns=deep_columns,
+                    n_classes=label_cnt,  # 0.11 bug
                     dnn_hidden_units=hidden_layers_value
                 )
             elif FLAGS.model_type == "wide":
@@ -283,7 +347,7 @@ class WdnnCommonManager:
                 print(deep_columns)
                 m = tf.contrib.learn.DNNClassifier(model_dir=model_dir,
                                                        feature_columns=deep_columns,
-                                                       n_classes = 3, #0.11 bug
+                                                       n_classes = label_cnt, #0.11 bug
                                                        hidden_units=hidden_layers_value)
 
             rv = self.network_update(nnid,model_dir)
@@ -299,30 +363,7 @@ class WdnnCommonManager:
         """
 
         utils.tfmsa_logger("((1.Make WDN Network Build)) start wddd build (" + nnid + ")")
-        # print("((1.Make WDN Network Build)) start wddd build (" + nnid + ")")
 
-        # print("get json string in wdnn builder ####")
-        # print(json_string)
-        # result = netconf.load_ori_format()(nnid, request.body)
-
-
-        # result_temp = netconf.get_network_config(nnid)
-        #
-        # datadesc = netconf.load_ori_format(nnid)
-        # print(datadesc)
-        # result_datadesc_source = json.loads(datadesc)
-        # # result_datadesc_source = eval(result_temp["datadesc"])
-        # # result_temp = netconf.get_network_config(nnid)
-        # # result_datadesc_source = eval(result_temp)
-        #
-        # # print(str(request.body, 'utf-8'))
-        # print("after get data")
-        # print(result_datadesc_source)
-        # result = dict()
-        # result1 = result_datadesc_source["cell_feature"]
-        # result2 = result_datadesc_source["label"]
-
-        # json_object = json.loads(json.dumps(json_string["datadesc"])) #3.5 fixed 16.11.02
         json_string = netconf.load_ori_format(nnid)
         json_object = json.loads(json_string)
         #json_object = json.loads(json_string["datadesc"])
@@ -332,10 +373,14 @@ class WdnnCommonManager:
 
         conf = netconf.load_conf(nnid)
         hidden_layers_value = conf.layer
+        result_temp = netconf.get_network_config(nnid)
+        label_cnt = json.loads(json.dumps(result_temp))
+        label_object  = label_cnt["datasets"]
+        print(label_object)
         # hidden_layers_value2 = conf["layer"]
         # print("((1.Make WDN Network Build)) config load " + str(hidden_layers_value2))
         print("((1.Make WDN Network Build)) set up Hidden Layers (" + str(hidden_layers_value), 'utf-8' + ")")
-        return conf, hidden_layers_value, json_object
+        return conf, hidden_layers_value, json_object, label_object
 
     def network_update(self,nnid, model_dir):
         """ Wide Deep Network Info directory sae

@@ -75,9 +75,34 @@ class DataFrameFormat(APIView):
             jd.datadesc = 'Y'
             print(jd)
             print("dataframe_format_post start")
+
+
+
+            cell_format  = str(request.body,'utf-8')
             #for k in jd.keys():
             #    print(k +"dddddddd------>" + jd[k])
-            netconf.save_format(nnid, str(request.body,'utf-8'))
+            netconf.save_format(nnid, cell_format)
+            # make lable distinct and save 16.11.25
+            #find label
+            coll_format_json = json.loads(cell_format)
+            t_label = coll_format_json['label']
+            label_column = list(t_label.keys())[0]
+            print("label print")
+            print(label_column)
+            #lable column_count check
+            df = data.DataMaster().query_data(baseid, tb, "a", use_df=True, limit_cnt=0,
+                                              with_label=label_column)
+            #hbase query
+            lable_list = df[label_column].unique()
+            lable_sorted_list = sorted(list(lable_list))
+            print("label_sorted_list")
+            print(lable_sorted_list)
+            jd.datasets = lable_sorted_list
+
+
+
+
+
             result = netconf.update_network(jd)
             print("dataframe_format_post end")
             netconf.set_on_data(nnid)
@@ -85,6 +110,7 @@ class DataFrameFormat(APIView):
             return_data = {"status": "200", "result": result}
             return Response(json.dumps(return_data))
         except Exception as e:
+            print("exception eeee")
             netconf.set_off_data(nnid)
             netconf.set_off_data_conf(nnid)
             return_data = {"status": "400", "result": str(e)}

@@ -114,7 +114,7 @@ class HbaseManager:
             print("get columns info")
             column_dtype_key ='columns' #fix
             cf = 'data'
-            print("get columns info before get table")
+            print("get columns info before getting table")
             column_dtype = table.row(column_dtype_key, columns=[cf])
             print(type(column_dtype))
             print(column_dtype)
@@ -154,16 +154,41 @@ class HbaseManager:
             df = pd.DataFrame(columns=columns)
 
             rowcnt = 0 #read row count variable
+            tfmsa_logger("HbaseMaster query_data End query data before loop##################")
+            #print(len(list(rows)))
             for row in rows:
-                df_row = {str(key,'utf-8').split(':')[1]: str(value,'utf-8') for key, value in row[1].items()}
+                #tfmsa_logger("####### before get row HbaseMaster query##################")
+                #df_row = {str(key,'utf-8').split(':')[1]: str(value,'utf-8') for key, value in row[1].items()}
+                df_row = {str(key,'utf-8').split(':')[1]: bytes.decode(value) for key, value in row[1].items()}
+                #tfmsa_logger("####### after get row HbaseMaster query##################")
                 df = df.append(df_row, ignore_index=True)
                 rowcnt += 1
+                #for key, value in row[1].items():
+                #    print("[" + bytes.decode(key) + "] key :" + bytes.decode(value) + " readRows(" + str(rowcnt) + ")")
                 #Print when 1000 rows count
-                if rowcnt%1000 == 0:
+                if rowcnt%100 == 0:
                     print ("[" + data_frame + "] table_name :" + table_name + " readRows(" + str(rowcnt) + ")")
+
+                #print("[" + data_frame + "] table_name :" + table_name + " readRows(" + str(rowcnt) + ")")
             for column, data_type in sorted(columns.items()): # can i sorted??? 11.11.21
-                df[column] = df[column].astype(np.dtype(data_type))
-                print (" column :" + column + " data_type(" + str(data_type) + ")")
+                try:
+                    print("column type make start error")
+                    column_name = str(column)
+                    print(column)
+                    print(data_type)
+                    if "int" in data_type:
+                        print("check integer column type")
+                        df[column_name] = df[column_name].astype("float").astype(np.dtype(data_type))
+                    else:
+                        print("check NOT integer column type")
+                        df[column_name] = df[column_name].astype(np.dtype(data_type))
+                    print (" column :" + column + " data_type(" + str(data_type) + ")")
+                    print(len(list(sorted(columns.items()))))
+                except Exception as ex:
+                    print(ex)
+                    print("column, data_type Except########")
+
+
             if("None" != with_label):
                 print("label exsist --> " + with_label)
                 #Label auto check
@@ -178,22 +203,32 @@ class HbaseManager:
                 #for uk in sorted(label_values):
 
 
-                print("sorted label value : " + str(label_first_value))
-                df['label'] = (
-                    #df[with_label].apply(lambda x: label_first_value.index(x))).astype(int) #16.10.25 auto check label values for 2 type values #16.11.19 multilable
+                # print("sorted label value : " + str(label_first_value))
+                # df['label'] = (
+                #     #df[with_label].apply(lambda x: label_first_value.index(x))).astype(int) #16.10.25 auto check label values for 2 type values #16.11.19 multilable
+                #    # df_train["income_bracket"].apply(lambda x: ">50K" in x)).astype(int)
+                #     df[with_label].apply(lambda x: 'Y' in x)).astype(int) #16.10.25 auto check label values for 2 type values #16.11.19 multilable
+                # print("sorted label value : " + str(label_first_value))
+
+                #16.11.21 one hot transport
+                df['label'] = df[with_label]
+                   #df[with_label].apply(lambda x: label_first_value.index(x))).astype(int) #16.10.25 auto check label values for 2 type values #16.11.19 multilable
                    # df_train["income_bracket"].apply(lambda x: ">50K" in x)).astype(int)
-                    df[with_label].apply(lambda x: 'Y' in x)).astype(int) #16.10.25 auto check label values for 2 type values #16.11.19 multilable
-                df_table = df
-                df_table["originalY"] = df[with_label]
-                df_table["convertY"] = df['label']
-                print("df_Table_table_table")
-                print(df_table)
+                   #df[with_label].apply(lambda x: 'Y' in x)).astype(int) #16.10.25 auto check label values for 2 type values #16.11.19 multilable
 
 
-            tfmsa_logger("End query data!")
+                #df_table = df
+                #df_table["originalY"] = df[with_label]
+                #df_table["convertY"] = df['label']
+                #print("df_Table_table_table")
+                #print(df_table)
+
+
+
             #print(use_df)
             #print(None)
             if use_df is None:
+                print("make list ############################## for hbase")
                 resultList = list()
 
                 #resultList.append(df.columns.values.tolist().append(df.values.tolist()))

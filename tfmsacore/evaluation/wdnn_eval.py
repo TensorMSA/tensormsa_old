@@ -14,6 +14,7 @@ import pandas as pd
 from tfmsacore.netcommon.wdnn_common import WdnnCommonManager
 from tfmsacore.netcommon.acc_eval_common import AccEvalCommon
 from tfmsacore.netcommon.acc_eval_common import AccStaticResult
+from sklearn.preprocessing import LabelEncoder
 
 
 class wdnn_eval(WdnnCommonManager):
@@ -57,6 +58,11 @@ class wdnn_eval(WdnnCommonManager):
             # should be change
             model_dir = str(json_string['query'])
             #json_ob = json.loads(json_object)
+            _label_list = json_string['datasets']
+            print(_label_list)
+
+            label_list = eval(_label_list)
+            print("##########predict label list ########  " + str(label_list))
 
             tt = json_ob['cell_feature']
 
@@ -107,6 +113,15 @@ class wdnn_eval(WdnnCommonManager):
             predict_results = wdnn_model.predict(input_fn=lambda: WdnnCommonManager.input_fn(self, df, nnid))
             df['predict_label'] = list(predict_results)
 
+            le = LabelEncoder()
+            # lable_list_sorted = sorted(list(lable_list))
+            print("make sorted lable######################")
+            le.fit(label_list)
+            print("make label encorder function ######################")
+            lable_decoder_func = lambda x: le.inverse_transform([x])
+
+            print("make label mapping start")
+            df['predict_label'] = df['predict_label'].map(lable_decoder_func).astype("str")
 
 
             # I am very sleeping
@@ -121,13 +136,18 @@ class wdnn_eval(WdnnCommonManager):
             #oneRows = pd.DataFrame(df.get(1))
             #print(oneRows)
 
+            #make label first
+
+
             for value in df.iterrows():
                 print("Inside start row by row")
                 print(type(value))
                 _row = value[1]
                 #print(value[1])
-                ori_label = _row["label"]
-                predict_label = _row["predict_label"]
+                #ori_label = _row["label"]
+                ori_label = _row[label_column]
+                predict_label = str(eval(_row["predict_label"])[0])#str(list(_row["predict_label"])[0])
+                #predict_label = le.inverse_transform(_predict_label)
                 print(str(ori_label) + "-------> " + str(predict_label))
                 acc_result_obj = AccEvalCommon(nnid).set_result(acc_result_obj, ori_label,predict_label)
                 # for v in value:

@@ -12,8 +12,7 @@ from tfmsacore import utils
 from rest_framework.response import Response
 import pandas as pd
 from tfmsacore.netcommon.wdnn_common import WdnnCommonManager
-
-
+from sklearn.preprocessing import LabelEncoder
 
 class wdnn_predict(WdnnCommonManager):
     def __init__(self):
@@ -39,14 +38,19 @@ class wdnn_predict(WdnnCommonManager):
 
             #should be change
             model_dir = str(json_string['query'])
-            #json_ob = json.loads(json_object)
+            #json_ob = json.loads(json_object)\
+            _label_list = json_string['datasets']
+            print(_label_list)
 
+            label_list = eval(_label_list)
+            print("##########predict label list ########  " + str(label_list))
             tt = json_ob['cell_feature']
 
             wdnn_model = WdnnCommonManager.wdnn_build(self, nnid,model_dir,False)
 
             t_label = json_ob['label']
             label_column = list(t_label.keys())[0]
+            print(label_column)
 
             # for key, value in t_label.items():
             #     print("label key   " , key)
@@ -69,8 +73,20 @@ class wdnn_predict(WdnnCommonManager):
                      # names=COLUMNS,
                      skipinitialspace=True,
                      engine="python")
+
+
+
                 # add label feature for wdnn netowrk
-                df['label'] = (df[label_column].apply(lambda x: "Y" in x)).astype(int)
+                # multi class
+                df['label'] = df[label_column]
+                #lable_list = df[label_column].unique()
+                #label_list
+                print("##########predict label list ########  " + str(label_list))
+
+
+
+
+                #df['label'] = (df[label_column].apply(lambda x: "Y" in x)).astype(int)
 
             print("((3.Wide & Deep Network Predict )) ##Start## ")
             predicts = wdnn_model.evaluate(input_fn=lambda: WdnnCommonManager.input_fn(self, df, nnid), steps=1)
@@ -84,7 +100,19 @@ class wdnn_predict(WdnnCommonManager):
             df['predict_label'] = list(predict_results)
 
 
-            
+            le = LabelEncoder()
+            # lable_list_sorted = sorted(list(lable_list))
+            print("make sorted lable######################")
+            le.fit(label_list)
+            print("make label encorder function ######################")
+            lable_decoder_func = lambda x: le.inverse_transform([x])
+
+            print("make label mapping start")
+            df['predict_label'] = df['predict_label'].map(lable_decoder_func).astype("str")
+            print(df['predict_label'])
+            #print(type(df['label']))
+            print("make label maping end")
+
             #print("Df file save")
             #csv = df.to_csv('/home/dev/test_predict2.csv', sep='\t', encoding='utf-8')
 
