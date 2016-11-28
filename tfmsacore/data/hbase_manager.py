@@ -179,9 +179,12 @@ class HbaseManager:
                     if "int" in data_type:
                         print("check integer column type")
                         df[column_name] = df[column_name].astype("float").astype(np.dtype(data_type))
-                    else:
+                    elif "float" in data_type:
                         print("check NOT integer column type")
                         df[column_name] = df[column_name].astype(np.dtype(data_type))
+                    else:
+                        print("check NOT integer column type")
+                        df[column_name] = df[column_name].astype("str")
                     print (" column :" + column + " data_type(" + str(data_type) + ")")
                     print(len(list(sorted(columns.items()))))
                 except Exception as ex:
