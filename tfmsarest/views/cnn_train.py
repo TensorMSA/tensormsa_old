@@ -3,7 +3,8 @@ import json
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from tfmsacore import netconf
-from tfmsacore.train.conv_train import train_conv_network
+from TensorMSA import const
+from tfmsacore import service
 
 class ConvNeuralNetTrain(APIView):
     """
@@ -30,11 +31,8 @@ class ConvNeuralNetTrain(APIView):
         - desc : train requested model and save
         """
         try:
-            json_data = json.loads(str(request.body, 'utf-8'))
-            # result = service.JobManager().regit_job(nnid, const.JOB_TYPE_CNN_TRAIN,
-            #                                         {"epoch" : json_data['epoch'],"testset" : json_data['testset']})
-            result = train_conv_network(nnid)
-            netconf.set_on_train(nnid)
+            #json_data = json.loads(str(request.body, 'utf-8'))
+            result = service.JobManager().regit_job(nnid, const.JOB_TYPE_CNN_TRAIN)
             return_data = {"status": "200", "result": result}
             return Response(json.dumps(return_data))
         except Exception as e:

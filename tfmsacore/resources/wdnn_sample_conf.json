@@ -1,0 +1,11 @@
+/*
+def wdnn_conf_post():
+    resp = requests.post('http://' + url + '/api/v1/type/wdnn/conf/'+net_work_id+'/',
+                         json={
+                                 "layer":[100,50]
+                             })
+    data = json.loads(resp.json())
+    print("evaluation result : {0}".format(data))
+*/
+
+[10, 20, 30 ,50, 90]

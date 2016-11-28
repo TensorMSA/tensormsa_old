@@ -1,9 +1,9 @@
 import json
-
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from tfmsacore import netconf
-from tfmsacore import train
+from tfmsacore import service
+from TensorMSA import const
 
 
 class WideDeepNetTrain(APIView):
@@ -29,8 +29,7 @@ class WideDeepNetTrain(APIView):
         - desc : train requested model and save
         """
         try:
-            result = train.wdnn_train().run_wdd_train(nnid) # commom class modification 16.11.04
-            netconf.set_on_train(nnid)
+            result = service.JobManager().regit_job(nnid, const.JOB_TYPE_WDNN_TRAIN)
             return_data = {"status": "200", "result": result}
             return Response(json.dumps(return_data))
         except Exception as e:

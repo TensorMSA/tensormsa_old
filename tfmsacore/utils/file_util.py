@@ -30,11 +30,12 @@ def save_upload_file(request):
         fp.close()
 
 
-def delete_upload_file(directory):
+def delete_upload_file(directory_list):
     """
     delete file on path
     :param directory:
     :return:
     """
-    if os.path.isfile(directory):
-        os.remove(directory)
+    for directory in directory_list:
+        if os.path.isfile(directory):
+            os.remove(directory)
