@@ -1,11 +1,8 @@
 from tfmsacore import netconf
 from tfmsacore.utils.logger import tfmsa_logger
-from django.conf import settings
 import os, happybase, json, struct, sys, time, random
-import numpy as np
-import tensorflow as tf
+from TensorMSA import const
 from django.conf import settings
-import pandas as pd
 from tfmsacore.data.hbase_manager import HbaseManager
 from tfmsacore import preprocess
 from tfmsacore.utils.json_conv import JsonDataConverter as jc
@@ -41,8 +38,9 @@ class ImageManager(HbaseManager):
 
             # get hbase trasaction table
             tfmsa_logger("[4]get hbase trasaction table")
-            conn, table = self.get_target_table(data_frame, table_name)
-            buffer = table.batch(transaction=True)
+            conn, train_table, test_table = self.get_divided_target_table(data_frame, table_name)
+            train_buffer = train_table.batch(transaction=True)
+            test_buffer = test_table.batch(transaction=True)
 
             #get Label list
             tfmsa_logger("[5]Updata Label List ")
@@ -51,6 +49,7 @@ class ImageManager(HbaseManager):
             # get Label list
             tfmsa_logger("[6]upload image on Hbase - start ")
             file_list = []
+            train_key_set, test_key_set = self.divide_train_sample(file_set.keys())
 
             for key in file_set.keys():
                 file = file_set[key]
@@ -63,8 +62,12 @@ class ImageManager(HbaseManager):
                 row_value[':'.join(('data', 'width'))] = str(width)
                 row_value[':'.join(('data', 'height'))] = str(height)
                 file_list.append(file._name)
-                buffer.put(row_key, row_value)
-            buffer.send()
+                if(key in train_key_set):
+                    train_buffer.put(row_key, row_value)
+                if(key in test_key_set):
+                    test_buffer.put(row_key, row_value)
+            train_buffer.send()
+            test_buffer.send()
             tfmsa_logger("[7]upload image on Hbase - finish")
             return file_list
         except Exception as e:
@@ -73,6 +76,17 @@ class ImageManager(HbaseManager):
         finally:
             conn.close()
             tfmsa_logger("Finish upload image...")
+
+    def divide_train_sample(self, input_list):
+        """
+        divide image name to train set and test set
+        :param input_list:
+        :return:
+        """
+        input_list = list(input_list)
+        train_set = random.sample(input_list, int(len(input_list) * const.TRAIN_DATA_PORTION))
+        test_set = list(set(input_list) - set(train_set))
+        return train_set, test_set
 
     def make_inital_path(self, nn_id):
         """
@@ -135,6 +149,25 @@ class ImageManager(HbaseManager):
         table = conn.table(make_prefix + table_name, use_prefix=False)
 
         return conn, table
+
+    def get_divided_target_table(self, data_frame, table_name):
+        """
+        get train set table and test set table
+        :param data_frame:
+        :param table_name:
+        :return:
+        """
+        # crate hbase session
+        conn = self.session_create()
+        conn.table_prefix = data_frame
+        conn.table_prefix_separator = ":"
+        make_prefix = data_frame + ":"
+
+        # get table transaction buffer
+        train_table = conn.table(make_prefix + table_name, use_prefix=False)
+        test_table = conn.table("test_schema_" + make_prefix + table_name, use_prefix=False)
+
+        return conn, train_table, test_table
 
     def image_preprocess(self, file, net_info, format_info, label):
         """

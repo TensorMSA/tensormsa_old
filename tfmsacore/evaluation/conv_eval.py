@@ -32,7 +32,7 @@ def eval_conv_network(nn_id, samplenum = 0.1, samplemethod = 1):
 
         # TODO : need to change data loader to get sample data (not all data)
         if(const.TYPE_IMAGE == net_info['preprocess']):
-            train_data_set, train_label_set = ConvCommonManager(conf_info).prepare_image_data(nn_id, net_info)
+            train_data_set, train_label_set = ConvCommonManager(conf_info).prepare_test_image_data(nn_id, net_info)
         elif(const.TYPE_DATA_FRAME == net_info['preprocess']):
             raise Exception("function not ready")
         elif(const.TYPE_TEXT == net_info['preprocess']):
@@ -42,7 +42,7 @@ def eval_conv_network(nn_id, samplenum = 0.1, samplemethod = 1):
 
         # data size info change
         utils.tfmsa_logger("[5]modify data stuctor info")
-        ConvCommonManager(conf_info).save_changed_data_info(nn_id, train_data_set)
+        #ConvCommonManager(conf_info).save_changed_data_info(nn_id, train_data_set)
 
         learnrate = conf_info.data.learnrate
         label_set = json.loads(net_info['datasets'])

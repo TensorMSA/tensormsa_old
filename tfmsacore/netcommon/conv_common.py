@@ -41,6 +41,33 @@ class ConvCommonManager:
             train_label_set.append(netcommon.return_index_position(out_index, str(row_data['label'], 'utf-8')))
         return train_data_set, train_label_set
 
+    def prepare_test_image_data(self, nn_id, net_info):
+        """
+        prepare image type data for test
+        convert image to analizerble array
+        :param nn_id:
+        :return:
+        """
+
+        # check current data pointer
+        utils.tfmsa_logger("[1]check current data pointer")
+        """
+        TO-DO : case when data size is big
+        """
+        # get train data from HDFS
+        utils.tfmsa_logger("[2]load data from hdfs")
+        row_data_arr = ImageManager().load_data("test_schema_" + net_info['dir'], net_info['table'], "0", "10")
+
+        # conver image to array
+        utils.tfmsa_logger("[3]convert image to array")
+        out_index = json.loads(net_info['datasets'])
+        train_data_set = []
+        train_label_set = []
+        for row_data in row_data_arr:
+            train_data_set.append(json.loads(str(row_data['bt'],'utf-8')))
+            train_label_set.append(netcommon.return_index_position(out_index, str(row_data['label'], 'utf-8')))
+        return train_data_set, train_label_set
+
     def struct_cnn_layer(self, train_data_set, train_label_set):
         """
         dynamically struct cnn

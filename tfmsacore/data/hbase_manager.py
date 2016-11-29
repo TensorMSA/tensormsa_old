@@ -406,10 +406,6 @@ class HbaseManager:
                  engine="python")
             train_set = df.sample(frac= const.TRAIN_DATA_PORTION, random_state=200)
             test_set = df.drop(train_set.index)
-
-            print(len(train_set))
-            print(len(test_set))
-
             rownum = self.to_hbase(train_set, data_frame, table_name, 'networkid')
             rownum = self.to_hbase(test_set, 'test_schema_' + data_frame, table_name, 'networkid')
         except Exception as e:
