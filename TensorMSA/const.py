@@ -23,3 +23,7 @@ TYPE_TEXT = '3'
 LOG_OUT_STEPS = 50
 #monitor - acc
 ACC_OUT_STEPS = 30
+
+#test data portion
+TEST_DATA_PORTION = 0.2
+TRAIN_DATA_PORTION = 0.8

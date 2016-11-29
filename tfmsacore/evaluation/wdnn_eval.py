@@ -87,7 +87,7 @@ class wdnn_eval(WdnnCommonManager):
                 limit_no = 100
                 print(
                     "((2.Get Dataframe from Hbase)) ##Start## (" + database + " , " + table_name + " , " + label_column + ")")
-                df = data.DataMaster().query_data(database, table_name, "a", limit_no, with_label=label_column)
+                df = data.DataMaster().query_data("test_schema_" +  database, table_name, "a", limit_no, with_label=label_column)
                 print(
                     "((2.Get Dataframe from Hbase)) ##End## (" + database + " , " + table_name + " , " + label_column + " , " + str(
                         limit_no) + ")")

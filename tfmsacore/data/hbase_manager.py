@@ -8,6 +8,7 @@ import sys
 import numpy as np
 import tensorflow as tf
 import time
+from TensorMSA import const
 
 
 
@@ -267,9 +268,11 @@ class HbaseManager:
             tfmsa_logger("start query data !")
             conn = self.session_create()
             nameSpace_tableName = db_name + ":" + table_name
+            test_nameSpace_tableName = "test_schema_" + db_name + ":" + table_name
             cf = {'data': dict(),}
 
             conn.create_table(nameSpace_tableName, cf)
+            conn.create_table(test_nameSpace_tableName, cf)
 
             # DBNAME probably needs
 
@@ -396,21 +399,19 @@ class HbaseManager:
         :return: rownum
         """
         try:
-            print("hbase_save_csv_to_df")
-            print(settings.FILE_ROOT)
-            print(data_frame)
-            print(table_name)
-            print(csv_file)
             file_path = settings.FILE_ROOT + "/" + data_frame + "/" + table_name + "/" + csv_file
-            print(file_path)
             df = pd.read_csv(
                  tf.gfile.Open(file_path),
-                 # names=COLUMNS,
                  skipinitialspace=True,
                  engine="python")
-            #when data insert to hbase, It occurs error about time out. I just pass the error
-            rownum = self.to_hbase(df, data_frame, table_name, 'networkid')
+            train_set = df.sample(frac= const.TRAIN_DATA_PORTION, random_state=200)
+            test_set = df.drop(train_set.index)
 
+            print(len(train_set))
+            print(len(test_set))
+
+            rownum = self.to_hbase(train_set, data_frame, table_name, 'networkid')
+            rownum = self.to_hbase(test_set, 'test_schema_' + data_frame, table_name, 'networkid')
         except Exception as e:
             tfmsa_logger(e)
             raise Exception(e)
