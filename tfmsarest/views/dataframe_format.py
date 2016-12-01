@@ -71,42 +71,29 @@ class DataFrameFormat(APIView):
             jd.nn_id = nnid
             jd.preprocess = '1'
             jd.datadesc = 'Y'
-            print(jd)
-            print("dataframe_format_post start")
-
-
 
             cell_format  = str(request.body,'utf-8')
-            #for k in jd.keys():
-            #    print(k +"dddddddd------>" + jd[k])
             netconf.save_format(nnid, cell_format)
-            # make lable distinct and save 16.11.25
+
             #find label
             coll_format_json = json.loads(cell_format)
             t_label = coll_format_json['label']
             label_column = list(t_label.keys())[0]
-            print("label print")
-            print(label_column)
+
             #lable column_count check
             df = data.DataMaster().query_data(baseid, tb, "a", use_df=True, limit_cnt=0,
                                               with_label=label_column)
             #hbase query
             lable_list = df[label_column].unique()
             lable_sorted_list = sorted(list(lable_list))
-            print("label_sorted_list")
-            print(lable_sorted_list)
             jd.datasets = lable_sorted_list
-
-
             netconf.save_format(nnid, str(request.body,'utf-8'))
 
             result = netconf.update_network(jd)
-            print("dataframe_format_post end")
             netconf.set_on_data(nnid)
             return_data = {"status": "200", "result": result}
             return Response(json.dumps(return_data))
         except Exception as e:
-            print("exception eeee")
             netconf.set_off_data(nnid)
             netconf.set_off_data_conf(nnid)
             return_data = {"status": "400", "result": str(e)}
@@ -118,27 +105,12 @@ class DataFrameFormat(APIView):
         """
         #get_network_config
         try:
-            print("dataframe_format_Get")
-            print(nnid)
-
-            #result = netconf.load_ori_format()(nnid, request.body)
             result_temp = netconf.get_network_config(nnid)
 
             datadesc = netconf.load_ori_format(nnid)
-            print(datadesc)
             result_datadesc_source = json.loads(datadesc)
-            print("after get data")
-            print(result_datadesc_source)
             result = dict()
-            result1 = result_datadesc_source["cell_feature"]
-            result2 = result_datadesc_source["label"]
 
-            #cell_label_condition = eval(str(request.body, 'utf-8'))
-            print(type)
-            #cell_label_condition["type"]
-
-            #print(cell_label_condition)
-            #request.body
             if type == "cell_feature":
                 result = result_datadesc_source["cell_feature"]
             elif type == "label":
@@ -146,8 +118,8 @@ class DataFrameFormat(APIView):
             elif type == "all":
                 result = result_datadesc_source["cell_feature"]
                 result.update(result_datadesc_source["label"])
-                #result.update(result_datadesc_source["label"])
-
+            elif type == "labels":
+                result = data.ImageManager().get_label_list(nnid)
             return_data = {"status": "200", "result": result}
             return Response(json.dumps(return_data))
         except Exception as e:

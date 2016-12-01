@@ -228,7 +228,7 @@ class ImageManager(HbaseManager):
         if (len(str(net_info['datasets'])) == 0):
             label_list = []
         else:
-            label_list = json.loads(net_info['datasets'])
+            label_list = json.loads(net_info['datasets'].replace("'", "\""))
         return label_list
 
     def update_label_list(self, nn_id, label):
