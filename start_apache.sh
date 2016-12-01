@@ -64,8 +64,9 @@ echo "==========================================="
 echo "step6 : Start TensorMSA Webserver      "
 echo "==========================================="
 
-#/usr/local/apache2/bin/apachectl start
-/usr/sbin/httpd
+
+uwsgi /home/dev/uwsgi/tensormsa.ini --emperor /home/dev/TensorMSA &
+/usr/sbin/nginx
 
 
  
