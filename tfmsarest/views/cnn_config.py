@@ -48,7 +48,7 @@ class ConvNeuralNetConfig(APIView):
         """
         try:
             result = netconf.load_ori_conf(nnid)
-            return_data = {"status": "200", "result": result}
+            return_data = {"status": "200", "result": json.loads(result[0])}
             return Response(json.dumps(return_data))
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}
