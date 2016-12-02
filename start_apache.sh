@@ -67,6 +67,6 @@ echo "==========================================="
 
 uwsgi /home/dev/uwsgi/tensormsa.ini --emperor /home/dev/TensorMSA &
 /usr/sbin/nginx
-
+sudo chmod 777 /home/dev/TensorMSA/TensorMSA.sock
 
  

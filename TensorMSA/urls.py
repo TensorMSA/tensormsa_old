@@ -31,11 +31,11 @@ urlpatterns = [
 
     url(r'^admin/', csrf_exempt(admin.site.urls)),
     # network info
-    url(r'^api/v1/type/common/nninfo/(?P<nnid>.*)/category/(?P<cate>.*)/subcate/(?P<sub>.*)/',
+    # url(r'^api/v1/type/common/nninfo/(?P<nnid>.*)/category/(?P<cate>.*)/subcate/(?P<sub>.*)/',
+    #     csrf_exempt(rest_view.CommonNetInfo.as_view())),
+    url(r'^api/v1/type/common/nninfo/(?P<nnid>.*)/',
         csrf_exempt(rest_view.CommonNetInfo.as_view())),
-    url(r'^api/v1/type/common/nninfo/$',
-        csrf_exempt(rest_view.CommonNetInfo.as_view())),
-    url(r'^api/v1/type/common/nninfo/(?P<nnid>.*)/$',
+    url(r'^api/v1/type/common/nninfo/',
         csrf_exempt(rest_view.CommonNetInfo.as_view())),
 
     # pre process for dataframe data

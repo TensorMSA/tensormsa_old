@@ -20,5 +20,5 @@ echo "step3 : stop Django"
 echo "======================="
 
 cd /home/dev/TensorMSA/
-pkill -f "uwsgi"
-pkill -f "nginx"
+pkill -f uwsgi -9
+pkill -f nginx

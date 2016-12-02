@@ -51,12 +51,16 @@ class CommonNetInfo(APIView):
             return_data = {"status": "400", "result": str(e)}
             return Response(json.dumps(return_data))
 
-    def get(self, request, nnid, cate, sub):
+
+    def get(self, request, nnid):
         """
         - desc : return nn_info data
         """
         try:
-            result = netconf.filter_network_config(nnid, cate, sub)
+            if(nnid == 'all'):
+                result = netconf.filter_network_config('', '', '')
+            else:
+                result = netconf.filter_network_config(nnid, '', '')
             return_data = {"status": "200", "result": result}
             return Response(json.dumps(return_data))
         except Exception as e:
