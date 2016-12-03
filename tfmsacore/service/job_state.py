@@ -176,3 +176,30 @@ class JobStateLoader:
             return obj.status
         except Exception as e:
             return 0
+
+
+    def set_data_pointer(self, nn_id, number):
+        """
+        set pointer number
+        :param nn_id:
+        :return:
+        """
+        try :
+            obj = models.JobManagement.objects.get(nn_id=str(nn_id))
+            obj.datapointer = str(number)
+            obj.save()
+            return obj.status
+        except Exception as e:
+            return 0
+
+    def get_data_pointer(self, nn_id):
+        """
+        get pointer number
+        :param nn_id:
+        :return:
+        """
+        try :
+            obj = models.JobManagement.objects.get(nn_id=str(nn_id))
+            return obj.datapointer
+        except Exception as e:
+            return 0

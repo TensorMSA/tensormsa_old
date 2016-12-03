@@ -11,7 +11,6 @@ import time
 from TensorMSA import const
 
 
-
 class HbaseManager:
 
     def session_create(self, db_name=None):
@@ -23,10 +22,9 @@ class HbaseManager:
 
             tfmsa_logger("Hbase Session Created")
             if db_name is None:
-                conn = happybase.Connection(host=settings.HBASE_HOST, port=settings.HBASE_HOST_PORT)
+                conn = happybase.Connection(host=settings.HBASE_HOST, port=settings.HBASE_HOST_PORT, )
             if db_name is not None:
                 conn = happybase.Connection(host=settings.HBASE_HOST, port=settings.HBASE_HOST_PORT, table_prefix=db_name, table_prefix_separator=':')
-            #print(conn.__class__)
             return conn
         except Exception as e:
             tfmsa_logger("Error : {0}".format(e))
@@ -43,12 +41,10 @@ class HbaseManager:
             t_tables = conn.tables()
             tables = list(map(lambda x : str(x,'utf-8'),t_tables))
             for tb in tables:
-                print(tb)
                 if (tb.find(":") > 0):
                     db_names.append(tb.split(":")[0])
             #Distict Dbname
             distict_db = set(db_names)
-            print(list(distict_db))
             return list(distict_db)#list(map(lambda x: str(x, 'utf-8').split(':')[0],tables))
         except Exception as e:
             tfmsa_logger("Error : {0}".format(e))
@@ -63,12 +59,6 @@ class HbaseManager:
         try:
             print("create hbase database" + db_name)
             raise Exception("Hbase can not make db")
-            #conn = self.spark_session_create()
-            #conn.table_prefix = db_name
-            #conn.table_prefix_separator = ":"
-            #print(db_name)
-            #table = conn.create_table(db_name,{'data':dict(),})
-            #return json.dumps(table)
         except Exception as e:
             tfmsa_logger("Error : {0}".format(e))
             raise Exception(e)
@@ -83,18 +73,46 @@ class HbaseManager:
         """
         try:
             conn = self.session_create(db_name)
-            #conn.table_prefix
-            #conn.table_prefix_separator = ":"
             table = conn.tables()
-            print(map(lambda x:str(x,'utf-8'), table))
-            #results = list(map(lambda x:))
             return list(map(lambda x:str(x,'utf-8') ,table))
         except Exception as e:
             tfmsa_logger("Error : {0}".format(e))
             raise Exception(e)
 
 
-    def query_data(self, data_frame, table_name, query_str, use_df= None, limit_cnt=0, with_label = "None"):
+    def __get_hbase_data(self, data_frame, table_name, use_df, row_start = '1', limit_cnt=10):
+        try :
+            tfmsa_logger("[1] Create Hbase Session")
+            conn = self.session_create()
+            conn.table_prefix = data_frame
+            conn.table_prefix_separator = ":"
+
+            # DBNAME probably needs
+            make_prefix = data_frame + ":"
+            table = conn.table(make_prefix + table_name, use_prefix=False)
+            column_dtype = table.row('columns', columns=['data'])
+            columns = {str(col, 'utf-8').split(':')[1]: str(value, 'utf-8') for col, value in column_dtype.items()}
+
+            tfmsa_logger("[2] Hbase Scan Table")
+            rows = dict()
+            if(isinstance(row_start, (str))):
+                row_start = row_start
+            elif(isinstance(row_start, (bytes))):
+                row_start = str(row_start, 'utf-8')
+            else:
+                row_start = str(row_start)
+
+            if (use_df == True) :
+                rows = table.scan(row_start=row_start, row_stop=str(sys.maxsize), limit=limit_cnt)
+            else :
+                rows = table.scan(row_start=row_start, row_stop=str(sys.maxsize), limit=15)
+
+            return rows, columns
+        except Exception as e:
+            tfmsa_logger(e)
+
+
+    def query_data(self, data_frame, table_name, query_str, use_df= None, limit_cnt=0, with_label = "None", start_pnt='1'):
         """
         get query data from spark
         :param data_fream(database), table_name,
@@ -103,159 +121,53 @@ class HbaseManager:
         :return: pandas dataframe object
         """
         try:
-            tfmsa_logger("start query data !")
-            conn = self.session_create()
-            conn.table_prefix = data_frame
-            conn.table_prefix_separator = ":"
-            # DBNAME probably needs
-            make_prefix = data_frame + ":"  # python 3.5 change
-            table = conn.table(make_prefix + table_name, use_prefix=False) # python 3.5 change
+            last_key = ""
+            rows, columns = self.__get_hbase_data(data_frame, table_name, use_df, start_pnt, limit_cnt)
 
-            key = 'columns'  # fix
-            print("get columns info")
-            column_dtype_key ='columns' #fix
-            cf = 'data'
-            print("get columns info before getting table")
-            column_dtype = table.row(column_dtype_key, columns=[cf])
-            print(type(column_dtype))
-            print(column_dtype)
-            print("get columns info after get table")
-            #column_dtype35 = dict(map(lambda x : str(x,'utf-8'),column_dtype.items()))#3.5 change
-            #print(column_dtype35)
-            #columns = {col.split(':')[1]: value for col, value in column_dtype.items()}
-            columns = {str(col,'utf-8').split(':')[1]: str(value,'utf-8') for col, value in column_dtype.items()}
-            print(columns)
-            column_order_key = key + 'column_order'
-
-            print("get columns_order_dict info before get table")
-            column_order_dict = table.row(column_order_key, columns=[cf])
-            print("get columns_order_dict info after get table")
-            column_order = list()
-            for i in range(len(column_order_dict)):
-                column_order.append(column_order_dict[':'.join((cf, struct.pack('>q', i)))])
-            print("column_ordder_dict")
-            print(column_order)
-            limit_cnt = 0
-            if use_df is None:
-                limit_cnt = 10
-            else:
-                limit_cnt = 0
-            #row_start = key + 'rows' + struct.pack('>q', 0)
-            #row_end = key + 'rows' + struct.pack('>q', sys.maxint)
-            row_start = "1"
-            row_end = str(sys.maxsize)
-            #limit check
-            #limit_cnt = 0
-            rows = dict()
-            if limit_cnt == 0:
-                rows = table.scan(row_start=row_start, row_stop=row_end)
-            elif limit_cnt > 0:
-                rows = table.scan(row_start=row_start, row_stop=row_end, limit=limit_cnt)
-
+            tfmsa_logger("[3] Convert to DataFrame")
+            rowcnt = 0
             df = pd.DataFrame(columns=columns)
-
-            rowcnt = 0 #read row count variable
-            tfmsa_logger("HbaseMaster query_data End query data before loop##################")
-            #print(len(list(rows)))
             for row in rows:
-                #tfmsa_logger("####### before get row HbaseMaster query##################")
-                #df_row = {str(key,'utf-8').split(':')[1]: str(value,'utf-8') for key, value in row[1].items()}
                 df_row = {str(key,'utf-8').split(':')[1]: bytes.decode(value) for key, value in row[1].items()}
-                #tfmsa_logger("####### after get row HbaseMaster query##################")
+                last_key = row[0]
                 df = df.append(df_row, ignore_index=True)
                 rowcnt += 1
-                #for key, value in row[1].items():
-                #    print("[" + bytes.decode(key) + "] key :" + bytes.decode(value) + " readRows(" + str(rowcnt) + ")")
-                #Print when 1000 rows count
-                if rowcnt%100 == 0:
-                    print ("[" + data_frame + "] table_name :" + table_name + " readRows(" + str(rowcnt) + ")")
 
-                #print("[" + data_frame + "] table_name :" + table_name + " readRows(" + str(rowcnt) + ")")
+                if rowcnt%100 == 0:
+                    tfmsa_logger ("[" + data_frame + "] table_name :" + table_name + " readRows(" + str(rowcnt) + ")")
+
+            tfmsa_logger("[4] Sort & Type Convert DataFrame")
             for column, data_type in sorted(columns.items()): # can i sorted??? 11.11.21
                 try:
-                    print("column type make start error")
                     column_name = str(column)
-                    print(column)
-                    print(data_type)
                     if "int" in data_type:
-                        print("check integer column type")
                         df[column_name] = df[column_name].astype("float").astype(np.dtype(data_type))
                     elif "float" in data_type:
-                        print("check NOT integer column type")
                         df[column_name] = df[column_name].astype(np.dtype(data_type))
                     else:
-                        print("check NOT integer column type")
                         df[column_name] = df[column_name].astype("str")
-                    print (" column :" + column + " data_type(" + str(data_type) + ")")
-                    print(len(list(sorted(columns.items()))))
                 except Exception as ex:
-                    print(ex)
-                    print("column, data_type Except########")
+                    tfmsa_logger(ex)
 
-
+            tfmsa_logger("[5] Set Label Data")
             if("None" != with_label):
-                print("label exsist --> " + with_label)
-                #Label auto check
-                label_values = df[with_label].unique()
-                #label_first_value = sorted(label_values)[0]
-                print("heare is problem")
-                label_first_value = sorted(label_values)
-                print(type(label_first_value))
-                print("heare is problem after")
-                # sorted after make order
-                #label_values.key
-                #for uk in sorted(label_values):
-
-
-                # print("sorted label value : " + str(label_first_value))
-                # df['label'] = (
-                #     #df[with_label].apply(lambda x: label_first_value.index(x))).astype(int) #16.10.25 auto check label values for 2 type values #16.11.19 multilable
-                #    # df_train["income_bracket"].apply(lambda x: ">50K" in x)).astype(int)
-                #     df[with_label].apply(lambda x: 'Y' in x)).astype(int) #16.10.25 auto check label values for 2 type values #16.11.19 multilable
-                # print("sorted label value : " + str(label_first_value))
-
-                #16.11.21 one hot transport
                 df['label'] = df[with_label]
-                   #df[with_label].apply(lambda x: label_first_value.index(x))).astype(int) #16.10.25 auto check label values for 2 type values #16.11.19 multilable
-                   # df_train["income_bracket"].apply(lambda x: ">50K" in x)).astype(int)
-                   #df[with_label].apply(lambda x: 'Y' in x)).astype(int) #16.10.25 auto check label values for 2 type values #16.11.19 multilable
 
-
-                #df_table = df
-                #df_table["originalY"] = df[with_label]
-                #df_table["convertY"] = df['label']
-                #print("df_Table_table_table")
-                #print(df_table)
-
-
-
-            #print(use_df)
-            #print(None)
             if use_df is None:
-                print("make list ############################## for hbase")
-                resultList = list()
-
-                #resultList.append(df.columns.values.tolist().append(df.values.tolist()))
+                tfmsa_logger("[6] Return Data to View")
                 resultList = df.values.tolist()
                 resultList.insert(0,df.columns.values.tolist())
                 result = json.loads(json.dumps(resultList))
-
-                #result = json.loads(json.dumps(df.values.tolist()))
-                #result = json.loads(json.dumps(df.columns.values.tolist()))
+                return result
             else:
-                print("for training")
+                tfmsa_logger("[6] Return Data to Train Neural Network")
                 result = df
-                #print(df)
-            #print(df.to_string(index=False))
-            return result#json.dumps(df.to_string(index=False))
-            #return json.dumps(df)
+                return result, last_key
 
         except Exception as e:
             tfmsa_logger(e)
             raise Exception(e)
-        #finally:
-        #    df.unpersist()
-        #    self.sc.stop()
+
 
     def create_table(self, db_name, table_name):
         """

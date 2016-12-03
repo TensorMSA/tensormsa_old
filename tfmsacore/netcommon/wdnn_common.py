@@ -243,7 +243,8 @@ class WdnnCommonManager:
             #Check Train or Predict
 
             if(train):
-                model_dir = settings.HDFS_MODEL_ROOT + "/"+nnid + "/"+tempfile.mkdtemp().split("/")[2]
+                #model_dir = settings.HDFS_MODEL_ROOT + "/"+nnid + "/"+tempfile.mkdtemp().split("/")[2]
+                model_dir = settings.HDFS_MODEL_ROOT + "/" + nnid
             else:
                 if(model_dir != "No"):
                     model_dir = model_dir
