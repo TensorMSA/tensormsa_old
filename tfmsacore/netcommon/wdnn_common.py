@@ -91,10 +91,11 @@ class WdnnCommonManager:
             # Merges the two dictionaries into one.
             utils.tfmsa_logger("((3.1 Wide & Deep Network Make Tensor)) ## SAPRSE TENSOR INPUT ##")
             #print("((3.1 Wide & Deep Network Make Tensor)) ## SAPRSE TENSOR INPUT ##")
+            feature_cols = {}
             if(len(CONTINUOUS_COLUMNS)>0):
                 #print("((3.1 Wide & Deep Network Make Tensor)) ## IF CONTINUE ADD LIST")
                 utils.tfmsa_logger("((3.1 Wide & Deep Network Make Tensor)) ## IF CONTINUE ADD LIST")
-                feature_cols = dict(continuous_cols)
+                feature_cols.update(continuous_cols)
             if len(CATEGORICAL_COLUMNS) > 0:
                 #print("((3.1 Wide & Deep Network Make Tensor)) ## IF CATEGORICAL ADD LIST")
                 utils.tfmsa_logger("((3.1 Wide & Deep Network Make Tensor)) ## IF CATEGORICAL ADD LIST")
