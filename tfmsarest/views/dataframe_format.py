@@ -81,10 +81,9 @@ class DataFrameFormat(APIView):
             label_column = list(t_label.keys())[0]
 
             #lable column_count check
-            df = data.DataMaster().query_data(baseid, tb, "a", use_df=True, limit_cnt=0,
-                                              with_label=label_column)
+            lable_list = data.DataMaster().get_distinct_label(baseid, tb, label_column)
+
             #hbase query
-            lable_list = df[label_column].unique()
             lable_sorted_list = sorted(list(lable_list))
             jd.datasets = lable_sorted_list
             netconf.save_format(nnid, str(request.body,'utf-8'))

@@ -102,8 +102,10 @@ class HbaseManager:
             else:
                 row_start = str(row_start)
 
-            if (use_df == True) :
+            if (use_df == True and limit_cnt > 0) :
                 rows = table.scan(row_start=row_start, row_stop=str(sys.maxsize), limit=limit_cnt)
+            elif(limit_cnt == -1):
+                rows = table.scan(row_start=row_start, row_stop=str(sys.maxsize))
             else :
                 rows = table.scan(row_start=row_start, row_stop=str(sys.maxsize), limit=15)
 
@@ -168,6 +170,23 @@ class HbaseManager:
             tfmsa_logger(e)
             raise Exception(e)
 
+    def get_distinct_label(self, data_frame, table_name, label_column):
+        """
+        get dist label list from happybase generated object without df convert (which takes too long)
+        :param data_frame:
+        :param table_name:
+        :param label_column:
+        :return:
+        """
+        try:
+            dist_label = set([])
+            rows, columns = self.__get_hbase_data(data_frame, table_name, False, 1, -1)
+            for row in rows:
+                df_row = {str(key,'utf-8').split(':')[1]: bytes.decode(value) for key, value in row[1].items()}
+                dist_label.add(df_row[label_column])
+            return list(dist_label)
+        except Exception as e:
+            tfmsa_logger(e)
 
     def create_table(self, db_name, table_name):
         """
