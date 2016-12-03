@@ -283,6 +283,8 @@ class HbaseManager:
                 rownum += 1
                 if rownum%100 == 0:
                     print("Insert Row count      " + str(rownum))
+                    b.send()
+                    b = table.batch(transaction=True)
             b.send()
             to_hbase_results['lastRowKey'] = row_key
             to_hbase_results['insertedRows'] = rownum
