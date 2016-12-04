@@ -50,7 +50,7 @@ class MonitorCommon(monitors.EveryN):
             #bool firstRowFlag = True
             print(self.first_row_check)
             if self.first_row_check == True:
-                netconf.delete_train_loss(self.nn_id)
+                #netconf.delete_train_loss(self.nn_id)
                 utils.tfmsa_logger("MonitorCommon.monitors_delete_firstCheck ---> postgres")
                 self.first_row_check = False
                 print(self.first_row_check)

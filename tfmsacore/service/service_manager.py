@@ -69,6 +69,7 @@ class JobManager:
                 eval_conv_network(nnid)
                 netconf.set_on_eval(nnid)
             elif (type == const.JOB_TYPE_WDNN_TRAIN):
+                JobStateLoader().init_job_info(nnid)
                 netconf.set_off_train(nnid)
                 wdnn_train().run_wdd_train(nnid)
                 netconf.set_on_train(nnid)

@@ -1,9 +1,11 @@
 from tfmsacore import models
 from tfmsacore.utils import serializers
+from django.core import serializers as serial
 from datetime import datetime
 from tfmsacore.utils.logger import tfmsa_logger
-from django.core import serializers as serial
+from tfmsacore import netconf
 import json
+
 
 class JobStateLoader:
 
@@ -203,3 +205,109 @@ class JobStateLoader:
             return obj.datapointer
         except Exception as e:
             return 0
+
+    def set_table_info(self, base, table, col_len, row_len):
+        """
+        set table info
+        :param nn_id:
+        :return:
+        """
+        try:
+            obj, created = models.DataTableInfo.objects.get_or_create(table_name=base + ":" + table)
+            if created :
+                tfmsa_logger("create new with state ready")
+                obj.col_len = col_len
+                obj.row_len = row_len
+                obj.save()
+            else :
+                tfmsa_logger("update finished state to ready")
+                obj = models.DataTableInfo.objects.get(table_name=base + ":" + table)
+                obj.col_len = col_len
+                obj.row_len = row_len
+                obj.save()
+            return True
+        except Exception as e:
+            tfmsa_logger(e)
+            return False
+
+
+    def get_table_info(self, base, table):
+        """
+        get table info
+        :param nn_id:
+        :return:
+        """
+        try:
+            data_set = models.DataTableInfo.objects.filter(table_name=base + ":" + table)
+            return data_set
+        except Exception as e:
+            tfmsa_logger(e)
+            return False
+
+    def init_job_info(self, nn_id):
+        """
+        get table info
+        :param nn_id:
+        :return:
+        """
+        try:
+            net_info = netconf.get_network_config(nn_id)
+            table_info = self.get_table_info(net_info['dir'], net_info['table'])
+            data_set = models.JobManagement.objects.get(nn_id=str(nn_id))
+            data_set.endpointer = str(table_info.row_len)
+            data_set.datapointer = '0'
+            data_set.save()
+            return data_set
+        except Exception as e:
+            tfmsa_logger(e)
+            return False
+
+    def set_curr_train_data(self, nn_id, pnt):
+        """
+        set_curr_train_data
+        :param nn_id:
+        :return:
+        """
+        try:
+            data_set = models.JobManagement.objects.get(nn_id=str(nn_id))
+            data_set.datapointer = str(pnt)
+            data_set.save()
+            return data_set
+        except Exception as e:
+            tfmsa_logger(e)
+            return False
+
+    def get_selected_job_info(self, nn_id):
+        """
+        get selected netowrks job parms
+        :param nn_id:
+        :return:
+        """
+        try:
+            data_set = models.JobManagement.objects.get(nn_id=str(nn_id))
+            if(data_set.batchsize == ''):
+                data_set.batchsize = '1000'
+            if(data_set.epoch == ''):
+                data_set.epoch = '10'
+            if (data_set.datapointer == ''):
+                data_set.datapointer = '0'
+            data_set.save()
+            return data_set
+        except Exception as e:
+            tfmsa_logger(e)
+            return False
+
+    def inc_job_data_pointer(self, nn_id):
+        """
+
+        :param nn_id:
+        :return:
+        """
+        try:
+            data_set = models.JobManagement.objects.get(nn_id=str(nn_id))
+            data_set.datapointer = str(int(data_set.datapointer) + int(data_set.batchsize))
+            data_set.save()
+            return data_set
+        except Exception as e:
+            tfmsa_logger(e)
+            return False

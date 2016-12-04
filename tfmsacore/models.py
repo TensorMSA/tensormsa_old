@@ -76,6 +76,8 @@ class JobManagement(models.Model):
     epoch = models.CharField(max_length=20, blank=True, default='')                         # itetraions time of training
     testsets = models.CharField(max_length=20, blank=True, default='')                      # number of evaluation data set
     datapointer = models.CharField(max_length=100, blank=True, default='')                  # current data pointer (used when data is too big)
+    endpointer = models.CharField(max_length=100, blank=True, default='')                   # data end pointer
+    batchsize = models.CharField(max_length=100, blank=True, default='')                    # size of data handle at a time
 
     def json(self):
         return dict(
@@ -89,7 +91,10 @@ class JobManagement(models.Model):
             progress=self.progress,
             acc=self.acc,
             epoch = self.epoch,
-            testsets = self.testsets
+            testsets = self.testsets,
+            datapointer=self.datapointer,
+            endpointer=self.endpointer,
+            batchsize=self.batchsize
         )
 
     def __getitem__(self, item):
@@ -230,6 +235,21 @@ class MetaSubCategory(models.Model):
             subcategory_name=self.subcategory_name,
             desc=self.desc,
             order=self.order
+        )
+
+    def __getitem__(self, item):
+        return self.__dict__[item]
+
+class DataTableInfo(models.Model):
+    table_name = models.CharField(max_length=100, blank=False, primary_key=True)           # table name
+    col_len = models.IntegerField(default=0)                                               # number of col
+    row_len = models.IntegerField(default=0)                                               # number of row
+
+    def json(self):
+        return dict(
+            table_name=self.table_name,
+            col_len=self.col_len,
+            row_len=self.row_len
         )
 
     def __getitem__(self, item):

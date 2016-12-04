@@ -6,6 +6,7 @@ from tfmsacore.netcommon.wdnn_common import WdnnCommonManager
 import json, math
 from tfmsacore.netcommon import monitors_common as Monitors
 from tfmsacore.utils.logger import tfmsa_logger
+from tfmsacore.service.job_state import JobStateLoader
 
 class wdnn_train(WdnnCommonManager):
     def __init__(self):
@@ -36,6 +37,11 @@ class wdnn_train(WdnnCommonManager):
             t_label = json_ob["label"]
             label_column = list(t_label.keys())[0]
 
+            #get train hyper param
+            job_parm = JobStateLoader().get_selected_job_info(nnid)
+            batch_size = int(job_parm.batchsize)
+            model_lint_cnt = int(job_parm.epoch)
+
             tfmsa_logger("[3] Get Dataframe from Hbase ##Start## {0},{1},{2},{3} ".format(start_pnt,database,table_name,label_column))
             df, pnt = data.DataMaster().query_data(database, table_name, "a", use_df=True,limit_cnt=batch_size,with_label=label_column, start_pnt = start_pnt)
             df_eval = df.copy()
@@ -44,7 +50,6 @@ class wdnn_train(WdnnCommonManager):
 
             ##MAKE MONITOR
             tfmsa_logger("[5] Make Monitor Class")
-            model_lint_cnt = 10000
             customsMonitor = Monitors.MonitorCommon(p_nn_id = nnid, p_max_steps=model_lint_cnt, p_every_n_steps=1000)
 
             tfmsa_logger("[6] start fitting")
@@ -57,6 +62,7 @@ class wdnn_train(WdnnCommonManager):
                     tfmsa_logger("%s: %s" % (key, results[key]))
                 return nnid
             else:
+                JobStateLoader().inc_job_data_pointer(nnid)
                 self.run_wdd_train(nnid = nnid , start_pnt = pnt)
 
             return nnid

@@ -11,6 +11,7 @@ import time
 from TensorMSA import const
 
 
+
 class HbaseManager:
 
     def session_create(self, db_name=None):
@@ -152,7 +153,7 @@ class HbaseManager:
                     tfmsa_logger(ex)
 
             tfmsa_logger("[5] Set Label Data")
-            if("None" != with_label):
+            if("None" != with_label and with_label != None):
                 df['label'] = df[with_label]
 
             if use_df is None:
@@ -178,12 +179,17 @@ class HbaseManager:
         :param label_column:
         :return:
         """
+        from tfmsacore.service.job_state import JobStateLoader
+
         try:
+            row_len = 0
             dist_label = set([])
             rows, columns = self.__get_hbase_data(data_frame, table_name, False, 1, -1)
             for row in rows:
                 df_row = {str(key,'utf-8').split(':')[1]: bytes.decode(value) for key, value in row[1].items()}
                 dist_label.add(df_row[label_column])
+                row_len = row_len + 1
+            JobStateLoader().set_table_info(data_frame, table_name, len(columns), row_len)
             return list(dist_label)
         except Exception as e:
             tfmsa_logger(e)

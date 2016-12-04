@@ -21,8 +21,8 @@ class JobManagementSerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = models.JobManagement
-        fields = ('nn_id', 'type','request', 'start', 'end', 'status', 'progress', 'acc', 'epoch', 'testsets')
-
+        fields = ('nn_id', 'type','request', 'start', 'end', 'status', 'progress', 'acc', 'epoch', 'testsets',
+                  'datapointer', 'endpointer', 'batchsize')
 
 
 class ServerConfSerializer(serializers.ModelSerializer):
@@ -74,3 +74,11 @@ class MetaSubCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = models.MetaSubCategory
         fields = ('category_id', 'subcateogry_id', 'subcategory_name', 'desc', 'order')
+
+class DataTableInfoSerializer(serializers.ModelSerializer):
+    """
+    Table : MetaSubCategory
+    """
+    class Meta:
+        model = models.DataTableInfo
+        fields = ('table_name', 'col_len', 'row_len')
