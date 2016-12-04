@@ -194,14 +194,13 @@ def get_thread_status(nn_id):
        """
     try:
         result_set = {}
-        query_set = models.NNInfo.objects.filter(nn_id = nn_id)
-        query_set = serial.serialize("json", query_set)
-        query_set = json.loads(query_set)[0]['fields']
-
-        if(query_set['samplenum'] == 'Y' and query_set['train'] == 'Y'):
-            return "N"
-        else:
-            return "Y"
-
+        query_set = models.JobManagement.objects.get(nn_id=str(nn_id))
+        result_set['status'] = query_set.status
+        result_set['datapointer'] = query_set.datapointer
+        result_set['endpointer'] = query_set.endpointer
+        result_set['batchsize'] = query_set.batchsize
+        result_set['epoch'] = query_set.epoch
+        result_set['progress'] = query_set.progress
+        return result_set
     except Exception as e:
         return e
