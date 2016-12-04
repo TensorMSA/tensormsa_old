@@ -1,3 +1,5 @@
 main {
-  display:block;
+    display: block;
+    overflow: hidden;
+    height: calc(100% - 64px);
 }

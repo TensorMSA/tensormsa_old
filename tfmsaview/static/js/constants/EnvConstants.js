@@ -1,5 +1,5 @@
 export default {
     getApiServerUrl() {
-        return __API_SERVER__;
+        return  'http://52.78.19.96:8989';
     }
 };

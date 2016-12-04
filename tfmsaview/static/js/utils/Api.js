@@ -1,15 +1,31 @@
 require('es6-promise').polyfill();
 require('isomorphic-fetch');
-
+ 
 import EnvConstants from './../constants/EnvConstants';
+import SpinnerComponent from './../NNLayout/common/SpinnerComponent'
+import React from 'react'
+ import { render } from 'react-dom';
 
-function Api() {
 
-}
-
-Api.prototype.get = function (url, params) {
-    console.log(EnvConstants.getApiServerUrl() + url + params)
-    return fetch(
+export default class Api {
+    setLoading(flag){//this method for Loading from index ID=loadingSpinner
+        let spinnerElement = React.createElement(SpinnerComponent, {
+            flag : flag
+        });
+        if(flag == false){
+            setTimeout(() => {
+            render(spinnerElement, document.getElementById('loadingSpinner'));
+            }, 1000);
+        }else{
+            render(spinnerElement, document.getElementById('loadingSpinner'));
+        }
+        
+    }
+  
+    get (url, params) {
+        console.log(EnvConstants.getApiServerUrl() + url + params);
+        this.setLoading(true);
+        return fetch(
         EnvConstants.getApiServerUrl() + url + params,
         {
             method: 'GET',
@@ -22,13 +38,14 @@ Api.prototype.get = function (url, params) {
         return response.json();
     }).then(function(json) {
         return json;
-    }).catch(function(e) {
+    }).then(this.setLoading(false)).catch(function(e) {
         console.log("An Error has occurred" + e);
     });
 };
 
-Api.prototype.post = function (url, params) {
+post(url, params) {
     console.log(EnvConstants.getApiServerUrl());
+    this.setLoading(true);
     return fetch(
         EnvConstants.getApiServerUrl() + url,
         {
@@ -38,18 +55,19 @@ Api.prototype.post = function (url, params) {
             headers: new Headers({
                 'Accept': 'application/json'
             })
-        }
+        }             
     ).then(function(response) {
         return response.json();
     }).then(function(json) {
         return json;
-    }).catch(function(e) {
+    }).then(this.setLoading(false)).catch(function(e) {
         console.log("An Error has occurred :" +e);
     });
 };
 
-Api.prototype.put = function (url, params) {
+put(url, params) {
     console.log(EnvConstants.getApiServerUrl());
+    this.setLoading(true);
     return fetch(
         EnvConstants.getApiServerUrl() + url,
         {
@@ -64,13 +82,14 @@ Api.prototype.put = function (url, params) {
         return response.json();
     }).then(function(json) {
         return json;
-    }).catch(function() {
+    }).then(this.setLoading(false)).catch(function() {
         console.log("An Error has occurred");
     });
 };
 
-Api.prototype.delete = function (url, params) {
+delete(url, params) {
     console.log(EnvConstants.getApiServerUrl());
+    this.setLoading(true);
     return fetch(
         EnvConstants.getApiServerUrl() + url,
         {
@@ -85,12 +104,12 @@ Api.prototype.delete = function (url, params) {
         return response.json();
     }).then(function(json) {
         return json;
-    }).catch(function() {
+    }).then(this.setLoading(false)).catch(function() {
         console.log("An Error has occurred");
     });
 };
 
-Api.prototype.getJson = function (url, params) {
+getJson  (url, params) {
     return fetch(
         url,
         {
@@ -109,5 +128,4 @@ Api.prototype.getJson = function (url, params) {
         console.log("An Error has occurred :" +e);
     });
 };
-
-export default Api;
+}
