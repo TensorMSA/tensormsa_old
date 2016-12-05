@@ -13,8 +13,8 @@ export default class PersonalDataTableComponent extends React.Component {
             return (<PersonalDataTableRowComponent key={i++} tableData={tableData}/>);
         });
         return (
-            <div className="table">
-                <table>
+            <div>
+                <table className="table">
                     <thead>
                     <tr>
                         <th>Name</th>

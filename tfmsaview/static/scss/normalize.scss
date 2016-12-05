@@ -1,51 +1,81 @@
 html {
-  font-family: $font-family-base;
-  -ms-text-size-adjust: 100%;
-  -webkit-text-size-adjust: 100%;
-}
-body {
-  margin: 0;
-  font-size: $font-size-base;
-  min-width:700px;
+    font-family: $font-family-base;
+    -ms-text-size-adjust: 100%;
+    -webkit-text-size-adjust: 100%;
+    height: 100%;
 }
 
-div,span,h1,h2,h3,h4,h5,h6,input[type=textarea],input[type="text"],textarea,button,ul,li,dl,dt,dd,table,tr,td,th {
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
+body {
+    margin: 0;
+    font-size: $font-size-base;
+    min-width: 700px;
+    height: 100%;
+    // overflow: hidden;
+}
+
+p {
+    margin: 0;
+}
+
+div,
+span,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+input[type=textarea],
+input[type="text"],
+input[type="password"],
+textarea,
+button,
+ul,
+li,
+dl,
+dt,
+dd,
+table,
+tr,
+td,
+th {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
 textarea {
-  resize:none;
+    resize: none;
 }
 
 .hidden {
-  margin:0;
-  padding:0;
-  line-hight:0;
-  width:0;
-  height:0;
-  display:none;
+    margin: 0;
+    padding: 0;
+    line-hight: 0;
+    width: 0;
+    height: 0;
+    display: none;
 }
 
-ul,li {
-  list-style:none;
-  text-decoration:none;
+ul,
+li {
+    list-style: none;
+    text-decoration: none;
 }
 
 a {
-  background-color: transparent;
-  text-decoration:none;
-  color:$font-color-base;
+    background-color: transparent;
+    text-decoration: none;
+    color: $font-color-base;
 }
+
 a:active,
 a:hover {
-  outline: 0;
+    outline: 0;
 }
 
-
 img {
-  border: 0;
+    border: 0;
 }
 
 button,
@@ -53,43 +83,47 @@ input,
 optgroup,
 select,
 textarea {
-  color: inherit;
-  font: inherit;
-  margin: 0;
+    color: inherit;
+    font: inherit;
+    margin: 0;
 }
 
 button {
-  overflow: visible;
+    overflow: visible;
 }
 
 button,
 select {
-  text-transform: none;
+    text-transform: none;
 }
 
 button,
 html input[type="button"],
 input[type="reset"],
 input[type="submit"] {
-  -webkit-appearance: button;
-  cursor: pointer;
+    -webkit-appearance: button;
+    cursor: pointer;
 }
 
 button::-moz-focus-inner,
 input::-moz-focus-inner {
-  border: 0;
-  padding: 0;
+    border: 0;
+    padding: 0;
 }
 
 table {
-  border-collapse: collapse;
-  border-spacing: 0;
+    border-collapse: collapse;
+    border-spacing: 0;
 }
 
-.w100p {width:100% !important;}
-.floatL {float:left !important}
-.floatR {float:right !important}
-.positionA {position:absolute !important;}
-.positionR {position:relative !important}
-.paddingT30 {padding-top:30px !important;}
-.paddingT10 {padding-top:10px !important;}
+label {
+    margin-right: 8px;
+}
+
+section,
+article,
+#main,
+#main>div,
+main {
+    height: 100%;
+}
