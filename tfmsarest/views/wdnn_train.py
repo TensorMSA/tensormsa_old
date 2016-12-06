@@ -31,6 +31,7 @@ class WideDeepNetTrain(APIView):
         try:
             result = service.JobManager().regit_job(nnid, const.JOB_TYPE_WDNN_TRAIN)
             return_data = {"status": "200", "result": result}
+            print("wdnn_Tran result" + str(return_data))
             return Response(json.dumps(return_data))
         except Exception as e:
             netconf.set_off_train(nnid)

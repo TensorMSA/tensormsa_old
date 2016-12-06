@@ -66,13 +66,13 @@ class WideDeepNetPredict(APIView):
                         fp.write(chunk)
                     fp.close()
 
-            print("before predict")
+            #print("before predict")
             result = predict.wdnn_predict().wdd_predict(nnid,filename)
 
-            print("return results %s" % type(result))
+            #print("return results %s" % type(result))
             #return_data = json.dumps(result,cls=PythonObjectEncoder)
             return_data = json.dumps(result)
-            print(return_data)
+            #print(return_data)
             return Response(json.dumps(return_data))
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}
