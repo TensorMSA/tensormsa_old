@@ -552,7 +552,7 @@ def common_job_post():
 
 
 def common_job_get():
-    resp = requests.get('http://' + url + '/api/v1/type/common/job/')
+    resp = requests.get('http://' + url + '/api/v1/type/common/job/mes_m30_wdnn_84110/')
     data = json.loads(resp.json())
     print("evaluation result : {0}".format(data))
 
@@ -772,7 +772,7 @@ dataframe_base_get
 
 category1 = "common"
 # checker, predict, stat, evaluation, train, conf, nnfino, base, data, format, table, pre
-category2 = "nninfo"
+category2 = "job"
 #dataframe_table_get
 # post, get, put, delete
 request = "get"

@@ -238,7 +238,7 @@ class JobStateLoader:
         :return:
         """
         try:
-            data_set = models.DataTableInfo.objects.filter(table_name=base + ":" + table)
+            data_set = models.DataTableInfo.objects.get(table_name=base + ":" + table)
             return data_set
         except Exception as e:
             tfmsa_logger(e)
@@ -305,9 +305,31 @@ class JobStateLoader:
         """
         try:
             data_set = models.JobManagement.objects.get(nn_id=str(nn_id))
-            data_set.datapointer = str(int(data_set.datapointer) + int(data_set.batchsize))
+            netx_size = str(int(data_set.datapointer) + int(data_set.batchsize))
+            if(int(data_set.endpointer) >= int(netx_size)):
+                data_set.datapointer = str(int(data_set.datapointer) + int(data_set.batchsize))
+            else :
+                data_set.datapointer = str(data_set.endpointer)
             data_set.save()
             return data_set
         except Exception as e:
             tfmsa_logger(e)
             return False
+
+    def set_job_info(self, nn_id, insert_data):
+        """
+        update parms on job info
+        :param net_id:
+        :return:
+        """
+        try:
+            obj = models.JobManagement.objects.get(nn_id=nn_id)
+            for key in insert_data.keys():
+                if (obj[key] != None):
+                    setattr(obj, key, insert_data[key])
+
+            obj.save()
+            return obj
+        except Exception as e:
+            tfmsa_logger(e)
+            raise Exception(e)
