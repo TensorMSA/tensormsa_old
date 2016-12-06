@@ -13,7 +13,7 @@ class JobManager:
     def __init__(self):
         tfmsa_logger("initialize JobManager!!")
 
-    def regit_job(self, nnid, type, param = {'epoch' : '10', 'testset' : '100'}):
+    def regit_job(self, nnid, type):
         """
         regist task on job manager
         :return:
@@ -24,7 +24,7 @@ class JobManager:
                 raise Exception ("reject")
 
             # get current running tasks from management db
-            num_running = JobStateLoader().create(nnid, type, param)
+            num_running = JobStateLoader().create(nnid, type)
 
             # check if there is a avail capacity for tfmsa
             if(int(const.MAX_JOB_CAPA) > num_running):
