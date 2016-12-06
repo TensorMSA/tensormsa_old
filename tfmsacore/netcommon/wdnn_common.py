@@ -101,68 +101,21 @@ class WdnnCommonManager:
                 utils.tfmsa_logger("((3.1 Wide & Deep Network Make Tensor)) ## IF CATEGORICAL ADD LIST")
                 feature_cols.update(categorical_cols)
 
+            #Get label distinct list from postgres 16.12.04
+            json_string = WdnnCommonManager.get_all_info_json_by_nnid(self, nnid=nnid)
+            _label_list = json_string['datasets']
+            #print(_label_list)
 
-            # 16.11.23 one hot transport
-            # Converts the label column into a constant Tensor.
-            #label = tf.constant(df["label"].values)
-
-            #16.11.23 one hot transport
-            #Converts the label column into a constant Tensor.
-
-            # lable_list = df['COKE_Q_DI150_Class'].unique()
-            # print(df["label"].values)
-            # print(sorted(list(lable_list())))
-            # le = LabelEncoder()
-            # lable_list_sorted = sorted(list(lable_list))
-            # le.fit(lable_list_sorted)
-            # f = lambda x: le.transform([x])
-            # lable_encoder_func = lambda x: le.transform([x])
-            # df['label2'] = df['label'].map(lable_encoder_func)
-            print("#################################label select")
-            print(type(df['label']))
-            print(df['label'])
-
-            #df['label'] = (df['label'].apply(lambda x: 'Y' in x)).astype(int)  # 16.10.25 auto check label values for 2 type values #16.11.19 multilable
-
-
-
-            #multi class
-            lable_list = df["label"].unique()
-            print(df["label"].values)
-            print(sorted(list(lable_list)))
+            utils.tfmsa_logger("((3.1 Wide & Deep Network Make Tensor)) ## Make Label List ##")
+            label_list = eval(_label_list)
             le = LabelEncoder()
-            lable_list_sorted = sorted(list(lable_list))
-            print("make sorted lable######################")
-            le.fit(lable_list_sorted)
-            print("make label encorder function ######################")
+            le.fit(label_list)
             lable_encoder_func = lambda x: le.transform([x])
-
-            print("make label mapping start")
             df['label'] = df['label'].map(lable_encoder_func).astype(int)
-            print(df['label'])
-            print(type(df['label']))
-            print("make label maping end")
-
-
+            #print(df['label'])
 
             label = tf.constant(df["label"].values)
-
-
-
-
-            #label2 = tf.one_hot([0,1,1,0],2)
-            #print(label2)
-
-            #label = tf.one_hot(list(df["label"].values),len(list(df["label"].unique())))
-
-            #print(label)
-            #print(type(label))
-
-
-            #print("((3.1 Wide & Deep Network Make Tensor)) ## END ##")
             utils.tfmsa_logger("((3.1 Wide & Deep Network Make Tensor)) ## END ##")
-            #print("((3.1 Wide & Deep Network Make Tensor LABEL)) ## START##")
-
             return feature_cols, label
         except Exception as e:
             print("Error Message : {0}".format(e))

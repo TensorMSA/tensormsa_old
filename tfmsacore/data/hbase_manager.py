@@ -115,6 +115,7 @@ class HbaseManager:
             tfmsa_logger(e)
 
 
+
     def query_data(self, data_frame, table_name, query_str, use_df= None, limit_cnt=0, with_label = "None", start_pnt='1'):
         """
         get query data from spark
@@ -137,6 +138,7 @@ class HbaseManager:
                 rowcnt += 1
 
                 if rowcnt%100 == 0:
+                    tfmsa_logger(last_key)
                     tfmsa_logger ("[" + data_frame + "] table_name :" + table_name + " readRows(" + str(rowcnt) + ")")
 
             tfmsa_logger("[4] Sort & Type Convert DataFrame")
@@ -190,6 +192,12 @@ class HbaseManager:
                 dist_label.add(df_row[label_column])
                 row_len = row_len + 1
             JobStateLoader().set_table_info(data_frame, table_name, len(columns), row_len)
+            rows, columns = self.__get_hbase_data("test_schema_"+data_frame, table_name, False, 1, -1)
+            for row in rows:
+                df_row = {str(key, 'utf-8').split(':')[1]: bytes.decode(value) for key, value in row[1].items()}
+                dist_label.add(df_row[label_column])
+                row_len = row_len + 1
+
             return list(dist_label)
         except Exception as e:
             tfmsa_logger(e)

@@ -71,22 +71,37 @@ class DataFrameFormat(APIView):
             jd.nn_id = nnid
             jd.preprocess = '1'
             jd.datadesc = 'Y'
-
+            coll_format_json = dict()
             cell_format  = str(request.body,'utf-8')
-            netconf.save_format(nnid, cell_format)
+            #if format info null
+            print(len(request.body))
+            print(request.body)
+            if(len(cell_format) == 2 ):
+                print("request is null ###################")
+                json_string = netconf.load_ori_format(nnid)
+                coll_format_json = json.loads(json_string)
+                cell_format = json_string
+            else:
+                print("request is not null ###################")
+                coll_format_json = json.loads(cell_format)
 
-            #find label
-            coll_format_json = json.loads(cell_format)
+            print("print cell format")
+            print(cell_format)
+            netconf.save_format(nnid, cell_format)
+            print("dataformat called1###################")
+
+
             t_label = coll_format_json['label']
             label_column = list(t_label.keys())[0]
-
-            #lable column_count check
+            print("dataformat called2###################" + str(label_column))
+            # lable column_count check
             lable_list = data.DataMaster().get_distinct_label(baseid, tb, label_column)
+
 
             #hbase query
             lable_sorted_list = sorted(list(lable_list))
             jd.datasets = lable_sorted_list
-            netconf.save_format(nnid, str(request.body,'utf-8'))
+            #netconf.save_format(nnid, str(request.body,'utf-8'))
 
             result = netconf.update_network(jd)
             netconf.set_on_data(nnid)

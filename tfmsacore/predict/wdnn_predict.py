@@ -88,9 +88,9 @@ class wdnn_predict(WdnnCommonManager):
 
                 #df['label'] = (df[label_column].apply(lambda x: "Y" in x)).astype(int)
 
-            print("((3.Wide & Deep Network Predict )) ##Start## ")
-            predicts = wdnn_model.evaluate(input_fn=lambda: WdnnCommonManager.input_fn(self, df, nnid), steps=1)
-            print("((3.Wide & Deep Network Predict )) ##End## ")
+            #print("((3.Wide & Deep Network Predict )) ##Start## ")
+            #predicts = wdnn_model.evaluate(input_fn=lambda: WdnnCommonManager.input_fn(self, df, nnid), steps=1)
+            #print("((3.Wide & Deep Network Predict )) ##End## ")
             results={}
 
             #add df column
@@ -105,7 +105,7 @@ class wdnn_predict(WdnnCommonManager):
             print("make sorted lable######################")
             le.fit(label_list)
             print("make label encorder function ######################")
-            lable_decoder_func = lambda x: le.inverse_transform([x])
+            lable_decoder_func = lambda x: le.inverse_transform(x)
 
             print("make label mapping start")
             df['predict_label'] = df['predict_label'].map(lable_decoder_func).astype("str")
