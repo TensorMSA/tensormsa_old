@@ -315,3 +315,21 @@ class JobStateLoader:
         except Exception as e:
             tfmsa_logger(e)
             return False
+
+    def set_job_info(self, nn_id, insert_data):
+        """
+        update parms on job info
+        :param net_id:
+        :return:
+        """
+        try:
+            obj = models.JobManagement.objects.get(nn_id=nn_id)
+            for key in insert_data.keys():
+                if (obj[key] != None):
+                    setattr(obj, key, insert_data[key])
+
+            obj.save()
+            return obj
+        except Exception as e:
+            tfmsa_logger(e)
+            raise Exception(e)
