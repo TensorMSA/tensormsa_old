@@ -71,6 +71,9 @@ urlpatterns = [
     url(r'^api/v1/type/cnn/conf/(?P<nnid>.*)/',
         csrf_exempt(rest_view.ConvNeuralNetConfig.as_view())),
 
+    # Check Cnn configuration validation
+    url(r'^api/v1/type/wdnn/checker/(?P<nnid>.*)/',
+        csrf_exempt(rest_view.WideAndDeepNetChecker.as_view())),
 
     # WDNN config data manage
     url(r'^api/v1/type/wdnn/conf/(?P<nnid>.*)/',

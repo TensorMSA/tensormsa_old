@@ -46,7 +46,7 @@ class CommonNetInfo(APIView):
         try:
             request_info = json.loads(str(request.body, 'utf-8'))
             result = netconf.create_new_network(request_info)
-            JobStateLoader().check_exist(request_info["nn_id"], '')
+            JobStateLoader().check_exist(request_info["nn_id"], request_info['type'])
             return_data = {"status": "200", "result": result}
             return Response(json.dumps(return_data))
         except Exception as e:
