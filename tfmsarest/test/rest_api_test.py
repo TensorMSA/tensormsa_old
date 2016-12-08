@@ -213,7 +213,7 @@ def dataframe_format_get():
 
     #resp = requests.get('http://' + url + '/api/v1/type/dataframe/base/csvtest/table/titanic/format//',json = {"type":"cell_feature"})
                                            #/api/v1/type/dataframe/base/csvtest/table/titanic/format/nn0000102 /
-    resp = requests.get('http://' + url + '/api/v1/type/dataframe/format/scm_default_wdnn_66039/type/all/')
+    resp = requests.get('http://' + url + '/api/v1/type/dataframe/format/mes_m30_wdnn_99023/type/labels/')
     #resp = requests.get('http://' + url + '/api/v1/type/dataframe/base/csvtest/table/titanic/format/scm_default_wdnn_66039/type/all/')
 
     #resp = requests.get('http://' + url + '/api/v1/type/dataframe/base/csvtest/table/titanic/format/nn0000102/',json = {"type":"cell_feature"})
@@ -770,9 +770,9 @@ dataframe_base_get
 """
 #common, dataframe, cnn, wdnn
 
-category1 = "common"
+category1 = "dataframe"
 # checker, predict, stat, evaluation, train, conf, nnfino, base, data, format, table, pre
-category2 = "job"
+category2 = "format"
 #dataframe_table_get
 # post, get, put, delete
 request = "get"

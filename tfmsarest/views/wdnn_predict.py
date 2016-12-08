@@ -43,21 +43,13 @@ class WideDeepNetPredict(APIView):
 
         try:
             logger.tfmsa_logger("[Predict] start uploading csv on file system")
-            logger.tfmsa_logger("start uploading csv on file system")
-            print(request.FILES)
 
             if len(request.FILES.keys()) > 0:
                 # loop files
                 for key, requestSingileFile in request.FILES.items():
-                    print("in the loop")
-                    #print(requestSingileFile)
-                    #print(key)
-                    #print("multi error")
-                    #print(file)
                     file = requestSingileFile
                     filename = file._name
-                    #print(filename)
-                    # save file on file system
+
                     directory = "{0}/{1}/{2}".format(settings.FILE_ROOT, "predict", nnid)
                     if not os.path.exists(directory):
                         os.makedirs(directory)
@@ -66,13 +58,8 @@ class WideDeepNetPredict(APIView):
                         fp.write(chunk)
                     fp.close()
 
-            #print("before predict")
             result = predict.wdnn_predict().wdd_predict(nnid,filename)
-
-            #print("return results %s" % type(result))
-            #return_data = json.dumps(result,cls=PythonObjectEncoder)
             return_data = json.dumps(result)
-            #print(return_data)
             return Response(json.dumps(return_data))
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}

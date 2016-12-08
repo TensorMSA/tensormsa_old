@@ -92,7 +92,7 @@ class wdnn_eval(WdnnCommonManager):
                 #print("Inside start row by row")
                 #print(type(value))
                 _row = value[1]
-                ori_label = _row[label_column]
+                ori_label = str(_row[label_column])
                 predict_label = str(eval(_row["predict_label"])[0])#str(list(_row["predict_label"])[0])
                 #predict_label = le.inverse_transform(_predict_label)
                 if (log_count%20 == 0):
