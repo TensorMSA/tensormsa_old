@@ -237,19 +237,18 @@ class HbaseManager:
             tfmsa_logger("delete table !")
             conn = self.session_create()
             nameSpace_tableName = db_name + ":" + table_name
+            test_nameSpace_tableName = "test_schema_" + db_name + ":" + table_name
             print("Delete table" + nameSpace_tableName)
 
             conn.delete_table(nameSpace_tableName, True)
-
+            try:
+                conn.delete_table(test_nameSpace_tableName, True)
+            except Exception as e:
+                tfmsa_logger("No Table")
             # DBNAME probably needs
 
             return table_name
 
-            #if (self.client.content("{0}{1}/{2}".format(self.root, db_name, table_name), strict=False) == None):
-            #    raise Exception("request table : {0} not exist".format(table_name))
-
-            #self.client.delete("{0}{1}/{2}".format(self.root, db_name, table_name), recursive=True)
-            #return table_name
         except Exception as e:
             tfmsa_logger("Error : {0}".format(e))
             raise Exception(e)
