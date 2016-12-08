@@ -38,9 +38,9 @@ def cnn_conf_post():
                          json={
                                  "data":
                                      {
-                                         "datalen": 10000,
+                                         "datalen": 1024,
                                          "taglen": 2,
-                                         "matrix": [100, 100],
+                                         "matrix": [32, 32],
                                          "learnrate": 0.01,
                                          "epoch": 10
                                      },
@@ -145,7 +145,7 @@ STEP3
 """
 def cnn_step2():
     cnn_conf_post()
-    cnn_train_post()
+    #cnn_train_post()
 
 """
 STEP4
@@ -158,8 +158,8 @@ def cnn_step3():
     cnn_eval_get()
 
 
-net_work_id = "mesm10cnn61110"
-database = "image_raw_mes_m20"
-table = "test2"
+net_work_id = "scm_default_cnn_66213"
+database = "image_raw_mes_m60"
+table = "CAT_DOG"
 
-cnn_step3()
+cnn_step2()

@@ -3,7 +3,7 @@ import json, unicodedata
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from tfmsacore.utils.json_conv import JsonDataConverter as jc
-
+from tfmsacore.service import JobStateLoader
 
 class CommonNetInfo(APIView):
     """
@@ -44,7 +44,13 @@ class CommonNetInfo(APIView):
           pytype: json
         """
         try:
-            result = netconf.create_new_network(json.loads(str(request.body, 'utf-8')))
+            request_info = json.loads(str(request.body, 'utf-8'))
+            result = netconf.create_new_network(request_info)
+            if(request_info['type'] == 'wdnn'):
+                JobStateLoader().check_exist(request_info["nn_id"], '1')
+            else:
+                JobStateLoader().check_exist(request_info["nn_id"], '2')
+
             return_data = {"status": "200", "result": result}
             return Response(json.dumps(return_data))
         except Exception as e:

@@ -9,10 +9,32 @@ import json
 
 class JobStateLoader:
 
-    def create(self, nn_id, job_type, param):
+    def check_exist(self, nn_id, job_type):
         """
-        set new server configuration
-        :param net_id:
+
+        :param nn_id:
+        :param job_type:
+        :return:
+        """
+        try:
+            current_time = datetime.now()
+            obj, created = models.JobManagement.objects.get_or_create(nn_id=nn_id)
+            if created:
+                obj.type = job_type
+                obj.status = "1"
+                obj.request = current_time
+                obj.start = None
+                obj.end = None
+                obj.progress = "0"
+                obj.save()
+        except Exception as e:
+            tfmsa_logger(e)
+
+    def create(self, nn_id, job_type):
+        """
+
+        :param nn_id:
+        :param job_type:
         :return:
         """
         try:
@@ -28,8 +50,6 @@ class JobStateLoader:
                 obj.start = None
                 obj.end = None
                 obj.progress = "0"
-                obj.epoch = param['epoch']
-                obj.testsets = param['testset']
                 obj.save()
             else :
                 tfmsa_logger("update finished state to ready")
@@ -40,8 +60,6 @@ class JobStateLoader:
                 obj.start = None
                 obj.end = None
                 obj.progress = "0"
-                obj.epoch = param['epoch']
-                obj.testsets = param['testset']
                 obj.save()
 
             return len(models.JobManagement.objects.filter(status__in=['3']))
@@ -289,7 +307,7 @@ class JobStateLoader:
                 data_set.batchsize = '1000'
             if(data_set.epoch == ''):
                 data_set.epoch = '10'
-            if (data_set.datapointer == ''):
+            if(data_set.datapointer == ''):
                 data_set.datapointer = '0'
             data_set.save()
             return data_set

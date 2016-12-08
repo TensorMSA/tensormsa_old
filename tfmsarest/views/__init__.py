@@ -26,3 +26,4 @@ from .cifar_ten_predict import CifarTenPredict
 from .common_stat import CommonResultStatInfo
 from .common_items import CommonItems
 from .common_schema import CommonSchema
+from .wdnn_checker import WideAndDeepNetChecker
