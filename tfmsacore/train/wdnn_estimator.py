@@ -55,7 +55,7 @@ class wdnn_train(WdnnCommonManager):
             tfmsa_logger("[6] start fitting")
             wdnn_model.fit(input_fn=lambda: WdnnCommonManager.input_fn(self, df, nnid), steps=model_lint_cnt, monitors=[customsMonitor])
 
-            if(start_pnt == pnt):
+            if(len(df_eval) < 10):
                 tfmsa_logger("[7] Train Result")
                 results = wdnn_model.evaluate(input_fn=lambda: WdnnCommonManager.input_fn(self, df_eval, nnid), steps=1)
                 for key in sorted(results):
