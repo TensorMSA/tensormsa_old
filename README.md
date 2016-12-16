@@ -1,4 +1,7 @@
-# TensorMSA : Tensorflow Micro Service Architecture 
+# TensorMSA : Tensorflow Micro Service Architecture
+
+[![HOYA ver0.1](https://github.com/TensorMSA/TensorMSA/blob/2d99ed93c2d6fa2b61b6f3a852ec6fb8f87e7b5c/video.PNG?raw=true)](https://youtu.be/sxx9l5gWbk0 "HOYA ver0.1 - Click to Watch!")
+
 <b>1.TensorMSA </b> </br>
    - Tensor Micro Service Architecture is a project started to make TensorFlow more accessable from Java legacy systems
    with out modifying too much source codes. 
