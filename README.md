@@ -5,7 +5,10 @@
 <b>1.TensorMSA </b> </br>
    - Tensor Micro Service Architecture is a project started to make TensorFlow more accessable from Java legacy systems
    with out modifying too much source codes. 
-
+   - We know there are AI platforms like Azure ML,Nvidia digits, AWS ML and etc, but our goal is little bit diffrent form theirs.
+   - More focus on enterprise support (continuous training, neural network management, history management, user managemetn and etc)  
+   - More focus on neural network (UI/UX based network configuration, work flow based management and etc)    
+   
 <b>2. Function </b></br>
    - REST APIs corresponding to Tensorflow 
    - JAVA API component interface with python REST APIS
@@ -14,9 +17,10 @@
    - Android mobile SDK are also part of the plan (gather data and predict) 
    
 <b>3. Schedule </b></br>
-   - We just started this projects (2016.8)
-   - We are still on research process now
-   - Expected to release first trial version on December 2016 
+   - start project : 2016.8
+   - start dev : 2016.9
+   - pilot version : 2016.12
+   - version 0.1 target date : 2017.4
 
 <b>4. Stack </b></br>
    - FE : React(ES6), SVG, D3, Pure CSS
@@ -205,3 +209,13 @@ python legacy systems can use deep learning easily
 # REST API / JAVA API Documents </br>
    - we are still on research process 
    - will be prepared on 2017
+
+# Contributions (TO-DO list)
+   (1) Data Base 
+      - Train history data management 
+      - Work Flow data maangement 
+      - Data Preprocess with spark & UI
+      - GPU Cluster support 
+      - SSO & Authority 
+      - Neural Network UI/UX library 
+   ... 
