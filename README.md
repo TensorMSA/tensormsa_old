@@ -212,30 +212,34 @@ python legacy systems can use deep learning easily
 
 # Contributions (TO-DO list)
  <b>1. Data Base</b> </br> 
-    - Train history data  
-    - Work Flow data 
-    - Data Preprocess with spark & UI
-    - GPU Cluster server info
-    - SSO & Authority (manager, servers, mobile users)
-    - Neural Network UI/UX config data
-    - odit columns 
-    - schedule job info
-    - plugin info
-    - convert vchar field to json (case use json)
-    - store file type data on postgresql
-    - store raw text data
-    - store dictionary (for RNN)
-    - store video, audio 
-    - Code based Custom Neural Net info store 
-    
- <b>2. Neural Nets</b> </br>     
-    - basic : linear regression, logistic regression, clustering 
-    - more nets : rnn, residual, lrcn, auto encoder
-    
- <b>3. View</b> </br>         
-    - Intro Page : notice pops up and etc 
-    - Top Menu : server management, user management, workflow, batch jobs, neural nets, plugins, etc 
-    - NeuralNet Menu : steps we have now, but will be related on workflow nodes 
-    - WorkFlow Menu : define extract data(ETL), preprocess, neuralnet, etc 
-    - Batch jobs : time or event based Workflow waker 
-    - Server Management : manage Hadoop, Hbase, Spark, Database, etc server ip & port 
+   - Train history data  
+   - Work Flow data 
+   - Data Preprocess with spark & UI
+   - GPU Cluster server info
+   - SSO & Authority (manager, servers, mobile users)
+   - Neural Network UI/UX config data
+   - odit columns 
+   - schedule job info
+   - plugin info
+   - convert vchar field to json (case use json)
+   - store file type data on postgresql
+   - store raw text data
+   - store dictionary (for RNN)
+   - store video, audio 
+   - Code based Custom Neural Net info store 
+   
+
+  
+ <b>2. View</b>      
+   - Intro Page : notice pops up and etc 
+   - Top Menu : server management, user management, workflow, batch jobs, neural nets, plugins, etc 
+   - NeuralNet Menu : steps we have now, but will be related on workflow nodes 
+   - WorkFlow Menu : define extract data(ETL), preprocess, neuralnet, etc 
+   - Batch jobs : time or event based Workflow waker 
+   - Server Management : manage Hadoop, Hbase, Spark, Database, etc server ip & port 
+
+
+
+ <b>3. Neural Net</b>         
+   - basic : linear regression, logistic regression, clustering      
+   - more nets : rnn, residual, lrcn, auto encoder
