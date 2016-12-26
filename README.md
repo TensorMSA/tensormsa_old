@@ -211,6 +211,9 @@ python legacy systems can use deep learning easily
    - will be prepared on 2017
 
 # Contributions (TO-DO list)
+ <p align="center">
+  <img src="https://github.com/TensorMSA/TensorMSA/blob/master/HOYA%20F_W%20Design%20Document.jpg?raw=true" width="750"/>
+ </p>
  <b>1. Data Base</b> </br> 
    - Train history data  
    - Work Flow data 
