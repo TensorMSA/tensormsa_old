@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 
 export default class WdnnTableSectionComponent extends React.Component {
     constructor(props){
@@ -17,16 +17,17 @@ export default class WdnnTableSectionComponent extends React.Component {
         else {
             this.setState({datasets: this.props.nnConfigFeatureInfoField});
         }
-
-        debugger;
     }
 
     render() {
+        console.log(this.props.nnConfigLabelInfoField)
+        console.log(this.state.datasets)
+
         return (
-            <section id='netconf-table'>                    
+            <div id='netconf-table'>                                  
                 <div className='l--body'>
                     <dl className="layer-box">
-                        <dt><span className="circle-blue">Network Config Layer</span></dt>
+                        <dt><span className="circle-blue">Network Config</span></dt>
                         <dd>
                             <table id='input_table' className='form-table align-center'>
                                 <thead>
@@ -51,7 +52,7 @@ export default class WdnnTableSectionComponent extends React.Component {
                     <dl>
                     </dl>
                     <dl className="layer-box">
-                        <dt><span className="circle-blue">Label Layer</span></dt>
+                        <dt><span className="circle-blue">Label</span></dt>
                         <dd>
                             <table id='output_table' className='form-table align-center'>
                                 <thead>
@@ -70,7 +71,7 @@ export default class WdnnTableSectionComponent extends React.Component {
                         </dd>
                     </dl>    
                 </div>                
-            </section>
+            </div>
         )
     }
 }

@@ -94,16 +94,20 @@ export default class ModalViewLabelCreate extends React.Component {
                                 </tr>
                                 </tbody>
                             </table>
-                            <table className="table marginT10">
-                                <thead>
-                                    <tr>
-                                        <th>Label Name</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="center">    
-                                    {this.state.labelRows}  
-                                </tbody>
-                            </table>
+                            <div className="scroll-container">
+                                <div className="scroll-wrap">
+                                    <table className="table">
+                                        <thead>
+                                            <tr>
+                                                <th><div>Label Name</div></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="center">    
+                                            {this.state.labelRows}  
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </article>
                     </div>
                 </div>

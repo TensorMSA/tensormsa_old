@@ -17,10 +17,9 @@ export default class NN_PredictResultComponent extends React.Component {
     }
 
      componentDidMount(){
-         console.log("Predict Main did mounted!!!!!")
+        console.log("Predict Main did mounted!!!!!")
         console.log('NN_TYPE : ' + this.context.NN_TYPE)   
         this.setFilter(this.context.NN_TYPE.toUpperCase())
-        
     } 
 
     setFilter(filter){
@@ -36,7 +35,7 @@ export default class NN_PredictResultComponent extends React.Component {
             return this.setState({PredictResultComponent  : <PredictResultCIFAComponent/>});
         }
         else {
-          
+          console.log("setFilter : " + filter)
           //  return this.setState({PredictResultComponent  : <PredictResultCIFAComponent/>});
         }
     }

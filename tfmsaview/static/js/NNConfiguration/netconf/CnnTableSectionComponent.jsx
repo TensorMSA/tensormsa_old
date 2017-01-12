@@ -21,7 +21,7 @@ export default class CnnTableSectionComponent extends React.Component {
 
     render() {
         return (
-            <section id='netconf-table'>                    
+            <div id='netconf-table'>                    
                 <div className='l--body'>
                     <dl className="layer-box">
                         <dt><span className="circle-blue">Input Layer</span></dt>
@@ -67,7 +67,7 @@ export default class CnnTableSectionComponent extends React.Component {
                         </dd>
                     </dl>    
                 </div>                
-            </section>
+            </div>
         )
     }
 }

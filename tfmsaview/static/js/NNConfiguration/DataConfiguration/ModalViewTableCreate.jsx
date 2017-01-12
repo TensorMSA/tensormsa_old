@@ -199,6 +199,7 @@ export default class ModalViewTableCreate extends React.Component {
                                 </tr>
                                 </tbody>
                             </table>
+                            
                             <table className="table marginT10">
                                 <colgroup>
                                     <col width="25" />
@@ -206,8 +207,8 @@ export default class ModalViewTableCreate extends React.Component {
                                 </colgroup> 
                                 <thead>
                                     <tr>
-                                        <th>chk</th>
-                                        <th>Table Name</th>
+                                        <th><div>chk</div></th>
+                                        <th><div>Table Name</div></th>
                                     </tr>
                                 </thead>
                                 <tbody className="center">      

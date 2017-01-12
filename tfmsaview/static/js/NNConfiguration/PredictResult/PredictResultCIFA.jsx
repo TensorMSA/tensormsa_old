@@ -9,11 +9,7 @@ export default class NN_PredictResultComponent extends React.Component {
         super(props);
         this.state = {
             result:'cifar 결과',
-            NN_TableData: null,
-            selModalView: null,
-            NN_ID : '',
-            networkList: null,
-            networkTitle: '',
+            selModalView: null,            
             dropzoneConfig: {
             //    iconFiletypes: ['.jpg', '.png', '.gif'],
                 showFiletypeIcon: true,
@@ -24,8 +20,9 @@ export default class NN_PredictResultComponent extends React.Component {
 
     componentDidMount(){
         console.log("CIFA did mounted!!!!")
-        this.getNetworkList();
-        console.log('NN_ID : ' + this.context.NN_ID)   
+        console.log('NN_ID... : ' + this.context.NN_ID)   
+        this.setDropZoneUrl(this.context.NN_ID);
+
     }    
 
     updateResult(result) {
@@ -45,39 +42,8 @@ export default class NN_PredictResultComponent extends React.Component {
         }
     }
 
-    getNetworkList(){
-        //let request
-        this.props.reportRepository.getCommonNNInfo().then((network_list) => {
-            let optionRows = [];
-            let networkData = {};
-            console.log(network_list)
-            for (var i in network_list) {
-                let networkId = network_list[i]['pk']
-                optionRows.push(<option key={i} value={networkId}>{networkId}</option>)
-                networkData[networkId] = network_list[i]
-            }
-            this.setState({networkList : optionRows})
-            this.setState({NN_TableData: networkData})
-            console.log('optionRows')
-            console.log(optionRows)
-            this.setNetwork(optionRows[0].props.value)
-        });
-    }
-
-    onNetworkChanged(e) {
-        this.setNetwork(e.target.value)
-    }
-
-    setNetwork(networkId)
-    {
-        console.log('value : ' +  networkId)
-        console.log(this.state.NN_TableData[networkId]['fields'])
-        this.setState({NN_ID: networkId})
-        this.setState({networkTitle: this.state.NN_TableData[networkId]['fields']['name']});
-        this.setDropZoneUrl(networkId)
-    } 
-
     setDropZoneUrl(networkId) {
+        console.log('dropzonurl');
         this.setState({dropzoneConfig: {
                 iconFiletypes: ['.jpg', '.png', '.gif'],
                 showFiletypeIcon: true,
@@ -89,7 +55,9 @@ export default class NN_PredictResultComponent extends React.Component {
         var djsConfig = { 
             addRemoveLinks: false,
             acceptedFiles: "image/jpeg,image/png,image/gif",
-            dictDefaultMessage: '파일 여기'
+            dictDefaultMessage: '파일 여기',
+            thumbnailWidth: 300,
+            thumbnailHeight: 300
          }
         var eventHandlers = { 
             init: (passedDropzone) => {
@@ -121,26 +89,6 @@ export default class NN_PredictResultComponent extends React.Component {
         return (
             <div className="container tabBody">
             <article>
-                <table className="form-table">
-                    <colgroup>
-                    <col width="20%" />
-                    <col width="30%" />
-                    <col width="20%" />
-                    </colgroup>
-                    <thead>
-                        <tr>
-                            <th>Network ID</th>
-                            <td className="left">
-                                <select onChange={this.onNetworkChanged.bind(this)} value={this.state.NN_ID}>
-                                    {this.state.networkList}  
-                                </select>
-                            </td>
-                            <th>제목</th>
-                            <td className="left">{this.state.networkTitle}</td>
-                        </tr>
-                    </thead>
-                </table>
-                
                 <div className="predict-box-wrap">
                     <div className="predict-box-container">
                         <div className="predict-tit">
@@ -215,5 +163,3 @@ export default class NN_PredictResultComponent extends React.Component {
 NN_PredictResultComponent.defaultProps = {
     reportRepository: new ReportRepository(new Api())
 }; 
-
-

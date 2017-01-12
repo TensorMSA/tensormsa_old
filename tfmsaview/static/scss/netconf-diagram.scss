@@ -86,20 +86,28 @@
         width: 800px;
         margin-left: auto;
         margin-right: auto;
+        display: inline;
     }
     .l--page {
         width: 944px;
-        margin-left: auto;
-        margin-right: auto;
+        margin: initial;
     }
+    @media (min-width: 800px) {
+        .l--page {
+            width: 1000px;
+            margin-left: 150px;
+        }
+    }    
     @media (min-width: 1180px) {
         .l--page {
-            width: 1100px;
+            width: 1380px;
+            margin-left: 150px;
         }
     }
     @media (min-width: 1400px) {
         .l--page {
-            width: 1220px;
+            width: 1600px;
+            margin-left: 150px;
         }
     }
     /* Buttons */
@@ -390,6 +398,7 @@
     .data.column .dataset-list {
         margin: 20px 0 10px;
         overflow: hidden;
+        display: none;
     }
     .data.column .dataset {
         position: relative;
@@ -409,13 +418,6 @@
         border: 2px solid rgba(0, 0, 0, 0.1);
         border-radius: 3px;
     }
-    /*.data.column .dataset:first-of-type {
-  margin-top: 8px;
-}
-
-.data.column .dataset:last-of-type {
-  margin-bottom: 20px;
-}*/
     .data.column .data-thumbnail:hover {
         border: 2px solid #999;
     }
@@ -467,7 +469,7 @@
     }
     /* Features column */
     .features.column {
-        width: 10%;
+        width: 12%;
         position: relative;
     }
     .features.column .plus-minus-neurons {
@@ -600,7 +602,7 @@
     }
     /* Hidden layers column */
     .hidden-layers.column {
-        width: 70%;
+        width: 80%;
     }
     #main-part .hidden-layers h4 {
         -webkit-justify-content: center;
@@ -633,7 +635,7 @@
     }
     /* Output column */
     .output.column {
-        width: 275px;
+        width: 30px;
     }
     #heatmap+div {
         float: left;

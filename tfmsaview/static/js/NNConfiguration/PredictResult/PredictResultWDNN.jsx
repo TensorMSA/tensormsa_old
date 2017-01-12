@@ -13,15 +13,18 @@ export default class PredictResultWDNNComponent extends React.Component {
         super(props);
         this.state = {
             result:' wdnn 결과',
-            NN_TableData: null,
+            // NN_TableData: null,
             selModalView: null,
+           // networkID: null,
             rows: [["파일을 업로드 하세요"]],
             settings : {
                 header: false
                         }  ,
-            NN_ID : '',
-            networkList: null,
-            networkTitle: '',
+            networkID: null,
+            nnid: null,            
+            // NN_ID : this.context.NN_ID,
+            // networkList: null,
+            // networkTitle: '',
             dropzoneConfig: {
             //    iconFiletypes: ['.jpg', '.png', '.gif'],
             //    showFiletypeIcon: true,
@@ -41,14 +44,23 @@ export default class PredictResultWDNNComponent extends React.Component {
 
     componentDidMount(){
         console.log("WDNN did mount!!!!")
-        this.getNetworkList();
-        console.log('NN_ID : ' + this.context.NN_ID)   
+        // this.getNetworkList();
+        //console.log('NN_ID : ' + this.context.NN_ID)   
+        
+        //var networkID =  this.context.NN_ID
+        //console.log('networkID_new : ' + networkID) 
+        //this.setState({nnid: this.context.NN_ID})
+        //this.networkID = this.context.NN_ID
+        this.setFileUploadUrl( this.context.NN_ID)
+        console.log('networkID_call.....  nnid : ' +  this.context.NN_ID) 
 
         
     }    
 
     updateResult(result) {
         var resultData;
+
+        console.log("data" + result);
         try {
             resultData = JSON.parse(JSON.parse(result));
         } catch (e) {
@@ -70,7 +82,7 @@ export default class PredictResultWDNNComponent extends React.Component {
             this.dropzone.removeFile(this.dropzone.files[0]);
         }
     }
-
+/*
     getNetworkList(){
         //let request
         this.props.reportRepository.getCommonNNInfo().then((network_list) => {
@@ -109,9 +121,13 @@ export default class PredictResultWDNNComponent extends React.Component {
         this.setFileUploadUrl(networkId)
         // this.setDropZoneUrl(networkId)
     } 
-
+*/
     setFileUploadUrl(networkId) {
+        
+        console.log('networkId... setFileUploadUrl ' + networkId );
         this.setState({
+
+          
             fileUploadOption: {
                     baseUrl:'http://52.78.19.96:8989/api/v1/type/wdnn/predict/' + networkId + '/',
                     fileFieldName(file) {
@@ -189,12 +205,13 @@ export default class PredictResultWDNNComponent extends React.Component {
                         <tr>
                             <th>Network ID</th>
                             <td className="left">
-                                <select onChange={this.onNetworkChanged.bind(this)} value={this.state.NN_ID}>
+                               {/* <select onChange={this.onNetworkChanged.bind(this)} value={this.state.NN_ID}>
                                     {this.state.networkList}  
-                                </select>
+                                </select> */}
+                               {this.context.NN_ID}     
                             </td>
                             <th>제목</th>
-                            <td className="left">{this.state.networkTitle}</td>
+                            <td className="left">{this.context.NN_TITLE}</td>
                             <td>   
                             </td>
                         </tr>
@@ -265,7 +282,8 @@ PredictResultWDNNComponent.defaultProps = {
 }; 
 
 PredictResultWDNNComponent.contextTypes = {
-    NN_ID: React.PropTypes.string
+    NN_ID: React.PropTypes.string,
+    NN_TITLE: React.PropTypes.string
 };
 
 

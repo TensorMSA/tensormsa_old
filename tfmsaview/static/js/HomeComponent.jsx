@@ -26,7 +26,9 @@ export default class HomeComponent extends React.Component {
                         NN_CONFVALID : null,
                         NN_TRAIN : null,
                         NN_DATATYPE : null,
-
+                        NN_TITLE : null,
+                        netBaseInfo : null,
+                        footerArea : <NN_FooterComponent netBaseInfo='Copyrights ⓒ POSCO ICT. All rights reserved.'/>
                          };
             this.addNewNNInfo = this.addNewNNInfo.bind(this); 
             this.getHeaderEvent = this.getHeaderEvent.bind(this);
@@ -40,17 +42,32 @@ export default class HomeComponent extends React.Component {
                   NN_CONFIG    : this.state.NN_CONFIG,
                   NN_CONFVALID : this.state.NN_CONFVALID,
                   NN_TRAIN     : this.state.NN_TRAIN,
-                  NN_DATATYPE  : this.state.NN_DATATYPE};
+                  NN_DATATYPE  : this.state.NN_DATATYPE,
+                  NN_TITLE : this.state.NN_TITLE};
     }
 
-    setActiveItem(item1, item2, item3, item4, item5, item6, item7) {
+    setActiveItem(item1, item2, item3, item4, item5, item6, item7, item8) {
         this.setState({NN_ID        : item1,
                        NN_TYPE      : item2,
                        NN_DATAVALID : item3,
                        NN_CONFIG    : item4,
                        NN_CONFVALID : item5,
                        NN_TRAIN     : item6,
-                       NN_DATATYPE  : item7});
+                       NN_DATATYPE  : item7,
+                       NN_TITLE     : item8
+                });
+        this.setFootContents(item1, item2, item8);
+    }
+
+    setFootContents(item1, item2, item8) {
+      let footContens = 'Copyrights ⓒ POSCO ICT. All rights reserved.'
+      if(item1){
+            footContens = ' 1. Network Id : ' + item1;
+            footContens += ' | 2. Title : ' + item8;
+            footContens += ' | 3. Net Type : ' + item2;
+        }
+
+        this.setState({footerArea:<NN_FooterComponent netBaseInfo={footContens}/> })
     }
 
     getHeaderEvent(i){
@@ -64,7 +81,8 @@ export default class HomeComponent extends React.Component {
                 this.setState({NN_CONFVALID : nnBaseInfo['result'][0]['fields']['confvaild']});
                 this.setState({NN_TRAIN : nnBaseInfo['result'][0]['fields']['train']});
                 this.setState({NN_DATATYPE : nnBaseInfo['result'][0]['fields']['preprocess']});
-              }
+                this.setState({NN_TITLE : nnBaseInfo['result'][0]['fields']['name']});
+            }
               this.getHeaderSwitch(i);
               
             });  
@@ -141,7 +159,7 @@ export default class HomeComponent extends React.Component {
             <div>
 				<NN_HeaderComponent getHeaderEvent={this.getHeaderEvent} /> 
 				<NN_SectionComponent NN_InfoList={this.state.NN_InfoList} getHeaderEvent={this.getHeaderEvent} />
-				<NN_FooterComponent/>                                  
+				{this.state.footerArea}                              
 			</div>
         )
     }
@@ -154,7 +172,8 @@ HomeComponent.childContextTypes = {
   NN_CONFIG    : React.PropTypes.string,
   NN_CONFVALID : React.PropTypes.string,
   NN_TRAIN     : React.PropTypes.string,
-  NN_DATATYPE  : React.PropTypes.string
+  NN_DATATYPE  : React.PropTypes.string,
+  NN_TITLE     : React.PropTypes.string
 }
 
 HomeComponent.contextTypes = {
@@ -164,7 +183,8 @@ HomeComponent.contextTypes = {
     NN_CONFIG    : React.PropTypes.string,
     NN_CONFVALID : React.PropTypes.string,
     NN_TRAIN     : React.PropTypes.string,
-    NN_DATATYPE  : React.PropTypes.string
+    NN_DATATYPE  : React.PropTypes.string,
+    NN_TITLE     : React.PropTypes.string
 };
 
 HomeComponent.defaultProps = {

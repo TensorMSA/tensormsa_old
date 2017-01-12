@@ -10,7 +10,7 @@ export default class LoginComponent extends React.Component {
                             <strong>
                             Thank you for visiting our website!
                             </strong>
-                            We always do my best
+                            Play with data, Enjoy deep learning
                         </div>
                         <div className="login_area">
                             <div className="login_title">HOYA LOGIN</div>

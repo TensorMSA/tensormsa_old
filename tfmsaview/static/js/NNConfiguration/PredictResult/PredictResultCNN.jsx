@@ -9,11 +9,7 @@ export default class NN_PredictResultComponent extends React.Component {
         super(props);
         this.state = {
             result:'결과',
-            NN_TableData: null,
             selModalView: null,
-            NN_ID : '',
-            networkList: null,
-            networkTitle: '',
             dropzoneConfig: {
                 iconFiletypes: ['.jpg', '.png', '.gif'],
                 showFiletypeIcon: true,
@@ -24,8 +20,9 @@ export default class NN_PredictResultComponent extends React.Component {
 
     componentDidMount(){
         console.log("CNN did mounted!!!!!")
-        this.getNetworkList();
         console.log('NN_ID : ' + this.context.NN_ID)   
+        this.setDropZoneUrl(this.context.NN_ID)
+        console.log('networkID_call..... : ' ) 
     }    
 
     updateResult(result) {
@@ -44,38 +41,6 @@ export default class NN_PredictResultComponent extends React.Component {
             this.dropzone.removeFile(this.dropzone.files[0]);
         }
     }
-
-    getNetworkList(){
-        //let request
-        this.props.reportRepository.getCommonNNInfo().then((network_list) => {
-            let optionRows = [];
-            let networkData = {};
-            console.log(network_list)
-            for (var i in network_list) {
-                let networkId = network_list[i]['pk']
-                optionRows.push(<option key={i} value={networkId}>{networkId}</option>)
-                networkData[networkId] = network_list[i]
-            }
-            this.setState({networkList : optionRows})
-            this.setState({NN_TableData: networkData})
-            console.log('optionRows')
-            console.log(optionRows)
-            this.setNetwork(this.context.NN_ID);
-        });
-    }
-
-    onNetworkChanged(e) {
-        this.setNetwork(e.target.value)
-    }
-
-    setNetwork(networkId)
-    {
-        console.log('value : ' +  networkId)
-        console.log(this.state.NN_TableData[networkId]['fields'])
-        this.setState({NN_ID: networkId})
-        this.setState({networkTitle: this.state.NN_TableData[networkId]['fields']['name']});
-        this.setDropZoneUrl(networkId)
-    } 
 
     setDropZoneUrl(networkId) {
         this.setState({dropzoneConfig: {
@@ -111,10 +76,6 @@ export default class NN_PredictResultComponent extends React.Component {
                 console.log(this.dropzone)
                 this.removeDropZoneFile();
             }
-            
-
-            
-
         }
 
 
@@ -134,13 +95,9 @@ export default class NN_PredictResultComponent extends React.Component {
                     <thead>
                         <tr>
                             <th>Network ID</th>
-                            <td className="left">
-                                <select onChange={this.onNetworkChanged.bind(this)} value={this.state.NN_ID}>
-                                    {this.state.networkList}  
-                                </select>
-                            </td>
+                            <td className="left">{this.context.NN_ID}</td>
                             <th>제목</th>
-                            <td className="left">{this.state.networkTitle}</td>
+                            <td className="left">{this.context.NN_TITLE}</td>
                             <td></td>
                         </tr>
                     </thead>
@@ -222,5 +179,6 @@ NN_PredictResultComponent.defaultProps = {
 }; 
 
 NN_PredictResultComponent.contextTypes = {
-    NN_ID: React.PropTypes.string
+    NN_ID: React.PropTypes.string,
+    NN_TITLE: React.PropTypes.string
 };

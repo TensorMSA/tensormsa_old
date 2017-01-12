@@ -8,31 +8,19 @@
     overflow: hidden;
     .logo {
         float: left;
-        width: $logo-width;
+        /*width: $logo-width;*/
         @include transition(width, 1s);
         height: 100%;
         float: left;
-        @include background(#9ec4e9, #78a4cf);
+        /*@include background(#9ec4e9, #78a4cf);*/
         .logo-image {
             display: inline-block;
-            width: 44px;
+            width: 154px;
             height: 44px;
             background: $logo-img-url no-repeat;
             margin-left: 27px;
             margin-top: 14px;
             float: left;
-        }
-        .system-logo {
-            text-indent: -999999px;
-            position: absolute;
-            display: inline-block;
-            opacity: 100;
-            @include transition(opacity, .5s);
-            width: 110px;
-            height: 20px;
-            background: $sysmen-logo-url no-repeat;
-            margin-left: 8px;
-            margin-top: 20px;
         }
     }
 }

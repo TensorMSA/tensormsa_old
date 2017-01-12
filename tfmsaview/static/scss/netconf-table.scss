@@ -1,6 +1,7 @@
-section#netconf-table {
+div#netconf-table {
     font-family: "Helvetica", "Arial", sans-serif;
     height: 318px;
+    margin-top: 25px;
 
     div {
         height: inherit;
@@ -21,4 +22,16 @@ section#netconf-table {
             width: 20%;
         }
     }
+
+    dl.layer-box > dd {
+        width: 100%;
+        background: $layer-box-bg;
+        min-height: calc(100% - 30px);
+        @include box-sizing(border-box);
+        padding: 10px;
+        border-radius: 0 0 $layer-box-border-radius $layer-box-border-radius;
+        overflow: scroll;
+        height: 120px;
+    }    
 }
+

@@ -1,6 +1,14 @@
 import React from 'react'
 
 export default class NN_FooterComponent extends React.Component {
+    constructor(props) {
+    super(props);
+        this.state = 
+        {  
+            footContents : null            
+        };
+    }
+
     render() {
         return (   
 			<footer>
@@ -28,7 +36,7 @@ export default class NN_FooterComponent extends React.Component {
 */}
                     <footer>
                         <div className="copyright_area">
-                            Copyrights ⓒ POSCO ICT. All rights reserved. 
+                            {this.props.netBaseInfo}      
                         </div>
                     </footer>
 			</footer>

@@ -62,7 +62,7 @@ export default class NN_BasicInfoComponent extends React.Component {
         this.props.reportRepository.postCommonNNInfo(null, this.key_id, this.state).then((answer) => {
             //console.log(answer.status);
             if(answer.status == "200") {
-                alert("저장되었습니다");
+                msg.show("New neural network registered!");
             }
         });
     }

@@ -1,5 +1,6 @@
 import React from 'react'
 import StepArrowComponent from './common/StepArrowComponent'
+import AlertContainer from 'react-alert';
 
 export default class NN_HeaderComponent extends React.Component {
     constructor(props) {
@@ -8,9 +9,17 @@ export default class NN_HeaderComponent extends React.Component {
         this.state = {
                 selected:null,
                 };
+		this.alertOptions = {
+			offset: 14,
+			position: 'top right',
+			theme: 'dark',
+			time: 5000,
+			transition: 'scale'
+		};
     }
 
     setFilter(filter){
+		console.log("[Header]" + filter + "," + JSON.stringify(this.context))
         this.setState({selected  : filter})
         switch (filter) {
             case 1:
@@ -19,22 +28,39 @@ export default class NN_HeaderComponent extends React.Component {
             	if(this.context.NN_ID && this.context.NN_TYPE != 'cifar'){
             		return this.props.getHeaderEvent(2);
             	}
+				break;
             case 3:
             	if(this.context.NN_ID && this.context.NN_TYPE != 'cifar'){
             		return this.props.getHeaderEvent(3);
             	}
+				break;
             case 4:
             	if(this.context.NN_DATAVALID && this.context.NN_TYPE != 'cifar'){
             		return this.props.getHeaderEvent(4);
-            	}
+            	} else {
+					if (!this.context.NN_DATAVALID) {
+						msg.show("데이터가 유효하지 않습니다.")
+					}
+				}
+				break;
             case 5:
             	if(this.context.NN_CONFIG && this.context.NN_TYPE != 'cifar'){
 	                return this.props.getHeaderEvent(5); 
-            	}
+            	} else {
+					if (!this.context.NN_CONFIG) {
+						msg.show("설정이 완료되지 않았습니다.")
+					}
+				}
+				break;
             case 6:
             	if(this.context.NN_TRAIN || this.context.NN_TYPE == 'cifar'){
 	                return this.props.getHeaderEvent(6); 
-	            }
+	            } else {
+					console.log("Can't predict. - " + JSON.stringify(this.context))
+					if (!this.context.NN_TRAIN) {
+						msg.show("학습이 완료되지 않았습니다.")
+					}
+				}
 	        
         }
     }
@@ -72,9 +98,14 @@ export default class NN_HeaderComponent extends React.Component {
         return (   
 			<header className="mainHeader">
 				<div className="mainHeader_area">
-					<h1 className="logo">
-						<a href="#" onClick={() => this.props.getHeaderEvent(0)}><img src={"../../imgages/h1_logo.png"} alt="HOYA"/></a>
-					</h1>	
+					<AlertContainer ref={(a) => global.msg = a} {...this.alertOptions} />
+					
+						<a href="#" onClick={() => this.props.getHeaderEvent(0)}>
+							<h1 className="logo">
+							<span className="hidden">HOYA</span>
+							<span className="logo-image"></span>
+							</h1>
+						</a>
 				<nav>
 					<h1 className="hidden">Navigator</h1>
 					<ul>

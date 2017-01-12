@@ -7,7 +7,7 @@ export default class RouterComponent extends React.Component {
     render() {
         return (   
                 <Router history = {browserHistory}>
-                    <Route path="/" component={LoginComponent} />
+                    <Route path="/" component={HomeComponent} />
                     <Route path="login" component={HomeComponent} />
                 </Router>
         )

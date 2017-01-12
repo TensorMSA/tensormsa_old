@@ -12,10 +12,8 @@ export default class DiagramSectionComponent extends React.Component {
         this.state = {
             nnConfigFeatureInfoField : null,
             nnConfigLabelInfoField : null,
-            saveBtnClickFlag: false,
             stepBack : 3,
-            stepForward : 5,
-            selected : null
+            stepForward : 5
         };
         
         // CNN
@@ -32,51 +30,53 @@ export default class DiagramSectionComponent extends React.Component {
     // execute just once
     componentWillMount(){
         // choose CNN or WDNN
+        localStorage.setItem('nn_type', (this.context.NN_TYPE).toUpperCase());
         (this.context.NN_TYPE).toUpperCase() ===  'CNN' ? this._getNetConfigCommonInfo(this.context.NN_ID):this._getNetConfigDataframeInfo(this.context.NN_ID)
     }
 
-    componentDidMount(){
-        const libScript = document.createElement("script");
-        const tsScript = document.createElement("script");
-
-        libScript.src = "../../../dist/lib.js";
-        libScript.async = false;
+    componentDidUpdate(prevProps,prevState){
         
-        tsScript.src = "../../../dist/NetConf.js";
-        tsScript.async = true;
-       
-        document.body.appendChild(libScript);
-        document.body.appendChild(tsScript);
+        if(prevState.nnConfigFeatureInfoField !== null && prevState.nnConfigLabelInfoField === null)
+        {           
+            const libScript = document.createElement("script");
+            const tsScript = document.createElement("script");
+
+            libScript.src = "../../../dist/lib.js";
+            libScript.async = false;
+            
+            tsScript.src = "../../../dist/NetConf.js";
+            tsScript.async = true;
+        
+            document.body.appendChild(libScript);
+            document.body.appendChild(tsScript);
+        }
     }
 
     // 3!
     shouldComponentUpdate(nextProps, nextState) {
-        return (this.state.nnConfigFeatureInfoField !== null && this.state.nnConfigLabelInfoField === null) || this.state.saveBtnClickFlag === true;
+        return (nextState.nnConfigFeatureInfoField !== null && nextState.nnConfigLabelInfoField === null)
+            || (nextState.nnConfigFeatureInfoField !== null && nextState.nnConfigLabelInfoField !== null);
     }    
 
     //4!
     componentWillUpdate(nextProps, nextState){
-        if(this.state.nnConfigFeatureInfoField !== null && this.state.saveBtnClickFlag === false)
+        if(nextState.nnConfigFeatureInfoField !== null && nextState.nnConfigLabelInfoField === null && (this.context.NN_TYPE).toUpperCase() ===  'CNN') 
         {           
-            this._getNetConfigFormatInfo(this.state.nnConfigFeatureInfoField, this.context.NN_ID);
-        }   
-
-        if(this.state.saveBtnClickFlag === true)
-        {           
-            this._postNNNetConfigInfo();
-        }        
+            this._getNetConfigFormatInfo(nextState.nnConfigFeatureInfoField, this.context.NN_ID);
+        }
     }
 
     //2
     _getNetConfigCommonInfo(params) {
         this.props.reportRepository.getNetConfigCommonInfo(params).then((tableData) => {
+            var nnConfigCommonInfoJson;
             if(typeof tableData === 'object')
             {
-                var nnConfigCommonInfoJson = JSON.parse(JSON.stringify(tableData));
+                nnConfigCommonInfoJson = JSON.parse(JSON.stringify(tableData));
             }
             else 
             {
-                var nnConfigCommonInfoJson = JSON.parse(tableData);
+                nnConfigCommonInfoJson = JSON.parse(tableData);
             }            
 
             for(let i=0; i < nnConfigCommonInfoJson.result.length; i++) 
@@ -87,7 +87,6 @@ export default class DiagramSectionComponent extends React.Component {
                     break;
                 }
             }
-            debugger;             
         });
     }
 
@@ -113,7 +112,21 @@ export default class DiagramSectionComponent extends React.Component {
     }
 
     _clickSaveButton(){
-        this.setState({saveBtnClickFlag: true});
+        console.log("click post!!");
+        if((this.context.NN_TYPE).toUpperCase() === 'CNN')
+        {
+            this._postNNNetConfigInfo();
+        }
+        else if((this.context.NN_TYPE).toUpperCase() === 'WDNN')
+        {
+            this._postNNNetConfigWdnnInfo();
+        }
+    }
+
+    _postNNNetConfigWdnnInfo(){
+        console.log(this.context.NN_ID);
+
+        this.props.reportRepository.postWdnnConf(this.context.NN_ID, JSON.parse(localStorage.wdnn_config));
     }
 
     _postNNNetConfigInfo(){
@@ -162,17 +175,20 @@ export default class DiagramSectionComponent extends React.Component {
         this.props.reportRepository.postNNNetConfigInfo(this.context.NN_ID, postObj);
     }
 
-
     // WDNN
     _getNetConfigDataframeInfo(nnId) {
+        var nnConfigWdnnFeatureInfoJson;
+        var nnConfigWdnnLabelInfoJson;
+        var nnConfigWdnnConfJson;
+
         this.props.reportRepository.getDataFrameOnNetworkConfig('all', nnId).then((tableData) => {
             if(typeof tableData === 'object')
             {
-                var nnConfigWdnnFeatureInfoJson = JSON.parse(JSON.stringify(tableData));
+                nnConfigWdnnFeatureInfoJson = JSON.parse(JSON.stringify(tableData));
             }
             else 
             {
-                var nnConfigWdnnFeatureInfoJson = JSON.parse(tableData);
+                nnConfigWdnnFeatureInfoJson = JSON.parse(tableData);
             }
             
             this.setState({nnConfigFeatureInfoField: nnConfigWdnnFeatureInfoJson.result});
@@ -181,15 +197,36 @@ export default class DiagramSectionComponent extends React.Component {
         this.props.reportRepository.getDataFrameOnNetworkConfig('labels', nnId).then((tableData) => {
             if(typeof tableData === 'object')
             {
-                var nnConfigWdnnLabelInfoJson = JSON.parse(JSON.stringify(tableData));
+                nnConfigWdnnLabelInfoJson = JSON.parse(JSON.stringify(tableData));
             }
             else 
             {
-                var nnConfigWdnnLabelInfoJson = JSON.parse(tableData);
+                nnConfigWdnnLabelInfoJson = JSON.parse(tableData);
             }
             
             this.setState({nnConfigLabelInfoField: nnConfigWdnnLabelInfoJson.result});
-        });                 
+        }); 
+
+        this.props.reportRepository.getWdnnConf(nnId).then((tableData) => {
+            if(typeof tableData === 'object')
+            {
+                nnConfigWdnnConfJson = JSON.parse(JSON.stringify(tableData));
+            }
+            else 
+            {
+                nnConfigWdnnConfJson = JSON.parse(tableData);
+            }
+
+            if(nnConfigWdnnConfJson.status === '404')
+            {
+                localStorage.setItem('wdnn_config', "{}");
+            }
+            else{
+                localStorage.setItem('wdnn_config', nnConfigWdnnConfJson.result[0]);
+            }
+            
+            localStorage.setItem('init_flag', 'true');
+        });              
     }
 
     render() {
@@ -198,16 +235,18 @@ export default class DiagramSectionComponent extends React.Component {
                     <ul className="tabHeader">
                         <li className="current"><a href="#">{(this.context.NN_TYPE).toUpperCase()}</a></li>
                         <div className="btnArea">
-                            <button type="button" onClick={this._clickSaveButton.bind(this)}>Save</button>
                             <StepArrowComponent getHeaderEvent={this.props.getHeaderEvent} stepBack={this.state.stepBack} stepForward={this.state.stepForward}/>
                         </div>                        
                     </ul> 
-                        <div id='netconf-diagram' className="container tabBody">                 
+                        <div id='netconf-diagram' className="container tabBody">
+                            <div className="btnArea">
+                                <button type="button" onClick={this._clickSaveButton.bind(this)}>Save</button>
+                            </div>
                             <div id="main-part" className="l--page">
                                 {/* Data Column */}
                                 <div className="column data">
                                     <h4>
-                                        <span>Data</span>
+                                        <span>CONFIG DATA</span>
                                     </h4>
                                     <div className="ui-dataset">
                                         <div className="dataset-list">
@@ -233,15 +272,9 @@ export default class DiagramSectionComponent extends React.Component {
                                     </div>
                                     <div>
                                         <div className="ui-percTrainData">
-                                            <label htmlFor="percTrainData">Ratio of training to test data:&nbsp;&nbsp;<span className="value">XX</span>%</label>
+                                            <label htmlFor="percTrainData">Learning&nbsp;Rate:&nbsp;&nbsp;<span className="value">XX</span>%</label>
                                             <p className="slider">
-                                                <input className="mdl-slider mdl-js-slider" type="range" id="percTrainData" min="10" max="90" step="10"/>
-                                            </p>
-                                        </div>
-                                        <div className="ui-noise">
-                                            <label htmlFor="noise">Noise:&nbsp;&nbsp;<span className="value">XX</span></label>
-                                            <p className="slider">
-                                                <input className="mdl-slider mdl-js-slider" type="range" id="noise" min="0" max="50" step="5"/>
+                                                <input className="mdl-slider mdl-js-slider" type="range" id="percTrainData" min="0" max="99" step="1"/>
                                             </p>
                                         </div>
                                         <div className="ui-batchSize">
@@ -315,25 +348,23 @@ export default class DiagramSectionComponent extends React.Component {
                                         <div id="linechart"></div>
                                     </div>
                                 </div>
+                                {/* CNN */}
+                                {
+                                    (this.context.NN_TYPE).toUpperCase() === 'CNN' && this.state.nnConfigFeatureInfoField !== null && this.state.nnConfigLabelInfoField !== null &&
+                                    <CnnTableSectionComponent nnConfigFeatureInfoField={this.state.nnConfigFeatureInfoField}
+                                                            nnConfigLabelInfoField={this.state.nnConfigLabelInfoField}
+                                    />
+                                }
+
+                                {/* WDNN */}
+                                {
+                                    (this.context.NN_TYPE).toUpperCase() === 'WDNN' && this.state.nnConfigFeatureInfoField !== null && this.state.nnConfigLabelInfoField !== null &&
+                                    <WdnnTableSectionComponent nnConfigFeatureInfoField={this.state.nnConfigFeatureInfoField}
+                                                            nnConfigLabelInfoField={this.state.nnConfigLabelInfoField}
+                                    />
+                                }                                
                             </div>
-
-                            {/* CNN */}
-                            {
-                                (this.context.NN_TYPE).toUpperCase() === 'CNN' && this.state.nnConfigFeatureInfoField !== null && this.state.nnConfigLabelInfoField !== null &&
-                                <CnnTableSectionComponent nnConfigFeatureInfoField={this.state.nnConfigFeatureInfoField}
-                                                          nnConfigLabelInfoField={this.state.nnConfigLabelInfoField}
-                                />
-                            }
-
-                            {/* WDNN */}
-                            {
-                                (this.context.NN_TYPE).toUpperCase() === 'WDNN' && this.state.nnConfigFeatureInfoField !== null && this.state.nnConfigLabelInfoField !== null &&
-                                <WdnnTableSectionComponent nnConfigFeatureInfoField={this.state.nnConfigFeatureInfoField}
-                                                           nnConfigLabelInfoField={this.state.nnConfigLabelInfoField}
-                                />
-                            }
-
-                        </div>                
+                        </div>   
                 </section>
         )
     }

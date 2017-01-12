@@ -20,7 +20,6 @@ a.btn {
     border-radius: $btn-border-radius;
     min-width: 80px;
     position: relative;
-    border: 1px solid $defaultBtn-border-color;
     margin-left: 2px;
     &.img-btn {
         padding-left: 30px;
@@ -47,17 +46,33 @@ a.btn {
         }
 }
 
-.img-btn {
+.imgBtn{
+    padding-left: $btn-img-padding;
+    &:before {
+            content: '';
+            width: 15px;
+            height: 15px;
+            display: inline-block;
+            position: absolute;
+            left: 8px;
+            background: $tblBtn-icon-url;
+        }
     &.save {
         &:before {
-            background-position: 0 0;
+            background-position: -105px 0;
+        }
+    }
+    &.serch {
+        &:before {
+            background-position: -75px 0;
         }
     }
     &.upload {
         &:before {
-            background-position: -30px 0;
+            background-position: -90px 0;
         }
     }
+
 }
 
 // table button
@@ -92,7 +107,18 @@ a.btn {
         }
     }
 }
-
+.img-btn {
+    padding-left: $btn-img-padding;
+    &:before {
+            content: '';
+            width: 15px;
+            height: 15px;
+            display: inline-block;
+            position: absolute;
+            left: 8px;
+            background: $tblBtn-icon-url;
+        }
+}
 table {
     button {
         @include gradient(#fff, #e5e6e8);
@@ -129,6 +155,12 @@ button {
             background-position: -60px 0;
         }
     }
+    &.search {
+        &:before {
+            background-position: -75px 0;
+        }
+    }
+
 }
 
 .btnArea {
