@@ -1,3 +1,1 @@
-test
-123sdasad
-sdfdsafe
+print('test...........')
