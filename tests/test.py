@@ -1,4 +1,7 @@
+import lxml.etree as etree
 
-print("test...........1'")
+x = etree.parse("filename")
+print etree.tostring(x, pretty_print = True)
 
-print("test...........2'")
+
+
